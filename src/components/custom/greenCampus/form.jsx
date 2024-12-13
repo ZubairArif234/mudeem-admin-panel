@@ -1,0 +1,60 @@
+import React from "react";
+
+const Form = () => {
+  return (
+    <form>
+      <div className="row gy-3">
+        <div className="col-12">
+          <label className="form-label">Latitude</label>
+          <input
+            type="text"
+            name="#0"
+            className="form-control form-control-sm"
+            placeholder="Enter Latitude"
+          />
+        </div>
+        <div className="col-12">
+          <label className="form-label">Longitude</label>
+          <input
+            type="text"
+            name="#0"
+            className="form-control"
+            placeholder="Enter Longitude"
+          />
+        </div>
+        <div className="col-12">
+          <label className="form-label">Category</label>
+          <input
+            type="text"
+            name="#0"
+            className="form-control form-control-sm"
+            placeholder="Enter Category"
+          />
+        </div>
+        <div className="col-12">
+          <label className="form-label">Green Points</label>
+          <input
+            type="text"
+            name="#0"
+            className="form-control form-control-sm"
+            placeholder="Enter Green Points"
+          />
+        </div>
+      </div>
+      <div className="mt-10 d-flex gap-2 justify-content-end">
+        <button
+          type="button"
+          class="btn btn-danger-600"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+        <button type="button" class="btn btn-success-600">
+          Save changes
+        </button>
+      </div>
+    </form>
+  );
+};
+
+export default Form;
