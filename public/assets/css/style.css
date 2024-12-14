@@ -11851,12 +11851,12 @@ select option {
   left: 50%;
   bottom: -1px;
   transform: translateX(-50%);
-  background-color: var(--primary-600);
+  background-color: var(--success-600);
   transition: 0.2s linear;
 }
 
 .bordered-tab .nav-link.active {
-  color: var(--primary-600);
+  color: var(--success-600);
 }
 
 .bordered-tab .nav-link.active::before {
@@ -11866,7 +11866,7 @@ select option {
 /* Bordered Tab Css End */
 /* Pill Tab Css Start */
 .pill-tab .nav-link.active {
-  background-color: var(--primary-600);
+  background-color: var(--success-600);
 }
 
 .pill-tab.style-three {
@@ -14249,3 +14249,11 @@ td.fc-header-center {
 }
 
 /* === footer css end === */
+
+/* custom css */
+.line-clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}

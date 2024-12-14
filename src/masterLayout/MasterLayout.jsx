@@ -1101,6 +1101,26 @@ const MasterLayout = ({ children }) => {
                 <span>Green Campus Map</span>
               </NavLink>
             </li>
+
+            <li>
+              <NavLink
+                to="/collaboration-forums"
+                className={(navData) => (navData.isActive ? "active-page" : "")}
+              >
+                <Icon icon="octicon:info-24" className="menu-icon" />
+                <span>Collaboration Forums</span>
+              </NavLink>
+            </li>
+
+            <li>
+              <NavLink
+                to="/event-calendar"
+                className={(navData) => (navData.isActive ? "active-page" : "")}
+              >
+                <Icon icon="octicon:info-24" className="menu-icon" />
+                <span>Event Calender</span>
+              </NavLink>
+            </li>
           </ul>
         </div>
       </aside>

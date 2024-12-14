@@ -19,9 +19,9 @@
 }
 
 .fc-button {
-  border-color: var(--primary-600) !important;
+  border-color: var(--success-600) !important;
   background: #fff !important;
-  color: var(--primary-600) !important;
+  color: var(--success-600) !important;
   font-weight: 600 !important;
   display: flex !important;
   justify-content: center !important;
@@ -30,17 +30,17 @@
 }
 
 .fc-button:hover {
-  background-color: var(--primary-50) !important;
+  background-color: var(--success-50) !important;
 }
 
 .fc-button-active {
   color: #fff !important;
-  background-color: var(--primary-600) !important;
+  background-color: var(--success-600) !important;
 }
 
 .fc-button-active:hover {
   color: #fff !important;
-  background-color: var(--primary-600) !important;
+  background-color: var(--success-600) !important;
 }
 
 .fc-button-active:focus,
@@ -60,24 +60,24 @@
   border: 0;
   padding: 4px;
   border-radius: 4px;
-  background-color: var(--primary-50) !important;
-  color: var(--primary-600) !important;
+  background-color: var(--success-50) !important;
+  color: var(--success-600) !important;
 }
 
 .fc-h-event .fc-event-main {
   border: 0;
   padding: 4px;
   border-radius: 4px;
-  background-color: var(--primary-50) !important;
-  color: var(--primary-600) !important;
+  background-color: var(--success-50) !important;
+  color: var(--success-600) !important;
 }
 
 .fc-v-event .fc-event-main {
   border: 0;
   padding: 4px;
   border-radius: 4px;
-  background-color: var(--primary-50) !important;
-  color: var(--primary-600) !important;
+  background-color: var(--success-50) !important;
+  color: var(--success-600) !important;
 }
 
 .fc-daygrid-day-number {
@@ -92,8 +92,8 @@
 }
 
 .fc-daygrid-day:hover .fc-daygrid-day-number {
-  background-color: var(--primary-100) !important;
-  color: var(--primary-600) !important;
+  background-color: var(--success-100) !important;
+  color: var(--success-600) !important;
   transition: background-color 0.2s;
 }
 

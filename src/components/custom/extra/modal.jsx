@@ -1,6 +1,6 @@
 import React from "react";
 
-const Modal = ({ id, button, body, title }) => {
+const Modal = ({ id, button, body, title, size }) => {
   return (
     <div>
       {button}
@@ -10,8 +10,9 @@ const Modal = ({ id, button, body, title }) => {
         tabindex="-1"
         aria-labelledby={id + "-label"}
         aria-hidden="true"
+        tabIndex={-1}
       >
-        <div class="modal-dialog modal-dialog-centered">
+        <div class={`modal-dialog modal-dialog-centered ${size}`}>
           <div class="modal-content">
             <div class="modal-header">
               <h6 class="modal-title" id={id + "-label"}>

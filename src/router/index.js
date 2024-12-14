@@ -84,6 +84,8 @@ import TextGeneratorNewPage from "../pages/TextGeneratorNewPage";
 import React from "react";
 import Carpooling from "../adminPages/carpooling";
 import GreenCampus from "../adminPages/green map";
+import CollaborateForums from "../adminPages/collaborationForums";
+import EventCalender from "../adminPages/event calendar";
 
 const Router = () => {
   return (
@@ -197,6 +199,12 @@ const Router = () => {
 
         <Route exact path="/carpooling" element={<Carpooling />} />
         <Route exact path="/green-campus" element={<GreenCampus />} />
+        <Route
+          exact
+          path="/collaboration-forums"
+          element={<CollaborateForums />}
+        />
+        <Route exact path="/event-calendar" element={<EventCalender />} />
       </Routes>
     </BrowserRouter>
   );
