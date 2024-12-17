@@ -1121,6 +1121,127 @@ const MasterLayout = ({ children }) => {
                 <span>Event Calender</span>
               </NavLink>
             </li>
+
+            <li>
+              <NavLink
+                to="/innovation"
+                className={(navData) => (navData.isActive ? "active-page" : "")}
+              >
+                <Icon icon="octicon:info-24" className="menu-icon" />
+                <span>Innovation</span>
+              </NavLink>
+            </li>
+
+            {/* sustainability  */}
+            <li className="dropdown">
+              <Link to="#">
+                <Icon
+                  icon="icon-park-outline:setting-two"
+                  className="menu-icon"
+                />
+                <span>Sustainibilty</span>
+              </Link>
+              <ul className="sidebar-submenu">
+                <li>
+                  <NavLink
+                    to="/sustainibilty-company"
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <Icon icon="uil:bag" className="menu-icon" />
+                    Company
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/sustainibilty-record"
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <Icon icon="uil:newspaper" className="menu-icon" />
+                    Record
+                  </NavLink>
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <NavLink
+                to="/subscription"
+                className={(navData) => (navData.isActive ? "active-page" : "")}
+              >
+                <Icon icon="octicon:info-24" className="menu-icon" />
+                <span>Subscription</span>
+              </NavLink>
+            </li>
+
+            <li>
+              <NavLink
+                to="/content-creator"
+                className={(navData) => (navData.isActive ? "active-page" : "")}
+              >
+                <Icon icon="octicon:info-24" className="menu-icon" />
+                <span>Content Creator</span>
+              </NavLink>
+            </li>
+
+            <li>
+              <NavLink
+                to="/academy"
+                className={(navData) => (navData.isActive ? "active-page" : "")}
+              >
+                <Icon icon="octicon:info-24" className="menu-icon" />
+                <span>Academy</span>
+              </NavLink>
+            </li>
+
+            {/* shop  */}
+            <li className="dropdown">
+              <Link to="#">
+                <Icon
+                  icon="icon-park-outline:setting-two"
+                  className="menu-icon"
+                />
+                <span>Shop</span>
+              </Link>
+              <ul className="sidebar-submenu">
+                <li>
+                  <NavLink
+                    to="/shop-products"
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <Icon icon="uil:bag" className="menu-icon" />
+                    Products
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/shop-orders"
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <Icon icon="uil:newspaper" className="menu-icon" />
+                    Order
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/shop-banner"
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <Icon icon="uil:newspaper" className="menu-icon" />
+                    Banner
+                  </NavLink>
+                </li>
+              </ul>
+            </li>
           </ul>
         </div>
       </aside>

@@ -8,7 +8,15 @@ import { SquarePagination } from "./PaginationLayer";
 import Modal from "./custom/extra/modal";
 import Form from "./custom/greenCampus/form";
 
-const TableDataLayer = ({ title, body, isCustomHeaderButton }) => {
+const TableDataLayer = ({
+  title,
+  body,
+  isCustomHeaderButton,
+  modalTitle,
+  modalId,
+  modalForm,
+  modalSize,
+}) => {
   // useEffect(() => {
   //   const table = $("#dataTable").DataTable({
   //     pageLength: 10,
@@ -35,19 +43,20 @@ const TableDataLayer = ({ title, body, isCustomHeaderButton }) => {
           </div>
           {isCustomHeaderButton && (
             <Modal
-              id="add-campus-location"
+              id={modalId}
               button={
                 <button
                   type="button"
                   class="btn btn-success-600 d-flex gap-2 align-items-center"
                   data-bs-toggle="modal"
-                  data-bs-target="#add-campus-location"
+                  data-bs-target={`#${modalId}`}
                 >
-                  <Icon icon="mage:plus" /> Add
+                  <Icon icon="mage:plus" /> {modalTitle}
                 </button>
               }
-              body={<Form />}
-              title="Add Location"
+              body={modalForm}
+              title={modalTitle}
+              size={modalSize}
             />
           )}
         </div>

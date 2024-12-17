@@ -3,7 +3,6 @@ import MasterLayout from "../../masterLayout/MasterLayout";
 import Breadcrumb from "../../components/Breadcrumb";
 import TableDataLayer from "../../components/TableDataLayer";
 import GreenCampusTable from "../../components/custom/greenCampus/table";
-import { Icon } from "@iconify/react/dist/iconify.js";
 import Form from "../../components/custom/greenCampus/form";
 
 const GreenCampus = () => {
@@ -83,7 +82,15 @@ const GreenCampus = () => {
 
       <TableDataLayer
         title={"Location"}
-        body={<GreenCampusTable heading={tableHeadings} rows={tableRows} />}
+        body={
+          <GreenCampusTable
+            heading={tableHeadings}
+            rows={tableRows}
+            modalTitle="Add Location"
+            modalId="add-campus-location"
+            modalForm={<Form />}
+          />
+        }
         isCustomHeaderButton
       />
     </MasterLayout>

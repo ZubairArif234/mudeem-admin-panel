@@ -86,6 +86,15 @@ import Carpooling from "../adminPages/carpooling";
 import GreenCampus from "../adminPages/green map";
 import CollaborateForums from "../adminPages/collaborationForums";
 import EventCalender from "../adminPages/event calendar";
+import Innovation from "../adminPages/innovation";
+import SustainibiltyRecord from "../adminPages/sustainibilty/record";
+import SustainibiltyCompany from "../adminPages/sustainibilty/company";
+import Subscription from "../adminPages/subscription";
+import ContentCreator from "../adminPages/contentCreator";
+import Academy from "../adminPages/academy";
+import Products from "../adminPages/shop/products";
+import Order from "../adminPages/shop/orders";
+import Banner from "../adminPages/shop/banner";
 
 const Router = () => {
   return (
@@ -205,6 +214,23 @@ const Router = () => {
           element={<CollaborateForums />}
         />
         <Route exact path="/event-calendar" element={<EventCalender />} />
+        <Route exact path="/innovation" element={<Innovation />} />
+        <Route
+          exact
+          path="/sustainibilty-company"
+          element={<SustainibiltyCompany />}
+        />
+        <Route
+          exact
+          path="/sustainibilty-record"
+          element={<SustainibiltyRecord />}
+        />
+        <Route exact path="/subscription" element={<Subscription />} />
+        <Route exact path="/content-creator" element={<ContentCreator />} />
+        <Route exact path="/academy" element={<Academy />} />
+        <Route exact path="/shop-products" element={<Products />} />
+        <Route exact path="/shop-orders" element={<Order />} />
+        <Route exact path="/shop-banner" element={<Banner />} />
       </Routes>
     </BrowserRouter>
   );

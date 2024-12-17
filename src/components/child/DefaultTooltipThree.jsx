@@ -120,7 +120,7 @@ export const SingleDefaultTooltipThree = ({ child, title }) => {
   return (
     <button
       type="button"
-      className=" bg-transparent bg-hover-success-50 text-primary-600 text-hover-primary-600 radius-20  "
+      className=" bg-transparent     "
       data-bs-toggle="DefaultTooltipThree"
       data-bs-placement="top"
       data-bs-custom-class="tooltip-success"
