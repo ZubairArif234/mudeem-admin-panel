@@ -1,10 +1,13 @@
 import React from "react";
-import Modal from "../../extra/modal";
-import DeleteModalContent from "../../extra/deleteModalContent";
+import Modal from "../extra/modal";
+import DeleteModalContent from "../extra/deleteModalContent";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import BannerForm from "./form";
+import { SingleDefaultTooltipThree } from "../../child/DefaultTooltipThree";
+import { Link } from "react-router-dom";
+import CareerForm from "./form";
+// import FarmDetail from "./farmDetails";
 
-const BannerTable = ({ isSelectable, rows }) => {
+const CareeresTable = ({ isSelectable, rows }) => {
   return (
     <table
       className="table bordered-table mb-0"
@@ -23,9 +26,11 @@ const BannerTable = ({ isSelectable, rows }) => {
           )}
 
           <th scope="col">ID</th>
-          <th scope="col">Name</th>
-          <th scope="col">Banner</th>
-          <th scope="col">Created At</th>
+          <th scope="col">Job Title</th>
+          <th scope="col">Company Name</th>
+          <th scope="col">Description</th>
+          <th scope="col">Salary</th>
+          <th scope="col">Link</th>
           <th scope="col">Action</th>
         </tr>
       </thead>
@@ -41,15 +46,24 @@ const BannerTable = ({ isSelectable, rows }) => {
               </td>
             )}
             <td>#{item?.id + 1 * 2087}</td>
-            <td>{item?.name}</td>
+            <td>{item?.jobTitle}</td>
+            <td>{item?.companyName}</td>
             <td>
               {" "}
-              <img src="/assets/images/product.png" width={100} />
+              <SingleDefaultTooltipThree
+                title={item?.description}
+                child={item?.description?.slice(0, 25) + "..."}
+              />
             </td>
+            <td>{item?.salary}</td>
 
-            <td> {item?.createdAt}</td>
             <td>
-              <div className="d-flex gap-2 align-items-start">
+              <Link to={"/"} className="text-success-500">
+                {item?.link}
+              </Link>
+            </td>
+            <td>
+              <div className="d-flex justify-content-center gap-2 align-items-start">
                 <Modal
                   id="edit-product"
                   button={
@@ -61,8 +75,8 @@ const BannerTable = ({ isSelectable, rows }) => {
                       data-bs-target="#edit-product"
                     />
                   }
-                  title="Edit Banner"
-                  body={<BannerForm />}
+                  title="Edit Job"
+                  body={<CareerForm />}
                 />
 
                 <Modal
@@ -88,4 +102,4 @@ const BannerTable = ({ isSelectable, rows }) => {
   );
 };
 
-export default BannerTable;
+export default CareeresTable;

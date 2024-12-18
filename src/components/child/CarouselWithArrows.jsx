@@ -123,13 +123,17 @@ export const CarouselWithArrowsOnlyImage = ({ images }) => {
       <Slider {...settings}>
         {[0, 1, 2]?.map((item, i) => {
           return (
-            <img
-              height={"300px"}
+            <div
               key={i}
-              src={images}
-              alt=""
-              className=" object-fit-contain"
-            />
+              className=" d-flex justify-content-center align-items-center"
+            >
+              <img
+                height={"400px"}
+                src={images}
+                alt=""
+                className=" object-fit-contain"
+              />
+            </div>
           );
         })}
       </Slider>

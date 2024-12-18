@@ -1,70 +1,41 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MasterLayout from "../../masterLayout/MasterLayout";
 import Breadcrumb from "../../components/Breadcrumb";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 const VideoCard = () => {
-  const [isPlay, setIsPlay] = useState(false);
-  const videoRef = useRef(null);
+  const [hide, setHide] = useState(false);
 
-  const togglePlayPause = () => {
-    if (isPlay) {
-      videoRef.current.pause(); // Pause the video
-    } else {
-      videoRef.current.play(); // Play the video
-    }
-    setIsPlay(!isPlay); // Toggle the state
-  };
   return (
     <div className="card bg-success-500 h-100 radius-12 p-0 overflow-hidden position-relative">
       <div className="card-body p-0 gradient-overlay bottom-0 start-0">
         <video
-          ref={videoRef}
           src="assets/images/card/contentVideo.mp4"
           alt=""
           width={"100%"}
           height={550}
           className="object-fit-cover"
           //   className="w-100 h-100"
-          //   controls
+          controls
         />
 
         <div
-          style={{ left: "42%" }}
-          className="position-absolute  bottom-50 cursor-pointer radius-10 bg-success-500  z-2 "
+          style={{ top: hide ? 0 : "-300px" }}
+          className="position-absolute bg-success-100   z-1 d-flex align-items-end"
         >
-          {isPlay ? (
-            <Icon
-              onClick={togglePlayPause}
-              icon="material-symbols:pause-rounded"
-              className="text-white"
-              width="54"
-              height="54"
-            />
-          ) : (
-            <Icon
-              onClick={togglePlayPause}
-              icon="material-symbols:play-arrow-rounded"
-              className="text-white"
-              width="54"
-              height="54"
-            />
-          )}
-        </div>
-        <div className="position-absolute  start-0 bottom-0 z-1 d-flex align-items-end">
           <div className="  p-24">
             <div className="d-flex gap-2 align-items-center">
               <span className="w-44-px h-44-px bg-success-subtle text-success-main rounded-circle d-flex justify-content-center align-items-center flex-shrink-0">
                 <img src="assets/images/user.png" alt="" />
               </span>
               <h5
-                className="card-title text-white 
+                className="card-title  
             text-lg mb-6"
               >
                 Kathryn Murphy
               </h5>
             </div>
-            <p className="card-text text-white ">
+            <p className="card-text  ">
               We quickly learn to fear and thus automatically avo id potentially
               stressful situations of all kinds, including the most common of
               all
@@ -76,6 +47,28 @@ const VideoCard = () => {
             >
               Reward Points
             </button>
+          </div>
+        </div>
+        <div
+          style={{ top: 0, right: 0 }}
+          className="position-absolute  z-2 d-flex  align-items-end"
+        >
+          <div className=" d-flex bg-success-100   ">
+            {hide ? (
+              <Icon
+                onClick={() => setHide(!hide)}
+                icon="material-symbols:keyboard-arrow-up-rounded"
+                className="icon cursor-pointer"
+                width={30}
+              />
+            ) : (
+              <Icon
+                onClick={() => setHide(!hide)}
+                icon="material-symbols:keyboard-arrow-down-rounded"
+                className="icon cursor-pointer "
+                width={30}
+              />
+            )}
           </div>
         </div>
       </div>

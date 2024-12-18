@@ -95,6 +95,13 @@ import Academy from "../adminPages/academy";
 import Products from "../adminPages/shop/products";
 import Order from "../adminPages/shop/orders";
 import Banner from "../adminPages/shop/banner";
+import Category from "../adminPages/shop/category";
+import Farm from "../adminPages/farm";
+import Careers from "../adminPages/careers";
+import Dashboard from "../adminPages/dashboard";
+import Users from "../adminPages/user";
+import Settings from "../adminPages/setting";
+import Profile from "../adminPages/profile";
 
 const Router = () => {
   return (
@@ -206,6 +213,7 @@ const Router = () => {
 
         {/* admin pages */}
 
+        <Route exact path="/dashboard2" element={<Dashboard />} />
         <Route exact path="/carpooling" element={<Carpooling />} />
         <Route exact path="/green-campus" element={<GreenCampus />} />
         <Route
@@ -231,6 +239,12 @@ const Router = () => {
         <Route exact path="/shop-products" element={<Products />} />
         <Route exact path="/shop-orders" element={<Order />} />
         <Route exact path="/shop-banner" element={<Banner />} />
+        <Route exact path="/shop-category" element={<Category />} />
+        <Route exact path="/farm" element={<Farm />} />
+        <Route exact path="/careers" element={<Careers />} />
+        <Route exact path="/user" element={<Users />} />
+        <Route exact path="/setting" element={<Settings />} />
+        <Route exact path="/my-profile" element={<Profile />} />
       </Routes>
     </BrowserRouter>
   );

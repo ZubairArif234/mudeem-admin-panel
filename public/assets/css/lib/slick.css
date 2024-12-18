@@ -19,7 +19,7 @@
 
 .slick-list {
   position: relative;
-  height: 400px;
+  /* height: 400px; */
   display: block;
   overflow: hidden;
 
@@ -45,7 +45,7 @@
 
 .slick-track {
   position: relative;
-  top: 0;
+
   left: 0;
 
   display: block;

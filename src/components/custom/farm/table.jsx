@@ -1,10 +1,10 @@
 import React from "react";
-import Modal from "../../extra/modal";
-import DeleteModalContent from "../../extra/deleteModalContent";
+import Modal from "../extra/modal";
+import DeleteModalContent from "../extra/deleteModalContent";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import BannerForm from "./form";
+import FarmDetail from "./farmDetails";
 
-const BannerTable = ({ isSelectable, rows }) => {
+const FarmTable = ({ isSelectable, rows }) => {
   return (
     <table
       className="table bordered-table mb-0"
@@ -23,9 +23,11 @@ const BannerTable = ({ isSelectable, rows }) => {
           )}
 
           <th scope="col">ID</th>
-          <th scope="col">Name</th>
-          <th scope="col">Banner</th>
-          <th scope="col">Created At</th>
+          <th scope="col">Location</th>
+          <th scope="col">Renewable Energy</th>
+          <th scope="col">Fertilizers</th>
+          <th scope="col">Desalination</th>
+          <th scope="col">Budget</th>
           <th scope="col">Action</th>
         </tr>
       </thead>
@@ -41,43 +43,28 @@ const BannerTable = ({ isSelectable, rows }) => {
               </td>
             )}
             <td>#{item?.id + 1 * 2087}</td>
-            <td>{item?.name}</td>
-            <td>
-              {" "}
-              <img src="/assets/images/product.png" width={100} />
-            </td>
+            <td>{item?.location}</td>
+            <td>{item?.renewable}</td>
+            <td>{item?.fertilizer}</td>
+            <td>{item?.desalination}</td>
 
-            <td> {item?.createdAt}</td>
+            <td> {item?.budget}</td>
             <td>
-              <div className="d-flex gap-2 align-items-start">
+              <div className="d-flex justify-content-center gap-2 align-items-start">
                 <Modal
-                  id="edit-product"
+                  id="farm-detail"
                   button={
                     <Icon
-                      icon="mage:edit"
-                      className="text-success-500 cursor-pointer"
+                      icon="uil:eye"
+                      className="text-primary-500 cursor-pointer"
                       type="button"
                       data-bs-toggle="modal"
-                      data-bs-target="#edit-product"
+                      data-bs-target="#farm-detail"
                     />
                   }
-                  title="Edit Banner"
-                  body={<BannerForm />}
-                />
-
-                <Modal
-                  id="delete-product"
-                  button={
-                    <Icon
-                      icon="mage:trash"
-                      className="text-danger-500 cursor-pointer"
-                      type="button"
-                      data-bs-toggle="modal"
-                      data-bs-target="#delete-product"
-                    />
-                  }
-                  body={<DeleteModalContent />}
-                  title="Are you sure!"
+                  body={<FarmDetail />}
+                  title="Farm Detail"
+                  size="modal-lg"
                 />
               </div>
             </td>
@@ -88,4 +75,4 @@ const BannerTable = ({ isSelectable, rows }) => {
   );
 };
 
-export default BannerTable;
+export default FarmTable;

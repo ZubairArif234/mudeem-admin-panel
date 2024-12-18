@@ -3,8 +3,9 @@ import Modal from "../../extra/modal";
 import DeleteModalContent from "../../extra/deleteModalContent";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import BannerForm from "./form";
+import CategoryForm from "./form";
 
-const BannerTable = ({ isSelectable, rows }) => {
+const CategoryTable = ({ isSelectable, rows }) => {
   return (
     <table
       className="table bordered-table mb-0"
@@ -23,8 +24,7 @@ const BannerTable = ({ isSelectable, rows }) => {
           )}
 
           <th scope="col">ID</th>
-          <th scope="col">Name</th>
-          <th scope="col">Banner</th>
+          <th scope="col">Category Name</th>
           <th scope="col">Created At</th>
           <th scope="col">Action</th>
         </tr>
@@ -42,38 +42,34 @@ const BannerTable = ({ isSelectable, rows }) => {
             )}
             <td>#{item?.id + 1 * 2087}</td>
             <td>{item?.name}</td>
-            <td>
-              {" "}
-              <img src="/assets/images/product.png" width={100} />
-            </td>
 
             <td> {item?.createdAt}</td>
             <td>
               <div className="d-flex gap-2 align-items-start">
                 <Modal
-                  id="edit-product"
+                  id="edit-category"
                   button={
                     <Icon
                       icon="mage:edit"
                       className="text-success-500 cursor-pointer"
                       type="button"
                       data-bs-toggle="modal"
-                      data-bs-target="#edit-product"
+                      data-bs-target="#edit-category"
                     />
                   }
-                  title="Edit Banner"
-                  body={<BannerForm />}
+                  title="Edit Category"
+                  body={<CategoryForm />}
                 />
 
                 <Modal
-                  id="delete-product"
+                  id="delete-category"
                   button={
                     <Icon
                       icon="mage:trash"
                       className="text-danger-500 cursor-pointer"
                       type="button"
                       data-bs-toggle="modal"
-                      data-bs-target="#delete-product"
+                      data-bs-target="#delete-category"
                     />
                   }
                   body={<DeleteModalContent />}
@@ -88,4 +84,4 @@ const BannerTable = ({ isSelectable, rows }) => {
   );
 };
 
-export default BannerTable;
+export default CategoryTable;

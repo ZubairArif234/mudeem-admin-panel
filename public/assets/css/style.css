@@ -11888,7 +11888,7 @@ select option {
 }
 
 .border-gradient-tab .nav-link.active {
-  color: var(--text-primary-light) !important;
+  color: var(--text-success-light) !important;
 }
 
 .border-gradient-tab .nav-link.active::before {
@@ -11897,7 +11897,7 @@ select option {
 }
 
 .border-gradient-tab .nav-link.active .notification-alert {
-  background-color: var(--primary-600) !important;
+  background-color: var(--success-600) !important;
   color: #fff !important;
 }
 
@@ -11908,7 +11908,7 @@ select option {
   height: 100%;
   left: 0;
   top: 0;
-  border-top: 1px solid var(--primary-600);
+  border-top: 1px solid var(--success-600);
   background: linear-gradient(
     180deg,
     rgba(72, 127, 255, 0.12) 0%,
@@ -11922,15 +11922,15 @@ select option {
 /* Gradient Tab Css End */
 /* Focus Tab Css Start */
 .focus-tab .nav-link.active {
-  background-color: var(--primary-50);
-  color: var(--primary-600);
+  background-color: var(--success-50);
+  color: var(--success-600);
 }
 
 /* Focus Tab Css End */
 /* Button Tab Css Start */
 .button-tab .nav-link.active {
-  background-color: var(--primary-600);
-  border-color: var(--primary-600) !important;
+  background-color: var(--success-600);
+  border-color: var(--success-600) !important;
   color: #fff !important;
 }
 
@@ -11938,7 +11938,7 @@ select option {
 /* Active Text Css Start */
 .active-text-tab.nav-pills .nav-link.active {
   background-color: transparent !important;
-  color: var(--primary-600) !important;
+  color: var(--success-600) !important;
 }
 
 /* Active Text Css End */
@@ -12561,7 +12561,7 @@ select option {
   height: 150px;
   position: relative;
   border-radius: 100%;
-  border: 1px solid var(--primary-600);
+  border: 1px solid var(--success-600);
   box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
 }
 

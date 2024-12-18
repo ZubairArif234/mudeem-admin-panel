@@ -7,7 +7,9 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 const PostModalBody = ({ data }) => {
   return (
     <div>
-      <CarouselWithArrowsOnlyImage images={data?.postImage} />
+      <div className="bg-neutral-300">
+        <CarouselWithArrowsOnlyImage images={data?.postImage} />
+      </div>
       <div className="d-flex align-items-center gap-2 my-3">
         <img
           src="assets/images/user.png"
