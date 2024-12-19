@@ -9,8 +9,8 @@ const TopSellingProductOne = () => {
         <div className="d-flex align-items-center flex-wrap gap-2 justify-content-between mb-20">
           <h6 className="mb-2 fw-bold text-lg mb-0">Recent Users</h6>
           <Link
-            to="#"
-            className="text-primary-600 hover-text-primary d-flex align-items-center gap-1"
+            to="/user"
+            className="text-success-600 hover-text-success d-flex align-items-center gap-1"
           >
             View All
             <Icon icon="solar:alt-arrow-right-linear" className="icon" />

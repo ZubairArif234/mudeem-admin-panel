@@ -8,8 +8,8 @@ const Breadcrumb = ({ heading = "Dashboard", title }) => {
       <ul className="d-flex align-items-center gap-2">
         <li className="fw-medium">
           <Link
-            to="/"
-            className="d-flex align-items-center gap-1 hover-text-primary"
+            to="/dashboard"
+            className="d-flex align-items-center gap-1 hover-text-success"
           >
             <Icon
               icon="solar:home-smile-angle-outline"

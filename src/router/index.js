@@ -109,7 +109,7 @@ const Router = () => {
       <RouteScrollToTop />
       <Routes>
         <Route path="/" element={<SignInPage />} />
-        <Route exact path="/dashboard" element={<HomePageOne />} />
+        <Route exact path="/dashboard2" element={<HomePageOne />} />
         <Route exact path="/index-2" element={<HomePageTwo />} />
         <Route exact path="/index-3" element={<HomePageThree />} />
         <Route exact path="/index-4" element={<HomePageFour />} />
@@ -213,7 +213,7 @@ const Router = () => {
 
         {/* admin pages */}
 
-        <Route exact path="/dashboard2" element={<Dashboard />} />
+        <Route exact path="/dashboard" element={<Dashboard />} />
         <Route exact path="/carpooling" element={<Carpooling />} />
         <Route exact path="/green-campus" element={<GreenCampus />} />
         <Route

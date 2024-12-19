@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 const TopCustomersOne = () => {
   return (
@@ -8,13 +8,13 @@ const TopCustomersOne = () => {
       <div className="card-body">
         <div className="d-flex align-items-center flex-wrap gap-2 justify-content-between mb-20">
           <h6 className="mb-2 fw-bold text-lg mb-0">Recent Notification</h6>
-          <Link
+          {/* <Link
             to="#"
             className="text-primary-600 hover-text-primary d-flex align-items-center gap-1"
           >
             View All
             <Icon icon="solar:alt-arrow-right-linear" className="icon" />
-          </Link>
+          </Link> */}
         </div>
         <div className="mt-32">
           {[0, 1, 2, 3, 4, 5, 6]?.map((item) => {
