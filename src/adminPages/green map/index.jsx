@@ -82,15 +82,10 @@ const GreenCampus = () => {
 
       <TableDataLayer
         title={"Location"}
-        body={
-          <GreenCampusTable
-            heading={tableHeadings}
-            rows={tableRows}
-            modalTitle="Add Location"
-            modalId="add-campus-location"
-            modalForm={<Form />}
-          />
-        }
+        body={<GreenCampusTable heading={tableHeadings} rows={tableRows} />}
+        modalTitle="Add Location"
+        modalId="add-campus-location"
+        modalForm={<Form />}
         isCustomHeaderButton
       />
     </MasterLayout>

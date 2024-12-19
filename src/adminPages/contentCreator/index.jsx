@@ -120,7 +120,7 @@ const ContentCreator = () => {
                 />
                 <div className="mt-3 d-flex justify-content-end align-items-center gap-3">
                   <button type="button" class="btn btn-success-600 ">
-                    Reward & Approve
+                    Reward Points
                   </button>
                 </div>
               </form>
