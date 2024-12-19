@@ -11,7 +11,7 @@ const StatsCounts = () => {
           <div className="card-body p-0">
             <div className="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
               <div className="d-flex align-items-center gap-2">
-                <span className="mb-0 w-48-px h-48-px bg-success-main flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+                <span className="mb-0 w-48-px h-48-px bg-success-500 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
                   <Icon icon="mingcute:user-follow-fill" className="icon" />
                 </span>
                 <div>
@@ -26,7 +26,7 @@ const StatsCounts = () => {
                 className="remove-tooltip-title rounded-tooltip-value"
               >
                 {/* Pass the color value here */}
-                {createChart("#45b369")}
+                {createChart("#51D483")}
               </div>
             </div>
             <p className="text-sm mb-0">Users</p>
@@ -38,7 +38,7 @@ const StatsCounts = () => {
           <div className="card-body p-0">
             <div className="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
               <div className="d-flex align-items-center gap-2">
-                <span className="mb-0 w-48-px h-48-px bg-success-main flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6">
+                <span className="mb-0 w-48-px h-48-px bg-success-500 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6">
                   <Icon icon="material-symbols:package-2" className="icon" />
                 </span>
                 <div>
@@ -53,7 +53,7 @@ const StatsCounts = () => {
                 className="remove-tooltip-title rounded-tooltip-value"
               >
                 {/* Pass the color value here */}
-                {createChart("#45b369")}
+                {createChart("#51D483")}
               </div>
             </div>
             <p className="text-sm mb-0">Shop</p>
@@ -65,7 +65,7 @@ const StatsCounts = () => {
           <div className="card-body p-0">
             <div className="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
               <div className="d-flex align-items-center gap-2">
-                <span className="mb-0 w-48-px h-48-px bg-success-main text-white flex-shrink-0 d-flex justify-content-center align-items-center rounded-circle h6">
+                <span className="mb-0 w-48-px h-48-px bg-success-500 text-white flex-shrink-0 d-flex justify-content-center align-items-center rounded-circle h6">
                   <Icon icon="material-symbols:book-2" className="icon" />
                 </span>
                 <div>
@@ -80,7 +80,7 @@ const StatsCounts = () => {
                 className="remove-tooltip-title rounded-tooltip-value"
               >
                 {/* Pass the color value here */}
-                {createChart("#45b369")}
+                {createChart("#51D483")}
               </div>
             </div>
             <p className="text-sm mb-0">Academy</p>
@@ -92,7 +92,7 @@ const StatsCounts = () => {
           <div className="card-body p-0">
             <div className="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
               <div className="d-flex align-items-center gap-2">
-                <span className="mb-0 w-48-px h-48-px bg-success-main text-white flex-shrink-0 d-flex justify-content-center align-items-center rounded-circle h6">
+                <span className="mb-0 w-48-px h-48-px bg-success-500 text-white flex-shrink-0 d-flex justify-content-center align-items-center rounded-circle h6">
                   <Icon
                     icon="material-symbols:directions-car"
                     className="icon"
@@ -110,7 +110,7 @@ const StatsCounts = () => {
                 className="remove-tooltip-title rounded-tooltip-value"
               >
                 {/* Pass the color value here */}
-                {createChart("#45b369")}
+                {createChart("#51D483")}
               </div>
             </div>
             <p className="text-sm mb-0">Carpooling</p>
@@ -122,7 +122,7 @@ const StatsCounts = () => {
           <div className="card-body p-0">
             <div className="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
               <div className="d-flex align-items-center gap-2">
-                <span className="mb-0 w-48-px h-48-px bg-success-main text-white flex-shrink-0 d-flex justify-content-center align-items-center rounded-circle h6">
+                <span className="mb-0 w-48-px h-48-px bg-success-500 text-white flex-shrink-0 d-flex justify-content-center align-items-center rounded-circle h6">
                   <Icon
                     icon="material-symbols:list-alt-check-rounded"
                     className="icon"
@@ -140,7 +140,7 @@ const StatsCounts = () => {
                 className="remove-tooltip-title rounded-tooltip-value"
               >
                 {/* Pass the color value here */}
-                {createChart("#45b369")}
+                {createChart("#51D483")}
               </div>
             </div>
             <p className="text-sm mb-0">Collaboration Forums</p>
@@ -152,7 +152,7 @@ const StatsCounts = () => {
           <div className="card-body p-0">
             <div className="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
               <div className="d-flex align-items-center gap-2">
-                <span className="mb-0 w-48-px h-48-px bg-success-main text-white flex-shrink-0 d-flex justify-content-center align-items-center rounded-circle h6">
+                <span className="mb-0 w-48-px h-48-px bg-success-500 text-white flex-shrink-0 d-flex justify-content-center align-items-center rounded-circle h6">
                   <Icon
                     icon="material-symbols:video-library-rounded"
                     className="icon"
@@ -170,7 +170,7 @@ const StatsCounts = () => {
                 className="remove-tooltip-title rounded-tooltip-value"
               >
                 {/* Pass the color value here */}
-                {createChart("#45b369")}
+                {createChart("#51D483")}
               </div>
             </div>
             <p className="text-sm mb-0">Content Creator</p>
@@ -182,7 +182,7 @@ const StatsCounts = () => {
           <div className="card-body p-0">
             <div className="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
               <div className="d-flex align-items-center gap-2">
-                <span className="mb-0 w-48-px h-48-px bg-success-main flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+                <span className="mb-0 w-48-px h-48-px bg-success-500 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
                   <Icon
                     icon="material-symbols:award-star-outline-rounded"
                     className="icon"
@@ -200,7 +200,7 @@ const StatsCounts = () => {
                 className="remove-tooltip-title rounded-tooltip-value"
               >
                 {/* Pass the color value here */}
-                {createChart("#45b369")}
+                {createChart("#51D483")}
               </div>
             </div>
             <p className="text-sm mb-0">Innovtion</p>
@@ -212,7 +212,7 @@ const StatsCounts = () => {
           <div className="card-body p-0">
             <div className="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
               <div className="d-flex align-items-center gap-2">
-                <span className="mb-0 w-48-px h-48-px bg-success-main flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6">
+                <span className="mb-0 w-48-px h-48-px bg-success-500 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6">
                   <Icon
                     icon="material-symbols:calendar-add-on"
                     className="icon"
@@ -230,7 +230,7 @@ const StatsCounts = () => {
                 className="remove-tooltip-title rounded-tooltip-value"
               >
                 {/* Pass the color value here */}
-                {createChart("#45b369")}
+                {createChart("#51D483")}
               </div>
             </div>
             <p className="text-sm mb-0">Event Calender</p>

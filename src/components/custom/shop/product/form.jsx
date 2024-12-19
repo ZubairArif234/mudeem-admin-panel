@@ -284,7 +284,7 @@ const ProductForm = () => {
           <label className="form-label">Shop</label>
           {/* <textarea> */}
           <input
-            type="number"
+            type="text"
             name="#0"
             className="form-control form-control-sm"
             placeholder="Enter Shop Name"

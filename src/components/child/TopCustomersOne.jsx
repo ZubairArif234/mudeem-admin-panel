@@ -21,7 +21,7 @@ const TopCustomersOne = () => {
             return (
               <div
                 key={item}
-                className="  d-flex align-items-start gap-3 mb-3 justify-content-between"
+                className="  d-flex align-items-start gap-2 mb-3 justify-content-between"
               >
                 <div className="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
                   <span className="w-44-px h-44-px bg-success-subtle text-success-main rounded-circle d-flex justify-content-center align-items-center flex-shrink-0">
@@ -31,16 +31,13 @@ const TopCustomersOne = () => {
                     />
                   </span>
                   <div>
-                    <h6 className="text-md fw-semibold mb-4">
-                      Congratulations
-                    </h6>
-                    <p className="mb-0 text-sm text-secondary-light text-w-200-px">
-                      Your profile has been Verified. Your profile has been
-                      Verified
+                    <h6 className="text-md fw-semibold mb-4">Congratulation</h6>
+                    <p className="mb-0 text-sm text-secondary-light text-w-120-px">
+                      Your profile has been...
                     </p>
                   </div>
                 </div>
-                <span className="text-sm text-secondary-light flex-shrink-0">
+                <span className="text-xxs text-secondary-light flex-shrink-0">
                   23 Mins ago
                 </span>
               </div>
