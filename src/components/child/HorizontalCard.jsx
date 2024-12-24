@@ -126,7 +126,7 @@ const HorizontalCard = () => {
   );
 };
 
-export const SingleHorizontalCard = ({ data }) => {
+export const SingleHorizontalCard = ({ data, number }) => {
   return (
     <div className="card radius-12 overflow-hidden h-100 d-flex align-items-center flex-nowrap flex-row">
       <div className="d-flex flex-shrink-0 w-170-px h-100">
@@ -151,11 +151,11 @@ export const SingleHorizontalCard = ({ data }) => {
           {data?.postText}
         </p>
         <Modal
-          id="read"
+          id={`read${number}`}
           button={
             <p
               data-bs-toggle="modal"
-              data-bs-target="#read"
+              data-bs-target={`#read${number}`}
               className="btn text-success-600 hover-text-success p-0 d-inline-flex align-items-center gap-2"
             >
               Read More{" "}

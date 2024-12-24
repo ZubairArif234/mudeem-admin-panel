@@ -32,7 +32,7 @@ const InnovationDetail = () => {
           class="btn btn-danger-600"
           data-bs-dismiss="modal"
         >
-          Close
+          Reject
         </button>
         <button
           type="button"

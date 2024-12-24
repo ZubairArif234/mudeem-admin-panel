@@ -1085,7 +1085,10 @@ const MasterLayout = ({ children }) => {
             {/* shop  */}
             <li className="dropdown">
               <Link to="#">
-                <Icon icon="material-symbols:package-2" className="menu-icon" />
+                <Icon
+                  icon="material-symbols:shopping-cart-rounded"
+                  className="menu-icon"
+                />
                 <span>Shop</span>
               </Link>
               <ul className="sidebar-submenu">
@@ -1210,7 +1213,7 @@ const MasterLayout = ({ children }) => {
             {/* innovation */}
             <li>
               <NavLink
-                to="/innovation"
+                to="/sustainable-innovation"
                 className={(navData) =>
                   navData.isActive ? "active-page mb-1" : ""
                 }
@@ -1219,13 +1222,13 @@ const MasterLayout = ({ children }) => {
                   icon="material-symbols:award-star-rounded"
                   className="menu-icon"
                 />
-                <span>Innovation</span>
+                <span>Sustainable Innovation</span>
               </NavLink>
             </li>
             {/* farm */}
             <li>
               <NavLink
-                to="/farm"
+                to="/sustainabilty-farm"
                 className={(navData) =>
                   navData.isActive ? "active-page mb-1" : ""
                 }
@@ -1234,7 +1237,7 @@ const MasterLayout = ({ children }) => {
                   icon="material-symbols:grass-rounded"
                   className="menu-icon"
                 />
-                <span>Farm</span>
+                <span>Sustainable Farm</span>
               </NavLink>
             </li>
             {/* sustainability  */}
@@ -1325,7 +1328,7 @@ const MasterLayout = ({ children }) => {
                   icon="material-symbols:checked-bag-question"
                   className="menu-icon"
                 />
-                <span>Carers</span>
+                <span>Careers</span>
               </NavLink>
             </li>
             {/* user */}
@@ -2039,11 +2042,6 @@ const MasterLayout = ({ children }) => {
           <div className="row align-items-center justify-content-between">
             <div className="col-auto">
               <p className="mb-0">© 2024 Dotclick. All Rights Reserved.</p>
-            </div>
-            <div className="col-auto">
-              <p className="mb-0">
-                Made by <span className="text-primary-600">Zubair Arif </span>
-              </p>
             </div>
           </div>
         </footer>

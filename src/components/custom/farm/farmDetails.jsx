@@ -65,13 +65,13 @@ const FarmDetail = () => {
           <p>Desired Equipment</p>
           <div className="d-flex gap-2 my-3">
             <span className="badge text-sm fw-semibold text-success-600 bg-success-100 px-20 py-9 radius-4 text-white">
-              In Stock
+              Grass
             </span>
             <span className="badge text-sm fw-semibold text-success-600 bg-success-100 px-20 py-9 radius-4 text-white">
-              Clothing
+              Tube well
             </span>
             <span className="badge text-sm fw-semibold text-success-600 bg-success-100 px-20 py-9 radius-4 text-white">
-              Girls
+              Soil fertilizer
             </span>
           </div>
         </div>

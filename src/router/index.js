@@ -222,7 +222,7 @@ const Router = () => {
           element={<CollaborateForums />}
         />
         <Route exact path="/event-calendar" element={<EventCalender />} />
-        <Route exact path="/innovation" element={<Innovation />} />
+        <Route exact path="/sustainable-innovation" element={<Innovation />} />
         <Route
           exact
           path="/sustainibilty-company"
@@ -240,7 +240,7 @@ const Router = () => {
         <Route exact path="/shop-orders" element={<Order />} />
         <Route exact path="/shop-banner" element={<Banner />} />
         <Route exact path="/shop-category" element={<Category />} />
-        <Route exact path="/farm" element={<Farm />} />
+        <Route exact path="/sustainabilty-farm" element={<Farm />} />
         <Route exact path="/careers" element={<Careers />} />
         <Route exact path="/user" element={<Users />} />
         <Route exact path="/setting" element={<Settings />} />

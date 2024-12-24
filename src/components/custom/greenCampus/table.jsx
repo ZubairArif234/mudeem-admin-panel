@@ -37,7 +37,7 @@ const GreenCampusTable = ({ isSelectable, rows }) => {
           )}
 
           <th scope="col">ID</th>
-          <th scope="col">Latidute</th>
+          <th scope="col">Latitude</th>
           <th scope="col">Longitude</th>
           <th scope="col">Category</th>
           <th scope="col">Points</th>

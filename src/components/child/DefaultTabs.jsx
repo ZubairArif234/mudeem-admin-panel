@@ -54,7 +54,7 @@ const DefaultTabs = ({ tabList, bodyType, data }) => {
                         {[0, 1, 2, 3, 4, 5]?.map((_, j) => {
                           return (
                             <div key={j} className="col-xl-6">
-                              <SingleHorizontalCard data={data} />
+                              <SingleHorizontalCard data={data} number={item} />
                             </div>
                           );
                         })}

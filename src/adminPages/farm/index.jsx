@@ -90,7 +90,7 @@ const Farm = () => {
   ];
   return (
     <MasterLayout>
-      <Breadcrumb heading="Farm" title="Farm" />
+      <Breadcrumb heading="Sustainable Farm" title="Sustainable Farm" />
 
       <TableDataLayer title={"Farm"} body={<FarmTable rows={tableRows} />} />
 

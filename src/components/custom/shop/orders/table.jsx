@@ -57,7 +57,7 @@ const OrdersTable = ({ isSelectable, rows }) => {
               </div>
             </td>
             <td> {item?.items}</td>
-            <td>$ {item?.total}</td>
+            <td>{item?.total} pts</td>
 
             <td>
               <select className="form-control form-control-sm">
