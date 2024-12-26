@@ -103,8 +103,8 @@ const SustainibiltyCompany = () => {
     <div>
       <MasterLayout>
         <Breadcrumb
-          heading="Invest Sustainibility"
-          title="Sustainibility - Company"
+          heading="Invest Sustainiability"
+          title="Sustainiability - Company"
         />
 
         <TableDataLayer

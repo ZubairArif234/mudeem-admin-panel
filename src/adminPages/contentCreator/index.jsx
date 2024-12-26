@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import MasterLayout from "../../masterLayout/MasterLayout";
 import Breadcrumb from "../../components/Breadcrumb";
 import { Icon } from "@iconify/react/dist/iconify.js";
-
-const VideoCard = () => {
+import TableDataLayer from "../../components/TableDataLayer";
+import ContentTable from "../../components/custom/contentCreator/table";
+export const VideoCard = () => {
   const [hide, setHide] = useState(false);
 
   return (
@@ -77,16 +78,100 @@ const VideoCard = () => {
 };
 
 const ContentCreator = () => {
+  const tableHeadings = [
+    "ID",
+    "Driver",
+    "Pick up",
+    "Destination",
+    "Seats",
+    "Passengers",
+  ];
+  const tableRows = [
+    {
+      id: "453",
+      name: "Kathryn Murphy",
+      imge: "assets/images/user-list/user-list1.png",
+      description:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+    },
+    {
+      id: "453",
+      name: "Kathryn Murphy",
+      imge: "assets/images/user-list/user-list1.png",
+      description:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+    },
+    {
+      id: "453",
+      name: "Kathryn Murphy",
+      imge: "assets/images/user-list/user-list1.png",
+      description:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+    },
+    {
+      id: "453",
+      name: "Kathryn Murphy",
+      imge: "assets/images/user-list/user-list1.png",
+      description:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+    },
+    {
+      id: "453",
+      name: "Kathryn Murphy",
+      imge: "assets/images/user-list/user-list1.png",
+      description:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+    },
+    {
+      id: "453",
+      name: "Kathryn Murphy",
+      imge: "assets/images/user-list/user-list1.png",
+      description:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+    },
+    {
+      id: "453",
+      name: "Kathryn Murphy",
+      imge: "assets/images/user-list/user-list1.png",
+      description:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+    },
+    {
+      id: "453",
+      name: "Kathryn Murphy",
+      imge: "assets/images/user-list/user-list1.png",
+      description:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+    },
+    {
+      id: "453",
+      name: "Kathryn Murphy",
+      imge: "assets/images/user-list/user-list1.png",
+      description:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+    },
+    {
+      id: "453",
+      name: "Kathryn Murphy",
+      imge: "assets/images/user-list/user-list1.png",
+      description:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+    },
+  ];
   return (
     <MasterLayout>
       <Breadcrumb heading="Content Creator" title="Content Creator" />
-      <div className="row gy-4">
+      {/* <div className="row gy-4">
         {[0, 1, 2, 3, 4]?.map((_, i) => (
           <div className="col-xxl-4 col-sm-6" key={i}>
             <VideoCard />
           </div>
         ))}
-      </div>
+      </div> */}
+      <TableDataLayer
+        title={"Videos"}
+        body={<ContentTable heading={tableHeadings} rows={tableRows} />}
+      />
 
       <div
         class="modal fade "

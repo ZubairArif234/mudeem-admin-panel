@@ -1247,12 +1247,12 @@ const MasterLayout = ({ children }) => {
                   icon="material-symbols:cleaning-bucket-rounded"
                   className="menu-icon"
                 />
-                <span>Invest Sustainibility</span>
+                <span>Invest Sustainability</span>
               </Link>
               <ul className="sidebar-submenu">
                 <li>
                   <NavLink
-                    to="/sustainibility-company"
+                    to="/sustainability-company"
                     className={(navData) =>
                       navData.isActive ? "active-page" : ""
                     }
@@ -1263,7 +1263,7 @@ const MasterLayout = ({ children }) => {
                 </li>
                 <li>
                   <NavLink
-                    to="/sustainibility-record"
+                    to="/sustainability-record"
                     className={(navData) =>
                       navData.isActive ? "active-page" : ""
                     }
