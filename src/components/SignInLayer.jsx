@@ -27,11 +27,11 @@ const SignInLayer = () => {
   const { login, error, isLoading, isPending, isError } = useLogin();
 
   const handleFormSubmit = async (data) => {
-    // try {
-    //   const res = await login(data);
-    // } catch (err) {
-    //   console.error("Login failed:", err);
-    // }
+    try {
+      const res = await login(data);
+    } catch (err) {
+      console.error("Login failed:", err);
+    }
 
     navigate("/dashboard");
     console.log("Form Submitted:", data, isLoading);
