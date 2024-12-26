@@ -81,7 +81,7 @@ const Subscription = () => {
     <MasterLayout>
       <Breadcrumb heading="Subscription" title="Subsciption" />
       <div className="card h-100 p-0 radius-12 overflow-hidden">
-        <div className="card-body p-10 p-lg-40">
+        <div className="card-body p-20">
           <div className="row gy-4">
             {data?.map((item, i) => {
               return (
