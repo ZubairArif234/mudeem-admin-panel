@@ -1,7 +1,12 @@
 import Router from "./router";
-
+import { Toaster } from "sonner";
 function App() {
-  return <Router />;
+  return (
+    <>
+      <Toaster richColors />
+      <Router />
+    </>
+  );
 }
 
 export default App;
