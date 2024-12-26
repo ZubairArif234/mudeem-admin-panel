@@ -50,18 +50,13 @@ const CareerForm = () => {
             type="text"
             name="#0"
             className="form-control form-control-sm"
-            placeholder="Enter Link"
+            placeholder="Enter Linkedin Link"
           />
         </div>
 
         <div className="col-12">
           <label className="form-label">Description</label>
-          {/* <input
-            type="text"
-            name="#0"
-            className="form-control form-control-sm"
-            placeholder="Enter Category Name"
-          /> */}
+
           <textarea
             style={{ height: "100px" }}
             className="form-control form-control-sm"

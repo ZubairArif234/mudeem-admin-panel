@@ -29,7 +29,7 @@ const Form = () => {
   return (
     <form>
       <div className="row gy-3">
-        <div className="col-6">
+        <div className="col-lg-6">
           <label>Upload Book Cover</label>
           <div className="upload-image-wrapper d-flex align-items-center gap-3">
             {/* Image preview section */}
@@ -77,7 +77,7 @@ const Form = () => {
             />
           </div>
         </div>
-        <div className="col-6">
+        <div className="col-lg-6">
           <label>Upload Book PDF</label>
           <div className="upload-image-wrapper d-flex align-items-center gap-3">
             {/* Image preview section */}
@@ -117,16 +117,16 @@ const Form = () => {
             {/* Always render the input, but hide it */}
             <input
               id="upload-file"
+              accept="application/pdf" // Optional: restrict to image files
               type="file"
               onChange={handleFileChange}
               hidden
               ref={fileInputRef}
-              accept="image/*" // Optional: restrict to image files
             />
           </div>
         </div>
 
-        <div className="col-6">
+        <div className="col-lg-6">
           <label className="form-label">Book Name</label>
           <input
             type="text"
@@ -136,7 +136,7 @@ const Form = () => {
           />
         </div>
 
-        <div className="col-6">
+        <div className="col-lg-6">
           <label className="form-label">Author Name</label>
           <input
             type="number"
@@ -146,7 +146,7 @@ const Form = () => {
           />
         </div>
 
-        <div className="col-4">
+        <div className="col-lg-4">
           <label className="form-label">No of pages</label>
           <input
             type="text"
@@ -156,7 +156,7 @@ const Form = () => {
           />
         </div>
 
-        <div className="col-4">
+        <div className="col-lg-4">
           <label className="form-label">Language</label>
           <input
             type="text"
@@ -166,7 +166,7 @@ const Form = () => {
           />
         </div>
 
-        <div className="col-4">
+        <div className="col-lg-4">
           <label className="form-label">Release Date</label>
           <input
             type="text"
@@ -176,7 +176,7 @@ const Form = () => {
           />
         </div>
 
-        <div className="col-6">
+        <div className="col-lg-6">
           <label className="form-label">Green Points</label>
           <input
             type="number"
@@ -186,17 +186,7 @@ const Form = () => {
           />
         </div>
 
-        <div className="col-6">
-          <label className="form-label">Price</label>
-          <input
-            type="number"
-            name="#0"
-            className="form-control form-control-sm"
-            placeholder="Enter Price"
-          />
-        </div>
-
-        <div className="col-12">
+        <div className="col-lg-6">
           <label className="form-label d-block">Category</label>
 
           <div

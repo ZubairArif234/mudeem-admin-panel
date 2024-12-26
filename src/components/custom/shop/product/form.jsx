@@ -111,7 +111,7 @@ const ProductForm = () => {
           ></textarea>
         </div>
 
-        <div className="col-6">
+        <div className="col-lg-6">
           <label className="form-label d-block">Sizes</label>
           {/* <textarea> */}
           <div
@@ -164,7 +164,7 @@ const ProductForm = () => {
           </div>
         </div>
 
-        <div className="col-6">
+        <div className="col-lg-6">
           <label className="form-label d-block">Availibility</label>
           {/* <textarea> */}
           <div
@@ -203,7 +203,7 @@ const ProductForm = () => {
           </div>
         </div>
 
-        <div className="col-6">
+        <div className="col-lg-6">
           <label className="form-label">Quantity</label>
           <input
             type="number"
@@ -213,7 +213,7 @@ const ProductForm = () => {
           />
         </div>
 
-        <div className="col-6">
+        <div className="col-lg-6">
           <label className="form-label">Colours</label>
           <div className="d-flex gap-2 align-items-center">
             <input
@@ -268,7 +268,7 @@ const ProductForm = () => {
           </div>
         </div>
 
-        <div className="col-6">
+        <div className="col-lg-6">
           <label className="form-label">Category</label>
 
           <select className="form-control form-control-sm">
@@ -280,7 +280,7 @@ const ProductForm = () => {
           </select>
         </div>
 
-        <div className="col-6">
+        <div className="col-lg-6">
           <label className="form-label">Shop</label>
           {/* <textarea> */}
           <input
@@ -291,14 +291,14 @@ const ProductForm = () => {
           />
         </div>
 
-        <div className="col-6">
-          <label className="form-label">Price</label>
+        <div className="col-lg-6">
+          <label className="form-label">Green Points</label>
           {/* <textarea> */}
           <input
             type="number"
             name="#0"
             className="form-control form-control-sm"
-            placeholder="Enter Price"
+            placeholder="Enter Green Points"
           />
         </div>
       </div>

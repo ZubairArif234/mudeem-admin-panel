@@ -31,7 +31,7 @@ const OrdersTable = ({ isSelectable, rows }) => {
           <th scope="col">ID</th>
           <th scope="col">User Name</th>
           <th scope="col">No Of Items</th>
-          <th scope="col">Total Price</th>
+          <th scope="col">Green Points</th>
           <th scope="col">Status</th>
           <th scope="col">Created At</th>
           <th scope="col">Action</th>

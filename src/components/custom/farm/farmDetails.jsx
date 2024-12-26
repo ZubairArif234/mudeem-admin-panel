@@ -5,7 +5,7 @@ const FarmDetail = () => {
   return (
     <div className="">
       <div className="row gy-3 align-items-center ">
-        <div className="col-6 bg-neutral-300">
+        <div className="col-lg-6 bg-neutral-300">
           <div className="">
             <CarouselWithArrowsOnlyImage
               images={
@@ -16,7 +16,7 @@ const FarmDetail = () => {
           </div>
         </div>
 
-        <div className="col-6">
+        <div className="col-lg-6">
           <p className="text-xxl fw-bold ">Molty Farm</p>
 
           <p className="mb-0">

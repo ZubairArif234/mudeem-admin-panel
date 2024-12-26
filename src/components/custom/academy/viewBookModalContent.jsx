@@ -47,12 +47,12 @@ const ViewBookModalContent = () => {
       <div className="border-top my-8"></div>
       <div className="d-flex justify-content-between">
         <div className="">
-          <p className=" mb-0 text-sm">Green points</p>
+          <p className=" mb-0 text-sm">Reward Green points</p>
           <p className=" text-xl text-success-500 fw-bold">120 pts</p>
         </div>
         <div className="">
-          <p className="mb-0 text-sm">Price</p>
-          <p className="text-xl fw-bold">$ 400.00</p>
+          <p className="mb-0 text-sm">Pay Green Points</p>
+          <p className="text-xl fw-bold"> 400.00 pts</p>
         </div>
       </div>
     </div>

@@ -14,10 +14,10 @@ const Dashboard = () => {
         <div className="col-12">
           <StatsCounts />
         </div>
-        <div className="col-8">
+        <div className="col-12 col-xl-8">
           <TopSellingProductOne />
         </div>
-        <div className="col-4">
+        <div className="col-12 col-xl-4">
           <TopCustomersOne />
         </div>
       </div>

@@ -28,7 +28,7 @@ const CompanyLayer = () => {
   }, [imagePreview]);
   return (
     <div className="card h-100 p-0 radius-12 overflow-hidden">
-      <div className="card-body p-40">
+      <div className="card-body p-20 p-lg-40">
         <form action="#">
           <div className="row">
             <div className="col-6">

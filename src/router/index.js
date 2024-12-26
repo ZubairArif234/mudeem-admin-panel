@@ -225,12 +225,12 @@ const Router = () => {
         <Route exact path="/sustainable-innovation" element={<Innovation />} />
         <Route
           exact
-          path="/sustainibilty-company"
+          path="/sustainibility-company"
           element={<SustainibiltyCompany />}
         />
         <Route
           exact
-          path="/sustainibilty-record"
+          path="/sustainibility-record"
           element={<SustainibiltyRecord />}
         />
         <Route exact path="/subscription" element={<Subscription />} />

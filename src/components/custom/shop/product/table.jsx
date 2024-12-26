@@ -30,7 +30,7 @@ const ProductsTable = ({ isSelectable, rows }) => {
           <th scope="col">Descripton</th>
           <th scope="col">Availibility</th>
 
-          <th scope="col">Price</th>
+          <th scope="col">Green Points</th>
           <th scope="col">Action</th>
         </tr>
       </thead>
@@ -69,7 +69,7 @@ const ProductsTable = ({ isSelectable, rows }) => {
               {" "}
               {item?.availibility}
             </td>
-            <td> {item?.price}</td>
+            <td> {item?.price} pts</td>
             <td>
               <div className="d-flex gap-2 align-items-start">
                 <Modal

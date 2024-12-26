@@ -21,7 +21,7 @@ const UserTable = ({ isSelectable, rows }) => {
           <th scope="col">ID</th>
           <th scope="col">User Name</th>
           <th scope="col">Email</th>
-          <th scope="col">Phonne</th>
+          <th scope="col">Phone</th>
           <th scope="col">Created At</th>
           <th scope="col">Activate/Deactivate</th>
         </tr>

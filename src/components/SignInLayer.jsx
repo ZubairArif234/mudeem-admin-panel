@@ -1,10 +1,42 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useLogin } from "../hook/apis/auth/useLogin";
+import Loader from "./custom/extra/loader";
+
+const LoginSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
 
 const SignInLayer = () => {
   const navigate = useNavigate();
   const [hidePassword, setHidePassword] = useState(true);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(LoginSchema),
+  });
+  const { login, error, isLoading, isPending, isError } = useLogin();
+
+  const handleFormSubmit = async (data) => {
+    try {
+      const res = await login(data);
+    } catch (err) {
+      console.error("Login failed:", err);
+    }
+
+    // navigate("/dashboard");
+    console.log("Form Submitted:", data, isLoading);
+  };
+  console.log(isPending, error, isError);
   return (
     <section className="auth bg-base d-flex flex-wrap">
       <div className="auth-left d-lg-block d-none">
@@ -26,39 +58,54 @@ const SignInLayer = () => {
               Welcome back! please enter your detail
             </p>
           </div>
-          <form action="#" onSubmit={() => navigate("/dashboard")}>
-            <div className="icon-field mb-16">
-              <span className="icon top-50 translate-middle-y">
-                <Icon icon="mage:email" />
-              </span>
-              <input
-                type="email"
-                className="form-control h-56-px bg-neutral-50 radius-12"
-                placeholder="Email"
-                defaultValue="admin@gmail.com"
-              />
-            </div>
-            <div className="position-relative mb-20">
-              <div className="icon-field">
+          <form action="#" onSubmit={handleSubmit(handleFormSubmit)}>
+            <label htmlFor="email" className="w-100 mb-16">
+              <div className="icon-field ">
                 <span className="icon top-50 translate-middle-y">
-                  <Icon icon="solar:lock-password-outline" />
+                  <Icon icon="mage:email" />
                 </span>
                 <input
-                  type={hidePassword ? "password" : "text"}
+                  id="email"
+                  type="email"
                   className="form-control h-56-px bg-neutral-50 radius-12"
-                  id="your-password"
-                  placeholder="Password"
-                  defaultValue="admin123"
+                  placeholder="Email"
+                  defaultValue="admin@gmail.com"
+                  data-error={errors?.email ? "true" : "false"}
+                  {...register("email")}
                 />
               </div>
-              <span
-                onClick={() => setHidePassword(!hidePassword)}
-                className={`toggle-password ${
-                  hidePassword ? "ri-eye-off-line" : "ri-eye-line"
-                } cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light`}
-                data-toggle="#your-password"
-              />
-            </div>
+              {errors?.email && (
+                <p className="text-danger-500">{errors?.email?.message}</p>
+              )}
+            </label>
+            <label htmlFor="password" className="w-100 mb-16">
+              <div className="position-relative ">
+                <div className="icon-field">
+                  <span className="icon top-50 translate-middle-y">
+                    <Icon icon="solar:lock-password-outline" />
+                  </span>
+                  <input
+                    type={hidePassword ? "password" : "text"}
+                    className="form-control h-56-px bg-neutral-50 radius-12"
+                    id="password"
+                    placeholder="Password"
+                    defaultValue="admin123"
+                    data-error={errors?.password ? "true" : "false"}
+                    {...register("password")}
+                  />
+                </div>
+                <span
+                  onClick={() => setHidePassword(!hidePassword)}
+                  className={`toggle-password ${
+                    hidePassword ? "ri-eye-off-line" : "ri-eye-line"
+                  } cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light`}
+                  data-toggle="#password"
+                />
+              </div>
+              {errors?.password && (
+                <p className="text-danger-500">{errors?.password?.message}</p>
+              )}
+            </label>
             <div className="">
               <div className="d-flex justify-content-between gap-2">
                 <div className="form-check style-check d-flex align-items-center">
@@ -85,7 +132,7 @@ const SignInLayer = () => {
               className="btn btn-success text-sm btn-sm px-12 py-16 w-100 radius-12 mt-32"
             >
               {" "}
-              Sign In
+              {isPending ? <Loader loading={isPending} /> : "Sign In"}
             </button>
           </form>
         </div>

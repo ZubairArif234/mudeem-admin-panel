@@ -27,10 +27,10 @@ const TableDataLayer = ({
   // }, []);
 
   return (
-    <div className="card basic-data-table">
-      <div className="card-header d-flex justify-content-between align-items-center">
+    <div className="card basic-data-table ">
+      <div className="card-header d-flex justify-content-between align-items-center flex-wrap">
         <h5 className="card-title mb-0">{title}</h5>
-        <div className="d-flex gap-2">
+        <div className="d-flex w-auto align-items-center gap-2 mt-3 mt-sm-0">
           <div className="icon-field mb-4">
             <span className="icon top-50 translate-middle-y">
               <Icon icon="mage:search" />
@@ -51,7 +51,8 @@ const TableDataLayer = ({
                   data-bs-toggle="modal"
                   data-bs-target={`#${modalId}`}
                 >
-                  <Icon icon="mage:plus" /> {modalTitle}
+                  <Icon icon="mage:plus" className="icon" />{" "}
+                  <span className="d-none d-sm-block">{modalTitle}</span>
                 </button>
               }
               body={modalForm}
@@ -62,7 +63,7 @@ const TableDataLayer = ({
         </div>
       </div>
       <div className="card-body">
-        {body}
+        <div className="table-responsive">{body}</div>
         <div className="d-flex justify-content-end">
           <SquarePagination />
         </div>

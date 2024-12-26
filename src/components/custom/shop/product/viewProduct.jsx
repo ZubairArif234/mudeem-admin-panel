@@ -4,7 +4,7 @@ import { CarouselWithArrowsOnlyImage } from "../../../child/CarouselWithArrows";
 const ViewProduct = () => {
   return (
     <div className="row gy-3">
-      <div className="col-6">
+      <div className="col-lg-6">
         {/* <div className="d-flex justify-content-center"> */}
         <CarouselWithArrowsOnlyImage images={"/assets/images/product.png"} />
         {/* <img src="/assets/images/product.png" width={"100%"} /> */}
@@ -21,7 +21,7 @@ const ViewProduct = () => {
           </span>
         </div>
       </div>
-      <div className="col-6">
+      <div className="col-lg-6">
         <p className="text-xxl fw-bold mb-0 ">
           Elegant Black Muslim Abaya with Modern Design
         </p>
@@ -75,8 +75,8 @@ const ViewProduct = () => {
         <div className="border-top my-8"></div>
 
         <div className="">
-          <p className="mb-0 text-sm">Price</p>
-          <p className="text-xl fw-bold">$ 400.00</p>
+          <p className="mb-0 text-sm">Green Points</p>
+          <p className="text-xl fw-bold">400.00 pts</p>
         </div>
       </div>
     </div>

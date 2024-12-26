@@ -29,8 +29,8 @@ const AcademyTable = ({ isSelectable, rows }) => {
           <th scope="col">Author Name</th>
           <th scope="col">Descripton</th>
           <th scope="col">Language</th>
-          <th scope="col">Price</th>
-          <th scope="col">Points</th>
+          <th scope="col">Green Points</th>
+          {/* <th scope="col">Points</th> */}
           <th scope="col">Action</th>
         </tr>
       </thead>
@@ -65,8 +65,8 @@ const AcademyTable = ({ isSelectable, rows }) => {
             <td>{item?.description?.slice(0, 25) + "..."}</td>
 
             <td> {item?.language}</td>
-            <td>$ {item?.price}</td>
-            <td> {item?.points}</td>
+            <td>{item?.price} pts</td>
+
             <td>
               <div className="d-flex gap-2 align-items-start">
                 <Modal

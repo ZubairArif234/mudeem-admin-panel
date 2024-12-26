@@ -1,3 +1,15 @@
 .flatpickr-time input:hover {
   color: black !important;
 }
+
+.form-control[data-error="true"] {
+  border-color: red !important ;
+}
+
+@media (max-width: 768px) {
+  .fc .fc-toolbar {
+    display: block !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+}
