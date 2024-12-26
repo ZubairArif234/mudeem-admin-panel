@@ -24,19 +24,17 @@ const SignInLayer = () => {
   } = useForm({
     resolver: zodResolver(LoginSchema),
   });
-  const { login, error, isLoading, isPending, isError } = useLogin();
+  const { login, isPending } = useLogin();
 
   const handleFormSubmit = async (data) => {
-    // try {
-    //   const res = await login(data);
-    // } catch (err) {
-    //   console.error("Login failed:", err);
-    // }
+    try {
+      const res = await login(data);
 
-    navigate("/dashboard");
-    console.log("Form Submitted:", data, isLoading);
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Login failed:", err);
+    }
   };
-  console.log(isPending, error, isError);
   return (
     <section className="auth bg-base d-flex flex-wrap">
       <div className="auth-left d-lg-block d-none">

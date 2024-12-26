@@ -1,8 +1,10 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-const ForgotPasswordLayer = () => {
+const ResetPasswordLayer = () => {
+  const [hidePassword, setHidePassword] = useState(true);
+
   return (
     <>
       <section className="auth forgot-password-page bg-base d-flex flex-wrap">
@@ -14,23 +16,64 @@ const ForgotPasswordLayer = () => {
         <div className="auth-right py-32 px-24 d-flex flex-column justify-content-center">
           <div className="max-w-464-px mx-auto w-100">
             <div>
-              <h4 className="mb-12">Forgot Password</h4>
+              <h4 className="mb-12">Reset Password</h4>
               <p className="mb-32 text-secondary-light text-lg">
                 Enter the email address associated with your account and we will
                 send you a OTP to reset your password.
               </p>
             </div>
             <form action="#">
-              <div className="icon-field">
-                <span className="icon top-50 translate-middle-y">
-                  <Icon icon="mage:email" />
-                </span>
-                <input
-                  type="email"
-                  className="form-control h-56-px bg-neutral-50 radius-12"
-                  placeholder="Enter Email"
-                />
-              </div>
+              <label htmlFor="otp" className="w-100 mb-16">
+                <div className="position-relative ">
+                  <div className="icon-field">
+                    <span className="icon top-50 translate-middle-y">
+                      <Icon icon="solar:lock-password-outline" />
+                    </span>
+                    <input
+                      type="number"
+                      max={6}
+                      className="form-control h-56-px bg-neutral-50 radius-12"
+                      id="password"
+                      placeholder="Enter OTP"
+                      defaultValue="admin123"
+                      //   data-error={errors?.password ? "true" : "false"}
+                      //   {...register("password")}
+                    />
+                  </div>
+                </div>
+                {/* {errors?.password && (
+                              <p className="text-danger-500">{errors?.password?.message}</p>
+                            )} */}
+              </label>
+
+              <label htmlFor="password" className="w-100 mb-16">
+                <div className="position-relative ">
+                  <div className="icon-field">
+                    <span className="icon top-50 translate-middle-y">
+                      <Icon icon="solar:lock-password-outline" />
+                    </span>
+                    <input
+                      type={hidePassword ? "password" : "text"}
+                      className="form-control h-56-px bg-neutral-50 radius-12"
+                      id="password"
+                      placeholder="Password"
+                      defaultValue="admin123"
+                      //   data-error={errors?.password ? "true" : "false"}
+                      //   {...register("password")}
+                    />
+                  </div>
+                  <span
+                    onClick={() => setHidePassword(!hidePassword)}
+                    className={`toggle-password ${
+                      hidePassword ? "ri-eye-off-line" : "ri-eye-line"
+                    } cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light`}
+                    data-toggle="#password"
+                  />
+                </div>
+                {/* {errors?.password && (
+                              <p className="text-danger-500">{errors?.password?.message}</p>
+                            )} */}
+              </label>
               <button
                 type="button"
                 className="btn btn-success text-sm btn-sm px-12 py-16 w-100 radius-12 mt-32"
@@ -88,4 +131,4 @@ const ForgotPasswordLayer = () => {
   );
 };
 
-export default ForgotPasswordLayer;
+export default ResetPasswordLayer;

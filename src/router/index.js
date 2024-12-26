@@ -102,6 +102,7 @@ import Dashboard from "../adminPages/dashboard";
 import Users from "../adminPages/user";
 import Settings from "../adminPages/setting";
 import Profile from "../adminPages/profile";
+import ResetPasswordPage from "../pages/ResetPasswordPage";
 
 const Router = () => {
   return (
@@ -213,6 +214,7 @@ const Router = () => {
 
         {/* admin pages */}
 
+        <Route exact path="/reset-password" element={<ResetPasswordPage />} />
         <Route exact path="/dashboard" element={<Dashboard />} />
         <Route exact path="/carpooling" element={<Carpooling />} />
         <Route exact path="/green-campus" element={<GreenCampus />} />

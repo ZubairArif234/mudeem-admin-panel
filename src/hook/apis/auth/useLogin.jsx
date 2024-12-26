@@ -35,8 +35,6 @@ export const useLogin = () => {
 
         return response?.data?.data;
       } catch (err) {
-        // Log the full error to understand it better
-        console.log(isPending);
         toast.error(err.response?.data?.message || "Login failed");
         throw err; // Rethrow to let the caller handle it
       }
