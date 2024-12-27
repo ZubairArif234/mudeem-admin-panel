@@ -1,6 +1,6 @@
 import React from "react";
 
-const DeleteModalContent = () => {
+const DeleteModalContent = ({ deleteFunction }) => {
   return (
     <div>
       <p>Do you want to delete ? This action can't be undone!</p>
@@ -8,7 +8,12 @@ const DeleteModalContent = () => {
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
           Close
         </button>
-        <button type="button" class="btn btn-danger-600">
+        <button
+          onClick={() => deleteFunction()}
+          type="button"
+          class="btn btn-danger-600"
+          data-bs-dismiss="modal"
+        >
           Delete
         </button>
       </div>

@@ -5,6 +5,9 @@
 .form-control[data-error="true"] {
   border-color: red !important ;
 }
+.upload-file[data-error="true"] {
+  border-color: red !important ;
+}
 
 @media (max-width: 768px) {
   .fc .fc-toolbar {

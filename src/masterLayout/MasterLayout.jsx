@@ -2035,7 +2035,7 @@ const MasterLayout = ({ children }) => {
         </div>
 
         {/* dashboard-main-body */}
-        <div className="dashboard-main-body">{children}</div>
+        <div className="dashboard-main-body ">{children}</div>
 
         {/* Footer section */}
         <footer className="d-footer">

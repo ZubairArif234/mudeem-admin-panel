@@ -12,6 +12,7 @@ const TableDataLayer = ({
   title,
   body,
   isCustomHeaderButton,
+  searchFunction,
   modalTitle,
   modalId,
   modalForm,
@@ -39,6 +40,7 @@ const TableDataLayer = ({
               type="email"
               className="form-control  bg-neutral-50 radius-12"
               placeholder="Search..."
+              onChange={(e) => searchFunction(e.target.value)}
             />
           </div>
           {isCustomHeaderButton && (
@@ -64,9 +66,9 @@ const TableDataLayer = ({
       </div>
       <div className="card-body">
         <div className="table-responsive">{body}</div>
-        <div className="d-flex justify-content-end">
+        {/* <div className="d-flex justify-content-end">
           <SquarePagination />
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -214,7 +214,11 @@ const Router = () => {
 
         {/* admin pages */}
 
-        <Route exact path="/reset-password" element={<ResetPasswordPage />} />
+        <Route
+          exact
+          path="/reset-password/:email"
+          element={<ResetPasswordPage />}
+        />
         <Route exact path="/dashboard" element={<Dashboard />} />
         <Route exact path="/carpooling" element={<Carpooling />} />
         <Route exact path="/green-campus" element={<GreenCampus />} />

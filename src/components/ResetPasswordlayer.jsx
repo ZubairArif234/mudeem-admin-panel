@@ -1,16 +1,55 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useResetPassword } from "../hook/apis/auth/useResetPassword";
+import Loader from "./custom/extra/loader";
 
+const ResetPasswordSchema = z.object({
+  passwordResetToken: z.string().length(6, "Invalid OTP , OTP must be 6 digit"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
 const ResetPasswordLayer = () => {
+  const navigate = useNavigate();
+  const { email } = useParams();
   const [hidePassword, setHidePassword] = useState(true);
 
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(ResetPasswordSchema),
+  });
+  const { resetPassword, isPending } = useResetPassword();
+
+  const handleFormSubmit = async (data) => {
+    const payload = {
+      ...data,
+      email,
+      passwordResetToken: Number(data.passwordResetToken),
+    };
+    try {
+      const res = await resetPassword(payload);
+      console.log(res);
+
+      // navigate("/dashboard");
+    } catch (err) {
+      console.error("Login failed:", err);
+    }
+  };
   return (
     <>
       <section className="auth forgot-password-page bg-base d-flex flex-wrap">
         <div className="auth-left d-lg-block d-none">
           <div className="d-flex align-items-center flex-column h-100 justify-content-center">
-            <img src="assets/images/auth/forgot-pass-img.png" alt="" />
+            <img
+              src="https://res.cloudinary.com/drqtz5s5m/image/upload/v1735285129/forgot-pass-img_cghshu.png"
+              alt=""
+            />
           </div>
         </div>
         <div className="auth-right py-32 px-24 d-flex flex-column justify-content-center">
@@ -22,7 +61,7 @@ const ResetPasswordLayer = () => {
                 send you a OTP to reset your password.
               </p>
             </div>
-            <form action="#">
+            <form action="#" onSubmit={handleSubmit(handleFormSubmit)}>
               <label htmlFor="otp" className="w-100 mb-16">
                 <div className="position-relative ">
                   <div className="icon-field">
@@ -31,19 +70,20 @@ const ResetPasswordLayer = () => {
                     </span>
                     <input
                       type="number"
-                      max={6}
+                      // maxLength="6"
                       className="form-control h-56-px bg-neutral-50 radius-12"
-                      id="password"
+                      id="passwordResetToken"
                       placeholder="Enter OTP"
-                      defaultValue="admin123"
-                      //   data-error={errors?.password ? "true" : "false"}
-                      //   {...register("password")}
+                      data-error={errors?.passwordResetToken ? "true" : "false"}
+                      {...register("passwordResetToken")}
                     />
                   </div>
                 </div>
-                {/* {errors?.password && (
-                              <p className="text-danger-500">{errors?.password?.message}</p>
-                            )} */}
+                {errors?.passwordResetToken && (
+                  <p className="text-danger-500">
+                    {errors?.passwordResetToken?.message}
+                  </p>
+                )}
               </label>
 
               <label htmlFor="password" className="w-100 mb-16">
@@ -57,9 +97,8 @@ const ResetPasswordLayer = () => {
                       className="form-control h-56-px bg-neutral-50 radius-12"
                       id="password"
                       placeholder="Password"
-                      defaultValue="admin123"
-                      //   data-error={errors?.password ? "true" : "false"}
-                      //   {...register("password")}
+                      data-error={errors?.password ? "true" : "false"}
+                      {...register("password")}
                     />
                   </div>
                   <span
@@ -70,63 +109,21 @@ const ResetPasswordLayer = () => {
                     data-toggle="#password"
                   />
                 </div>
-                {/* {errors?.password && (
-                              <p className="text-danger-500">{errors?.password?.message}</p>
-                            )} */}
+                {errors?.password && (
+                  <p className="text-danger-500">{errors?.password?.message}</p>
+                )}
               </label>
+
               <button
-                type="button"
+                type="submit"
                 className="btn btn-success text-sm btn-sm px-12 py-16 w-100 radius-12 mt-32"
-                data-bs-toggle="modal"
-                data-bs-target="#exampleModal"
               >
-                Continue
+                {isPending ? <Loader loading={isPending} /> : "Save Password"}
               </button>
-              <div className="text-center">
-                <Link to="/sign-in" className="text-success-600 fw-bold mt-24">
-                  Back to Sign In
-                </Link>
-              </div>
             </form>
           </div>
         </div>
       </section>
-      {/* Modal */}
-      <div
-        className="modal fade"
-        id="exampleModal"
-        tabIndex={-1}
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-dialog modal-dialog-centered">
-          <div className="modal-content radius-16 bg-base">
-            <div className="modal-body p-40 text-center">
-              <div className="mb-32">
-                <img src="assets/images/auth/envelop-icon.png" alt="" />
-              </div>
-              <h6 className="mb-12">Verify your Email</h6>
-              <p className="text-secondary-light text-sm mb-0">
-                Thank you, check your email for instructions to reset your
-                password
-              </p>
-              <button
-                type="button"
-                className="btn btn-primary text-sm btn-sm px-12 py-16 w-100 radius-12 mt-32"
-              >
-                Skip
-              </button>
-              <div className="mt-32 text-sm">
-                <p className="mb-0">
-                  Don’t receive an email?{" "}
-                  <Link to="/resend" className="text-primary-600 fw-semibold">
-                    Resend
-                  </Link>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </>
   );
 };

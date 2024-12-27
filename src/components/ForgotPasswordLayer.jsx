@@ -1,8 +1,42 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React from "react";
 import { Link } from "react-router-dom";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
+import { useForgotPassword } from "../hook/apis/auth/useForgotPassword";
+import Loader from "./custom/extra/loader";
 
+const ForgotPasswordSchema = z.object({
+  email: z
+    .string()
+    .regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Invalid email address"),
+});
 const ForgotPasswordLayer = () => {
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(ForgotPasswordSchema),
+  });
+  const { forgotPassword, isPending } = useForgotPassword();
+  const handleFormSubmit = async (data) => {
+    if (data?.email) {
+      try {
+        // const res = await forgotPassword(data);
+
+        // console.log(res);
+        // navigate("/dashboard");
+        navigate(`/reset-password/${data?.email}`);
+      } catch (err) {
+        console.error("Login failed:", err);
+      }
+    }
+  };
   return (
     <>
       <section className="auth forgot-password-page bg-base d-flex flex-wrap">
@@ -20,24 +54,31 @@ const ForgotPasswordLayer = () => {
                 send you a OTP to reset your password.
               </p>
             </div>
-            <form action="#">
-              <div className="icon-field">
-                <span className="icon top-50 translate-middle-y">
-                  <Icon icon="mage:email" />
-                </span>
-                <input
-                  type="email"
-                  className="form-control h-56-px bg-neutral-50 radius-12"
-                  placeholder="Enter Email"
-                />
-              </div>
+            <form action="#" onSubmit={handleSubmit(handleFormSubmit)}>
+              <label htmlFor="email" className="w-100 ">
+                <div className="icon-field">
+                  <span className="icon top-50 translate-middle-y">
+                    <Icon icon="mage:email" />
+                  </span>
+                  <input
+                    type="email"
+                    className="form-control h-56-px bg-neutral-50 radius-12"
+                    placeholder="Enter Email"
+                    data-error={errors?.email ? "true" : "false"}
+                    {...register("email")}
+                  />
+                </div>
+                {errors?.email && (
+                  <p className="text-danger-500">{errors?.email?.message}</p>
+                )}
+              </label>
               <button
-                type="button"
+                type="submit"
                 className="btn btn-success text-sm btn-sm px-12 py-16 w-100 radius-12 mt-32"
-                data-bs-toggle="modal"
-                data-bs-target="#exampleModal"
+                // data-bs-toggle="modal"
+                // data-bs-target="#exampleModal"
               >
-                Continue
+                {isPending ? <Loader loading={isPending} /> : "Continue"}
               </button>
               <div className="text-center">
                 <Link to="/sign-in" className="text-success-600 fw-bold mt-24">
@@ -49,7 +90,7 @@ const ForgotPasswordLayer = () => {
         </div>
       </section>
       {/* Modal */}
-      <div
+      {/* <div
         className="modal fade"
         id="exampleModal"
         tabIndex={-1}
@@ -83,7 +124,7 @@ const ForgotPasswordLayer = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

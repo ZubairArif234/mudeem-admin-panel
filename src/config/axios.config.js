@@ -12,5 +12,14 @@ const custAxios = axios.create({
     Accept: "application/json",
   },
 });
+// axios instance for json data
+export const formAxios = axios.create({
+  withCredentials: true,
+  baseURL: baseURL,
+  headers: {
+    "Content-Type": "multipart/form-data",
+    Accept: "multipart/form-data",
+  },
+});
 
 export default custAxios;

@@ -1,49 +1,42 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MasterLayout from "../../../masterLayout/MasterLayout";
 import Breadcrumb from "../../../components/Breadcrumb";
 import TableDataLayer from "../../../components/TableDataLayer";
 import CategoryTable from "../../../components/custom/shop/category/table";
 import CategoryForm from "../../../components/custom/shop/category/form";
+import { useCreateCategory } from "../../../hook/apis/auth/shop/category/useCreateCategory";
+import { useGetCategory } from "../../../hook/apis/auth/shop/category/useGetCategory";
+import DataNotFound from "../../../components/custom/extra/dataNotFound";
 
 const Category = () => {
-  const tableRows = [
-    {
-      id: "453",
-      name: "Clothing",
-      createdAt: "25-Feb-2025",
-    },
-    {
-      id: "453",
-      name: "Toys",
-      createdAt: "25-Feb-2025",
-    },
-    {
-      id: "453",
-      name: "Blankets & Curtains",
-      createdAt: "25-Feb-2025",
-    },
-    {
-      id: "453",
-      name: "Shoes",
-      createdAt: "25-Feb-2025",
-    },
-    {
-      id: "453",
-      name: "Grocery",
-      createdAt: "25-Feb-2025",
-    },
-  ];
+  const [filters, setFilters] = useState({ search: "" });
+  const { categories, isPending } = useGetCategory(filters);
+  console.log(categories);
+
+  const handleSearch = (value) => {
+    setFilters((prev) => ({ ...prev, search: value }));
+  };
   return (
     <MasterLayout>
       <Breadcrumb heading="Shop" title="Shop - Category" />
 
       <TableDataLayer
         title={"Category"}
-        body={<CategoryTable rows={tableRows} />}
+        body={
+          categories?.length > 0 ? (
+            <CategoryTable rows={categories} />
+          ) : (
+            <DataNotFound
+              heading={"Categories Not Found"}
+              text={"There is not categories found , based on your search!"}
+            />
+          )
+        }
         isCustomHeaderButton
         modalTitle="Add Category"
-        modalId="add-sustainibility-company"
+        modalId="add-category"
         modalForm={<CategoryForm />}
+        searchFunction={handleSearch}
       />
     </MasterLayout>
   );

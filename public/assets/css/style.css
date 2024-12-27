@@ -11248,7 +11248,9 @@ textarea:active {
 .form-control[data-error="true"] {
   border-color: red !important ;
 }
-
+.upload-file[data-error="true"] {
+  border-color: red !important ;
+}
 .form-select {
   padding: 0.5625rem 1.875rem 0.5625rem 0.9375rem;
   background-position-x: right;

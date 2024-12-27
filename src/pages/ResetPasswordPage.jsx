@@ -4,7 +4,6 @@ import ResetPasswordLayer from "../components/ResetPasswordlayer";
 const ResetPasswordPage = () => {
   return (
     <>
-      {/* SignInLayer */}
       <ResetPasswordLayer />
     </>
   );

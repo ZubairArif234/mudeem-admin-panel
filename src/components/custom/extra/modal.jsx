@@ -18,12 +18,12 @@ const Modal = ({ id, button, body, title, size }) => {
               <h6 class="modal-title" id={id + "-label"}>
                 {title}
               </h6>
-              <button
+              {/* <button
                 type="button"
                 class="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
-              ></button>
+              ></button> */}
             </div>
             <div class="modal-body">{body}</div>
           </div>
