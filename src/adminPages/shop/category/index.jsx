@@ -7,11 +7,12 @@ import CategoryForm from "../../../components/custom/shop/category/form";
 import { useCreateCategory } from "../../../hook/apis/auth/shop/category/useCreateCategory";
 import { useGetCategory } from "../../../hook/apis/auth/shop/category/useGetCategory";
 import DataNotFound from "../../../components/custom/extra/dataNotFound";
+import Loader from "../../../components/custom/extra/loader";
 
 const Category = () => {
   const [filters, setFilters] = useState({ search: "" });
   const { categories, isPending } = useGetCategory(filters);
-  console.log(categories);
+  
 
   const handleSearch = (value) => {
     setFilters((prev) => ({ ...prev, search: value }));
@@ -23,6 +24,11 @@ const Category = () => {
       <TableDataLayer
         title={"Category"}
         body={
+          isPending ? (<div style={{minHeight:"59vh"}} className="d-flex justify-content-center align-items-center">
+
+            <Loader loading={isPending} size={150} color="#15803d"/>
+          </div>
+          ) :
           categories?.length > 0 ? (
             <CategoryTable rows={categories} />
           ) : (

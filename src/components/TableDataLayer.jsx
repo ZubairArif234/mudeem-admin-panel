@@ -65,7 +65,7 @@ const TableDataLayer = ({
         </div>
       </div>
       <div className="card-body">
-        <div className="table-responsive">{body}</div>
+        <div className="table-responsive" >{body}</div>
         {/* <div className="d-flex justify-content-end">
           <SquarePagination />
         </div> */}

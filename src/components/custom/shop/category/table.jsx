@@ -5,7 +5,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 
 import CategoryForm from "./form";
 import moment from "moment/moment";
-import { useDeletedCategory } from "../../../../hook/apis/auth/shop/category/deleteCategory";
+import { useDeletedCategory } from "../../../../hook/apis/auth/shop/category/useDeleteCategory";
 
 const CategoryTable = ({ isSelectable, rows }) => {
   const { deleteCategory, isPending } = useDeletedCategory();
@@ -76,7 +76,7 @@ const CategoryTable = ({ isSelectable, rows }) => {
                       data-bs-target={`#edit-category-${item._id}`}
                     />
                   }
-                  title={"Edit Category" + i}
+                  title={"Edit Category" }
                   body={<CategoryForm data={item} key={i} />}
                 />
                 <Modal

@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateCategory } from "../../../../hook/apis/auth/shop/category/useCreateCategory";
 import Loader from "../../extra/loader";
+import { useUpdateCategory } from "../../../../hook/apis/auth/shop/category/useUpdateCategory";
 
 const imageValidation = (file) => {
   const allowedTypes = ["image/png"];
@@ -77,18 +78,26 @@ const CategoryForm = ({ data }) => {
   }, [data]);
 
   const { createCategory, isPending } = useCreateCategory();
+  const { updateCategory, updatePending } = useUpdateCategory();
 
-  const handleFormSubmit = async (data) => {
+  const handleFormSubmit = async (values) => {
     const formData = new FormData();
-    formData.append("name", data.name);
-    if (imageFile) {
-      console.log(imageFile, "hai");
+    formData.append("name", values.name);
+    if (!imageFile) {
+      return;
+    }else{
+console.log(imageFile);
 
+      
       formData.append("image", imageFile);
     }
-    try {
-      await createCategory(formData);
 
+    try {
+      if (data?._id) {
+        await updateCategory({ payload: formData, id: data._id });
+      } else {
+        await createCategory(formData);
+      }
       reset();
       setImagePreview(null);
       setImageFile(".");
@@ -105,10 +114,12 @@ const CategoryForm = ({ data }) => {
   return (
     <form
       onSubmit={(e) => {
+        e.preventDefault();
         if (imagePreview === null) {
           setImageFile(null);
+        } else {
+          handleSubmit(handleFormSubmit)(e);
         }
-        handleSubmit(handleFormSubmit)(e);
       }}
     >
       <div className="row gy-3">
@@ -193,8 +204,15 @@ const CategoryForm = ({ data }) => {
           >
             Close
           </button>
-          <button type="submit" class="btn btn-success-600">
-            {isPending ? <Loader loading={isPending} /> : "Save Category"}
+          <button
+            type="submit"
+            class="btn btn-success-600"
+          >
+            {isPending || updatePending ? (
+              <Loader loading={isPending || updatePending} />
+            ) : (
+              "Save Category"
+            )}
           </button>
         </div>
       </div>
