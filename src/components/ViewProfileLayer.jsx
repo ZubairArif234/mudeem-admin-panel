@@ -58,7 +58,7 @@ const ViewProfileLayer = () => {
                   <span className="w-30 text-md fw-semibold text-primary-light">
                     Full Name
                   </span>
-                  <span className="w-70 text-secondary-light fw-medium">
+                  <span className="w-70 text-secondary-light fw-medium text-capitalize">
                     : {me?.user?.name || "Admin"}
                   </span>
                 </li>

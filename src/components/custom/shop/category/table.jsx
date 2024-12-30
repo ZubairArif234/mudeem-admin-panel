@@ -58,7 +58,7 @@ const CategoryTable = ({ isSelectable, rows }) => {
               {" "}
               <img src={item?.image} alt={item?.name} width={80} height={80} />
             </td>
-            <td>{item?.name}</td>
+            <td className="text-capitalize">{item?.name}</td>
 
             <td> {moment(item?.createdAt).format("DD/MMM/YYYY")}</td>
             <td key={i + 1}>

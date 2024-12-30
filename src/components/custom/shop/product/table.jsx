@@ -56,7 +56,7 @@ const ProductsTable = ({ isSelectable, rows }) => {
               </td>
             )}
             <td>#{item?.id + 1 * 2087}</td>
-            <td>
+            <td className="text-capitalize">
               <div className="d-flex gap-1 align-items-center">
                 <img src="/assets/images/product.png" width={50} />
 
@@ -66,8 +66,10 @@ const ProductsTable = ({ isSelectable, rows }) => {
                 />
               </div>
             </td>
-            <td> {item?.brand}</td>
-            <td>{item?.description?.slice(0, 25) + "..."}</td>
+            <td className="text-capitalize"> {item?.brand}</td>
+            <td className="text-capitalize">
+              {item?.description?.slice(0, 25) + "..."}
+            </td>
 
             <td
               className={

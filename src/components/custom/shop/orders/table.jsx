@@ -59,8 +59,8 @@ const OrdersTable = ({ isSelectable, rows }) => {
               </td>
             )}
             <td>#{item?.id + 1 * 2087}</td>
-            <td>
-              <div className="d-flex gap-1 align-items-center">
+            <td className="text-capitalize">
+              <div className=" d-flex gap-1 align-items-center">
                 <img src="/assets/images/user.png" width={40} />
 
                 {item?.userName}
