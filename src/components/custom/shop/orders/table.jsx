@@ -71,7 +71,7 @@ const OrdersTable = ({ isSelectable, rows }) => {
 
             <td>
               <select
-                className="form-control form-control-sm"
+                className="text-capitalize form-control form-control-sm"
                 // onChange={() => handleUpdateStatus(item.id)}
               >
                 <option disabled>Select Status</option>
