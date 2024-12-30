@@ -76,7 +76,9 @@ const OrdersTable = ({ isSelectable, rows }) => {
               >
                 <option disabled>Select Status</option>
                 <option>Pending</option>
-                <option>Delivered</option>
+                <option className="text-capitalize">confirmed</option>
+                <option className="text-capitalize">shipped</option>
+                <option className="text-capitalize">delivered</option>
               </select>
             </td>
             <td> {item?.createdAt}</td>

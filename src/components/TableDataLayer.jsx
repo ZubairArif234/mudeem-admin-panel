@@ -45,11 +45,13 @@ const TableDataLayer = ({
               </span>
               <select
                 style={{ minWidth: "200px" }}
-                className="form-control  bg-neutral-50 radius-12 "
+                className="text-capitalize form-control  bg-neutral-50 radius-12 "
               >
                 <option disabled>Select Status</option>
                 <option>Pending</option>
-                <option>Delivered</option>
+                <option className="text-capitalize">confirmed</option>
+                <option className="text-capitalize">shipped</option>
+                <option className="text-capitalize">delivered</option>
               </select>
             </div>
           )}
