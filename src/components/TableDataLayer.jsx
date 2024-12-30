@@ -2,12 +2,9 @@ import React, { useEffect } from "react";
 import $ from "jquery";
 import "datatables.net-dt/js/dataTables.dataTables.js";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { Link } from "react-router-dom";
-import AvatarGroup, { SingleAvatarGroup } from "./child/AvatarGroup";
 import { SquarePagination } from "./PaginationLayer";
 import Modal from "./custom/extra/modal";
-import Form from "./custom/greenCampus/form";
-
+import { debounceFunction } from "../helper/functions";
 const TableDataLayer = ({
   title,
   body,
@@ -17,6 +14,10 @@ const TableDataLayer = ({
   modalId,
   modalForm,
   modalSize,
+  isAllowPagination,
+  paginationFunction,
+  page,
+  isFilter,
 }) => {
   // useEffect(() => {
   //   const table = $("#dataTable").DataTable({
@@ -27,48 +28,86 @@ const TableDataLayer = ({
   //   };
   // }, []);
 
+  const debouncedSearch = debounceFunction(
+    (value) => searchFunction(value),
+    1000
+  );
+
   return (
     <div className="card basic-data-table ">
       <div className="card-header d-flex justify-content-between align-items-center flex-wrap">
         <h5 className="card-title mb-0">{title}</h5>
-        <div className="d-flex w-auto align-items-center gap-2 mt-3 mt-sm-0">
-          <div className="icon-field mb-4">
-            <span className="icon top-50 translate-middle-y">
-              <Icon icon="mage:search" />
-            </span>
-            <input
-              type="email"
-              className="form-control  bg-neutral-50 radius-12"
-              placeholder="Search..."
-              onChange={(e) => searchFunction(e.target.value)}
-            />
-          </div>
-          {isCustomHeaderButton && (
-            <Modal
-              id={modalId}
-              button={
-                <button
-                  type="button"
-                  class="btn btn-success-600 d-flex gap-2 align-items-center"
-                  data-bs-toggle="modal"
-                  data-bs-target={`#${modalId}`}
-                >
-                  <Icon icon="mage:plus" className="icon" />{" "}
-                  <span className="d-none d-sm-block">{modalTitle}</span>
-                </button>
-              }
-              body={modalForm}
-              title={modalTitle}
-              size={modalSize}
-            />
+        <div className="d-flex flex-wrap align-items-center gap-2 mt-3 mt-sm-0">
+          {isFilter && (
+            <div className="icon-field ">
+              <span className="icon top-50 translate-middle-y">
+                <Icon icon="mage:filter" />
+              </span>
+              <select
+                style={{ minWidth: "200px" }}
+                className="form-control  bg-neutral-50 radius-12 "
+              >
+                <option disabled>Select Status</option>
+                <option>Pending</option>
+                <option>Delivered</option>
+              </select>
+            </div>
           )}
+          <div className="d-flex  align-items-center gap-2 mt-1 mt-sm-0">
+            <div className="icon-field mb-4">
+              <span className="icon top-50 translate-middle-y">
+                <Icon icon="mage:search" />
+              </span>
+
+              {searchFunction ? (
+                <input
+                  style={{ minWidth: "200px" }}
+                  type="text"
+                  className="form-control  bg-neutral-50 radius-12"
+                  placeholder="Search..."
+                  onChange={(e) => debouncedSearch(e.target.value)}
+                />
+              ) : (
+                <input
+                  style={{ minWidth: "200px" }}
+                  type="text"
+                  className="form-control  bg-neutral-50 radius-12"
+                  placeholder="Search..."
+                />
+              )}
+            </div>
+            {isCustomHeaderButton && (
+              <Modal
+                id={modalId}
+                button={
+                  <button
+                    type="button"
+                    class="btn btn-success-600 d-flex gap-2 align-items-center"
+                    data-bs-toggle="modal"
+                    data-bs-target={`#${modalId}`}
+                  >
+                    <Icon icon="mage:plus" className="icon" />{" "}
+                    <span className="d-none d-sm-block">{modalTitle}</span>
+                  </button>
+                }
+                body={modalForm}
+                title={modalTitle}
+                size={modalSize}
+              />
+            )}
+          </div>
         </div>
       </div>
       <div className="card-body">
-        <div className="table-responsive" >{body}</div>
-        {/* <div className="d-flex justify-content-end">
-          <SquarePagination />
-        </div> */}
+        <div className="table-responsive">{body}</div>
+        {isAllowPagination && (
+          <div className="d-flex justify-content-end">
+            <SquarePagination
+              current={page}
+              handlePagination={paginationFunction}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

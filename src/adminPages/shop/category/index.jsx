@@ -12,11 +12,11 @@ import Loader from "../../../components/custom/extra/loader";
 const Category = () => {
   const [filters, setFilters] = useState({ search: "" });
   const { categories, isPending } = useGetCategory(filters);
-  
 
   const handleSearch = (value) => {
     setFilters((prev) => ({ ...prev, search: value }));
   };
+
   return (
     <MasterLayout>
       <Breadcrumb heading="Shop" title="Shop - Category" />
@@ -24,17 +24,19 @@ const Category = () => {
       <TableDataLayer
         title={"Category"}
         body={
-          isPending ? (<div style={{minHeight:"59vh"}} className="d-flex justify-content-center align-items-center">
-
-            <Loader loading={isPending} size={150} color="#15803d"/>
-          </div>
-          ) :
-          categories?.length > 0 ? (
+          isPending ? (
+            <div
+              style={{ minHeight: "59vh" }}
+              className="d-flex justify-content-center align-items-center"
+            >
+              <Loader loading={isPending} size={150} color="#15803d" />
+            </div>
+          ) : categories?.length > 0 ? (
             <CategoryTable rows={categories} />
           ) : (
             <DataNotFound
               heading={"Categories Not Found"}
-              text={"There is not categories found , based on your search!"}
+              text={"There is no categories found , based on your search!"}
             />
           )
         }

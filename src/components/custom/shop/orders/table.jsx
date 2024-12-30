@@ -7,10 +7,20 @@ import DeleteModalContent from "../../extra/deleteModalContent";
 import ProductsTable from "../product/table";
 import OrderDetailTable from "./orderDetailTable";
 import OrderDetail from "./orderDetail";
+import { useUpdateOrderStatus } from "../../../../hook/apis/auth/shop/order/useUpdateStatus";
 // import ViewProduct from "./viewProduct";
 // import ProductForm from "./form";
 
 const OrdersTable = ({ isSelectable, rows }) => {
+  const { updateOrderStatus } = useUpdateOrderStatus();
+
+  const handleUpdateStatus = async (id) => {
+    try {
+      await updateOrderStatus(id);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <table
       className="table bordered-table mb-0"
@@ -60,7 +70,10 @@ const OrdersTable = ({ isSelectable, rows }) => {
             <td>{item?.total} pts</td>
 
             <td>
-              <select className="form-control form-control-sm">
+              <select
+                className="form-control form-control-sm"
+                // onChange={() => handleUpdateStatus(item.id)}
+              >
                 <option disabled>Select Status</option>
                 <option>Pending</option>
                 <option>Delivered</option>

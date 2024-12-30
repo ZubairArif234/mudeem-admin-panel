@@ -5,8 +5,18 @@ import { SingleDefaultTooltipThree } from "../../../child/DefaultTooltipThree";
 import DeleteModalContent from "../../extra/deleteModalContent";
 import ViewProduct from "./viewProduct";
 import ProductForm from "./form";
-
+import { useDeletedProduct } from "../../../../hook/apis/auth/shop/product/useDeleteProduct";
 const ProductsTable = ({ isSelectable, rows }) => {
+  const { deleteProduct } = useDeletedProduct();
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteProduct(id);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <table
       className="table bordered-table mb-0"
@@ -115,7 +125,11 @@ const ProductsTable = ({ isSelectable, rows }) => {
                       data-bs-target="#delete-product"
                     />
                   }
-                  body={<DeleteModalContent />}
+                  body={
+                    <DeleteModalContent
+                      deleteFunction={() => handleDelete(item._id)}
+                    />
+                  }
                   title="Are you sure!"
                 />
               </div>

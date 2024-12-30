@@ -813,18 +813,38 @@ const PaginationLayer = () => {
   );
 };
 
-export const SquarePagination = () => {
+export const SquarePagination = ({ current = 1, handlePagination }) => {
   return (
     <ul className="pagination d-flex flex-wrap align-items-center gap-2 justify-content-center mt-24">
       <li className="page-item">
         <Link
+          onClick={() => {
+            handlePagination(current - 1);
+          }}
           className="page-link bg-success-50 text-secondary-light fw-medium radius-8 border-0  py-10 d-flex align-items-center justify-content-center h-30-px w-30-px"
           to="#"
         >
           <Icon icon="ep:d-arrow-left" className="text-xl" />
         </Link>
       </li>
-      <li className="page-item">
+      {[1, 2, 3, 4]?.map((item) => (
+        <li className="page-item" key={item}>
+          <Link
+            onClick={() => {
+              handlePagination(item);
+            }}
+            className={
+              current === item
+                ? "page-link bg-success-50 text-secondary-light fw-medium radius-8 border-0  py-10 d-flex align-items-center justify-content-center h-40-px w-40-px bg-success-600 text-white"
+                : "page-link bg-success-50 text-secondary-light fw-medium radius-8 border-0  py-10 d-flex align-items-center justify-content-center h-40-px w-40-px"
+            }
+            to="#"
+          >
+            {item}
+          </Link>
+        </li>
+      ))}
+      {/* <li className="page-item">
         <Link
           className="page-link bg-success-50 text-secondary-light fw-medium radius-8 border-0  py-10 d-flex align-items-center justify-content-center h-40-px w-40-px"
           to="#"
@@ -847,9 +867,12 @@ export const SquarePagination = () => {
         >
           3
         </Link>
-      </li>
+      </li> */}
       <li className="page-item">
         <Link
+          onClick={() => {
+            handlePagination(current + 1);
+          }}
           className="page-link bg-success-50 text-secondary-light fw-medium radius-8 border-0  py-10 d-flex align-items-center justify-content-center h-40-px w-40-px"
           to="#"
         >

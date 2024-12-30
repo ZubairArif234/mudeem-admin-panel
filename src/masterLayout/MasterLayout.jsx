@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import ThemeToggleButton from "../helper/ThemeToggleButton";
+import { useGetMe } from "../hook/apis/auth/useMe";
 // import lightThemeLogo from "../../public/assets/images/logo.png";
 
 const MasterLayout = ({ children }) => {
   let [sidebarActive, seSidebarActive] = useState(false);
   let [mobileMenu, setMobileMenu] = useState(false);
   const location = useLocation(); // Hook to get the current route
+
+  const { me } = useGetMe();
 
   useEffect(() => {
     // Function to handle dropdown clicks
@@ -1966,10 +1969,10 @@ const MasterLayout = ({ children }) => {
                     <div className="py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">
                       <div>
                         <h6 className="text-lg text-primary-light fw-semibold mb-2">
-                          Shaidul Islam
+                          {me?.user?.name || "Admin"}
                         </h6>
                         <span className="text-secondary-light fw-medium text-sm">
-                          Admin
+                          {me?.user?.email || "Admin"}
                         </span>
                       </div>
                       <button type="button" className="hover-text-danger">

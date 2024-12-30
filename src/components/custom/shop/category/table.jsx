@@ -8,12 +8,10 @@ import moment from "moment/moment";
 import { useDeletedCategory } from "../../../../hook/apis/auth/shop/category/useDeleteCategory";
 
 const CategoryTable = ({ isSelectable, rows }) => {
-  const { deleteCategory, isPending } = useDeletedCategory();
+  const { deleteCategory } = useDeletedCategory();
 
   const handleDelete = async (id) => {
     try {
-      // console.log(id, "delete it");
-
       await deleteCategory(id);
     } catch (err) {
       console.log(err);
@@ -76,7 +74,7 @@ const CategoryTable = ({ isSelectable, rows }) => {
                       data-bs-target={`#edit-category-${item._id}`}
                     />
                   }
-                  title={"Edit Category" }
+                  title={"Edit Category"}
                   body={<CategoryForm data={item} key={i} />}
                 />
                 <Modal

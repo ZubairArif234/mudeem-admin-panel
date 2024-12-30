@@ -1,7 +1,10 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useState } from "react";
+import { useGetMe } from "../hook/apis/auth/useMe";
 
 const ViewProfileLayer = () => {
+  const { me } = useGetMe();
+
   const [imagePreview, setImagePreview] = useState(
     "assets/images/user-grid/user-grid-img13.png"
   );
@@ -43,9 +46,9 @@ const ViewProfileLayer = () => {
                 alt=""
                 className="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover"
               />
-              <h6 className="mb-0 mt-16">Jacob Jones</h6>
+              <h6 className="mb-0 mt-16">{me?.user?.name || "Admin"}</h6>
               <span className="text-secondary-light mb-16">
-                ifrandom@gmail.com
+                {me?.user?.email || "admin@gmail.com"}
               </span>
             </div>
             <div className="mt-24">
@@ -56,7 +59,7 @@ const ViewProfileLayer = () => {
                     Full Name
                   </span>
                   <span className="w-70 text-secondary-light fw-medium">
-                    : Will Jonto
+                    : {me?.user?.name || "Admin"}
                   </span>
                 </li>
                 <li className="d-flex align-items-center gap-1 mb-12">
@@ -65,7 +68,7 @@ const ViewProfileLayer = () => {
                     Email
                   </span>
                   <span className="w-70 text-secondary-light fw-medium">
-                    : willjontoax@gmail.com
+                    : {me?.user?.email || "admin@gmail.com"}
                   </span>
                 </li>
                 <li className="d-flex align-items-center gap-1 mb-12">
@@ -74,7 +77,7 @@ const ViewProfileLayer = () => {
                     Phone Number
                   </span>
                   <span className="w-70 text-secondary-light fw-medium">
-                    : (1) 2536 2561 2365
+                    : {me?.user?.phone || "-"}
                   </span>
                 </li>
                 {/* <li className="d-flex align-items-center gap-1 mb-12">
@@ -218,6 +221,7 @@ const ViewProfileLayer = () => {
                           className="form-control radius-8"
                           id="name"
                           placeholder="Enter Full Name"
+                          defaultValue={me?.user?.name}
                         />
                       </div>
                     </div>
@@ -234,6 +238,7 @@ const ViewProfileLayer = () => {
                           className="form-control radius-8"
                           id="email"
                           placeholder="Enter email address"
+                          defaultValue={me?.user?.email}
                         />
                       </div>
                     </div>
@@ -250,6 +255,7 @@ const ViewProfileLayer = () => {
                           className="form-control radius-8"
                           id="number"
                           placeholder="Enter phone number"
+                          defaultValue={me?.user?.phone}
                         />
                       </div>
                     </div>

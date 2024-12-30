@@ -128,8 +128,8 @@ const HorizontalCard = () => {
 
 export const SingleHorizontalCard = ({ data, number }) => {
   return (
-    <div className="card radius-12 overflow-hidden h-100 d-block d-lg-flex align-items-center flex-nowrap flex-row">
-      <div className="d-block d-lg-flex flex-shrink-0 w-100 w-lg-170-px h-auto h-lg-100">
+    <div className="card radius-12 overflow-hidden h-100  d-flex align-items-center flex-nowrap flex-row">
+      <div className=" d-none d-md-flex flex-shrink-0  w-25 h-100 ">
         <img
           src={data?.postImage}
           className="h-100 w-100 object-fit-cover"
