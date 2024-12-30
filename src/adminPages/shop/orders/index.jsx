@@ -3,7 +3,7 @@ import MasterLayout from "../../../masterLayout/MasterLayout";
 import Breadcrumb from "../../../components/Breadcrumb";
 import TableDataLayer from "../../../components/TableDataLayer";
 import OrdersTable from "../../../components/custom/shop/orders/table";
-import { useGetOrder } from "../../../hook/apis/auth/shop/order/useGetOrder";
+import { useGetOrder } from "../../../hook/apis/shop/order/useGetOrder";
 import DataNotFound from "../../../components/custom/extra/dataNotFound";
 import Loader from "../../../components/custom/extra/loader";
 const Order = () => {

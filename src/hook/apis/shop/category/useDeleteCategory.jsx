@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import custAxios from "../../../../../config/axios.config";
+import custAxios from "../../../../config/axios.config";
+
 import { toast } from "sonner";
 
 export const useDeletedCategory = () => {

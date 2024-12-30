@@ -5,7 +5,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 
 import CategoryForm from "./form";
 import moment from "moment/moment";
-import { useDeletedCategory } from "../../../../hook/apis/auth/shop/category/useDeleteCategory";
+import { useDeletedCategory } from "../../../../hook/apis/shop/category/useDeleteCategory";
 
 const CategoryTable = ({ isSelectable, rows }) => {
   const { deleteCategory } = useDeletedCategory();

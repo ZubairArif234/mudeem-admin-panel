@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import custAxios from "../../../../../config/axios.config";
+import custAxios from "../../../../config/axios.config";
 
 export const useGetOrder = (filters) => {
   const { data, ...rest } = useQuery({

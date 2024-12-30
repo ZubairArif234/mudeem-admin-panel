@@ -7,7 +7,7 @@ import DeleteModalContent from "../../extra/deleteModalContent";
 import ProductsTable from "../product/table";
 import OrderDetailTable from "./orderDetailTable";
 import OrderDetail from "./orderDetail";
-import { useUpdateOrderStatus } from "../../../../hook/apis/auth/shop/order/useUpdateStatus";
+import { useUpdateOrderStatus } from "../../../../hook/apis/shop/order/useUpdateStatus";
 // import ViewProduct from "./viewProduct";
 // import ProductForm from "./form";
 

@@ -5,7 +5,7 @@ import { SingleDefaultTooltipThree } from "../../../child/DefaultTooltipThree";
 import DeleteModalContent from "../../extra/deleteModalContent";
 import ViewProduct from "./viewProduct";
 import ProductForm from "./form";
-import { useDeletedProduct } from "../../../../hook/apis/auth/shop/product/useDeleteProduct";
+import { useDeletedProduct } from "../../../../hook/apis/shop/product/useDeleteProduct";
 const ProductsTable = ({ isSelectable, rows }) => {
   const { deleteProduct } = useDeletedProduct();
 

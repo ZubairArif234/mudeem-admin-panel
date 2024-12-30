@@ -3,9 +3,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCreateCategory } from "../../../../hook/apis/auth/shop/category/useCreateCategory";
+import { useCreateCategory } from "../../../../hook/apis/shop/category/useCreateCategory";
 import Loader from "../../extra/loader";
-import { useUpdateCategory } from "../../../../hook/apis/auth/shop/category/useUpdateCategory";
+import { useUpdateCategory } from "../../../../hook/apis/shop/category/useUpdateCategory";
 
 const imageValidation = (file) => {
   const allowedTypes = ["image/png"];
@@ -53,7 +53,6 @@ const CategoryForm = ({ data }) => {
       }
     };
   }, [imagePreview]);
-  console.log(imagePreview);
 
   const {
     register,
@@ -85,10 +84,9 @@ const CategoryForm = ({ data }) => {
     formData.append("name", values.name);
     if (!imageFile) {
       return;
-    }else{
-console.log(imageFile);
+    } else {
+      console.log(imageFile);
 
-      
       formData.append("image", imageFile);
     }
 
@@ -207,6 +205,7 @@ console.log(imageFile);
           <button
             type="submit"
             class="btn btn-success-600"
+            data-bs-dismiss={data && "modal"}
           >
             {isPending || updatePending ? (
               <Loader loading={isPending || updatePending} />

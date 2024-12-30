@@ -1,30 +1,27 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import  { formAxios } from "../../../../../config/axios.config";
+import custAxios from "../../../../config/axios.config";
 import { toast } from "sonner";
 
-export const useUpdateProduct = () => {
+export const useDeletedProduct = () => {
   const queryClient = useQueryClient();
   const { mutateAsync, isLoading, isPending, isError, error } = useMutation({
-    mutationFn: async ({payload,  id} ) => {
+    mutationFn: async (id) => {
       try {
-        
-        
-        const response = await formAxios.
-        put(`/shop/product/${id}`, payload);
-        toast.success("Product updated successful");
+        const response = await custAxios.delete(`/shop/product/${id}`);
+        toast.success("Product deleteed successful");
         queryClient.invalidateQueries("product");
         return response?.data?.data;
       } catch (err) {
-        toast.error(err.response?.data?.message || "Product updated failed");
+        toast.error(err.response?.data?.message || "Product deleted failed");
         throw err; // Rethrow to let the caller handle it
       }
     },
   });
 
   return {
-    updateProduct: mutateAsync,
+    deleteProduct: mutateAsync,
     isLoading,
-    updatePending:isPending,
+    isPending,
     isError,
     error,
   };

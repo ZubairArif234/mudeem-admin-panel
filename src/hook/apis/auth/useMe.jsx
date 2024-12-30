@@ -7,10 +7,10 @@ export const useGetMe = () => {
       const data = await custAxios.get("/auth/me");
       return data?.data?.data;
     },
-    queryKey: ["me"],
+    staleTime: Infinity,
+    queryKey: "user",
     refetchOnWindowFocus: false,
     retry: 3,
-    staleTime: Infinity,
   });
   return { me: data, ...rest };
 };

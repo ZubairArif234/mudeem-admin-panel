@@ -4,7 +4,7 @@ import Breadcrumb from "../../../components/Breadcrumb";
 import TableDataLayer from "../../../components/TableDataLayer";
 import ProductsTable from "../../../components/custom/shop/product/table";
 import ProductForm from "../../../components/custom/shop/product/form";
-import { useGetProduct } from "../../../hook/apis/auth/shop/product/useGetProduct";
+import { useGetProduct } from "../../../hook/apis/shop/product/useGetProduct";
 import Loader from "../../../components/custom/extra/loader";
 import DataNotFound from "../../../components/custom/extra/dataNotFound";
 const Products = () => {
