@@ -22,7 +22,6 @@ const SignInLayer = () => {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(LoginSchema),

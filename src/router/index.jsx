@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import HomePageOne from "../pages/HomePageOne";
 import HomePageTwo from "../pages/HomePageTwo";
 import HomePageThree from "../pages/HomePageThree";
@@ -104,34 +104,19 @@ import Settings from "../adminPages/setting";
 import Profile from "../adminPages/profile";
 import ResetPasswordPage from "../pages/ResetPasswordPage";
 import CreateProduct from "../adminPages/shop/products/createProduct";
-import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import PreLoader from "../components/custom/extra/preLoader";
 const Router = () => {
   const [isLoading, setIsLoading] = useState(true); // Track loading state
-  // const [hasVisited, setHasVisited] = useState(false); // Track if it's the first visit
-  const location = useLocation();
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setIsLoading(false); // Stop loading after 3 seconds
-      // setHasVisited(true); // Mark that the user has visited at least once
+      setIsLoading(false);
     }, 3000);
 
     return () => clearTimeout(timer); // Cleanup on component unmount
   }, []);
 
-  // Trigger loading again when navigating to new routes
-  // useEffect(() => {
-  //   if (location.pathname == "/") {
-  //     setIsLoading(true); // Show pre-loader on route change
-  //     const timer = setTimeout(() => {
-  //       setIsLoading(false); // Stop loading after 2 seconds on route change
-  //     }, 2000);
-
-  //     return () => clearTimeout(timer); // Cleanup the timeout
-  //   }
-  // }, []); // Runs on every route change
   return (
     <>
       <RouteScrollToTop />
