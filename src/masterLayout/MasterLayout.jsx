@@ -108,7 +108,7 @@ const MasterLayout = ({ children }) => {
           <Icon icon="radix-icons:cross-2" />
         </button>
         <div className="d-flex justify-content-center">
-          <Link to="/" className="sidebar-logo">
+          <Link to="/dashboard" className="sidebar-logo">
             <img
               src="assets/images/logo.png"
               alt="site logo"
