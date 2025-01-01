@@ -45,7 +45,8 @@ const ViewProfileLayer = () => {
   });
   const handleFormSubmit = async (data) => {
     try {
-      const res = await updatePassword(data);
+      await updatePassword(data);
+      reset();
     } catch (err) {
       console.error("Update password failed:", err);
     }
