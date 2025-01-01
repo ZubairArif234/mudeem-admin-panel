@@ -9,6 +9,19 @@
   border-color: red !important ;
 }
 
+.preloader-container {
+  /* position: fixed; */
+  /* top: 0; */
+  /* left: 0; */
+  width: 100vh;
+  height: 100vh;
+  background-color: #fff !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
 @media (max-width: 768px) {
   .fc .fc-toolbar {
     display: block !important;

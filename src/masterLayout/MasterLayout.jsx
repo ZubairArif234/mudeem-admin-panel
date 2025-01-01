@@ -5,14 +5,26 @@ import ThemeToggleButton from "../helper/ThemeToggleButton";
 import { useGetMe } from "../hook/apis/auth/useMe";
 import { useLogout } from "../hook/apis/auth/useLogout";
 // import lightThemeLogo from "../../public/assets/images/logo.png";
-
+import { useNavigate } from "react-router-dom";
 const MasterLayout = ({ children }) => {
   let [sidebarActive, seSidebarActive] = useState(false);
   let [mobileMenu, setMobileMenu] = useState(false);
   const location = useLocation(); // Hook to get the current route
   const { logout } = useLogout();
+  const navigate = useNavigate();
   const { me } = useGetMe();
 
+  const handleCheckAuthorization = async () => {
+    try {
+      const res = await me();
+    } catch (err) {
+      navigate("/");
+    }
+  };
+
+  useEffect(() => {
+    handleCheckAuthorization();
+  }, []);
   const handleLogut = async () => {
     try {
       await logout();
