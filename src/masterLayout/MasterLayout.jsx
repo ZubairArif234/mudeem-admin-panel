@@ -3,14 +3,23 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import ThemeToggleButton from "../helper/ThemeToggleButton";
 import { useGetMe } from "../hook/apis/auth/useMe";
+import { useLogout } from "../hook/apis/auth/useLogout";
 // import lightThemeLogo from "../../public/assets/images/logo.png";
 
 const MasterLayout = ({ children }) => {
   let [sidebarActive, seSidebarActive] = useState(false);
   let [mobileMenu, setMobileMenu] = useState(false);
   const location = useLocation(); // Hook to get the current route
-
+  const { logout } = useLogout();
   const { me } = useGetMe();
+
+  const handleLogut = async () => {
+    try {
+      await logout();
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+  };
 
   useEffect(() => {
     // Function to handle dropdown clicks
@@ -2022,7 +2031,7 @@ const MasterLayout = ({ children }) => {
                       <li>
                         <Link
                           className="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-danger d-flex align-items-center gap-3"
-                          to="#"
+                          onClick={handleLogut}
                         >
                           <Icon icon="lucide:power" className="icon text-xl" />{" "}
                           Log Out
