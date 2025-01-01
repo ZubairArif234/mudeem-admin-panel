@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
 import $ from "jquery";
 import "datatables.net-dt/js/dataTables.dataTables.js";
 import { Icon } from "@iconify/react/dist/iconify.js";
@@ -18,6 +19,7 @@ const TableDataLayer = ({
   paginationFunction,
   page,
   isFilter,
+  pageLink,
 }) => {
   // useEffect(() => {
   //   const table = $("#dataTable").DataTable({
@@ -30,7 +32,7 @@ const TableDataLayer = ({
 
   const debouncedSearch = debounceFunction(
     (value) => searchFunction(value),
-    1000
+    500
   );
 
   return (
@@ -78,25 +80,36 @@ const TableDataLayer = ({
                 />
               )}
             </div>
-            {isCustomHeaderButton && (
-              <Modal
-                id={modalId}
-                button={
+            {isCustomHeaderButton &&
+              (modalId ? (
+                <Modal
+                  id={modalId}
+                  button={
+                    <button
+                      type="button"
+                      className="btn btn-success-600 d-flex gap-2 align-items-center"
+                      data-bs-toggle="modal"
+                      data-bs-target={`#${modalId}`}
+                    >
+                      <Icon icon="mage:plus" className="icon" />
+                      <span className="d-none d-sm-block">{modalTitle}</span>
+                    </button>
+                  }
+                  body={modalForm}
+                  title={modalTitle}
+                  size={modalSize}
+                />
+              ) : (
+                <Link to={pageLink}>
                   <button
                     type="button"
-                    class="btn btn-success-600 d-flex gap-2 align-items-center"
-                    data-bs-toggle="modal"
-                    data-bs-target={`#${modalId}`}
+                    className="btn btn-success-600 d-flex gap-2 align-items-center"
                   >
-                    <Icon icon="mage:plus" className="icon" />{" "}
+                    <Icon icon="mage:plus" className="icon" />
                     <span className="d-none d-sm-block">{modalTitle}</span>
                   </button>
-                }
-                body={modalForm}
-                title={modalTitle}
-                size={modalSize}
-              />
-            )}
+                </Link>
+              ))}
           </div>
         </div>
       </div>

@@ -8,7 +8,7 @@ const Form = () => {
           <label className="form-label">Latitude</label>
           <input
             type="text"
-            name="#0"
+            name="latitude"
             className="form-control form-control-sm"
             placeholder="Enter Latitude"
           />
@@ -17,7 +17,7 @@ const Form = () => {
           <label className="form-label">Longitude</label>
           <input
             type="text"
-            name="#0"
+            name="longitude"
             className="form-control"
             placeholder="Enter Longitude"
           />
@@ -26,7 +26,7 @@ const Form = () => {
           <label className="form-label">Category</label>
           <input
             type="text"
-            name="#0"
+            name="Category"
             className="form-control form-control-sm"
             placeholder="Enter Category"
           />
@@ -34,8 +34,8 @@ const Form = () => {
         <div className="col-12">
           <label className="form-label">Green Points</label>
           <input
-            type="text"
-            name="#0"
+            type="number"
+            name="greenPoints"
             className="form-control form-control-sm"
             placeholder="Enter Green Points"
           />
@@ -49,7 +49,7 @@ const Form = () => {
         >
           Close
         </button>
-        <button type="button" class="btn btn-success-600">
+        <button type="submit" class="btn btn-success-600">
           Save changes
         </button>
       </div>

@@ -97,7 +97,7 @@ const Farm = () => {
       <div
         class="modal fade "
         id={"reward-points"}
-        tabindex="-1"
+        tabIndex="-1"
         aria-labelledby={"reward-points-label"}
         aria-hidden="true"
         tabIndex={-1}

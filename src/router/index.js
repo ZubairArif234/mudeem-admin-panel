@@ -103,7 +103,7 @@ import Users from "../adminPages/user";
 import Settings from "../adminPages/setting";
 import Profile from "../adminPages/profile";
 import ResetPasswordPage from "../pages/ResetPasswordPage";
-
+import CreateProduct from "../adminPages/shop/products/createProduct";
 const Router = () => {
   return (
     <BrowserRouter>
@@ -242,6 +242,7 @@ const Router = () => {
         <Route exact path="/subscription" element={<Subscription />} />
         <Route exact path="/content-creator" element={<ContentCreator />} />
         <Route exact path="/academy" element={<Academy />} />
+        <Route exact path="/create-products/:id?" element={<CreateProduct />} />
         <Route exact path="/shop-products" element={<Products />} />
         <Route exact path="/shop-orders" element={<Order />} />
         <Route exact path="/shop-banner" element={<Banner />} />

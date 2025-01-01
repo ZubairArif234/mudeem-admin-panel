@@ -5,6 +5,7 @@ import { SingleDefaultTooltipThree } from "../../../child/DefaultTooltipThree";
 import DeleteModalContent from "../../extra/deleteModalContent";
 import ViewProduct from "./viewProduct";
 import ProductForm from "./form";
+import { Link } from "react-router-dom";
 import { useDeletedProduct } from "../../../../hook/apis/shop/product/useDeleteProduct";
 const ProductsTable = ({ isSelectable, rows }) => {
   const { deleteProduct } = useDeletedProduct();
@@ -46,7 +47,7 @@ const ProductsTable = ({ isSelectable, rows }) => {
       </thead>
       <tbody>
         {rows.map((item, i) => (
-          <tr>
+          <tr key={i}>
             {isSelectable && (
               <td>
                 <div className="form-check style-check d-flex align-items-center">
@@ -100,7 +101,7 @@ const ProductsTable = ({ isSelectable, rows }) => {
                   size="modal-lg"
                 />
 
-                <Modal
+                {/* <Modal
                   id="edit-product"
                   button={
                     <Icon
@@ -114,7 +115,16 @@ const ProductsTable = ({ isSelectable, rows }) => {
                   title="Edit Product"
                   body={<ProductForm />}
                   size={"modal-lg"}
-                />
+                /> */}
+                <Link to={`/create-products/${"jkjjdd789"}`}>
+                  <button>
+                    <Icon
+                      icon="mage:edit"
+                      className="text-success-500 cursor-pointer"
+                      type="button"
+                    />
+                  </button>
+                </Link>
 
                 <Modal
                   id="delete-product"

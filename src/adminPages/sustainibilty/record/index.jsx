@@ -155,7 +155,7 @@ const SustainibiltyRecord = () => {
         <div
           class="modal fade "
           id={"sustainibility-points"}
-          tabindex="-1"
+          tabIndex="-1"
           aria-labelledby={"sustainibility-points-label"}
           aria-hidden="true"
           tabIndex={-1}

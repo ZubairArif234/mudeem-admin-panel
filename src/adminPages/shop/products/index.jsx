@@ -136,9 +136,7 @@ const Products = () => {
         }
         isCustomHeaderButton
         modalTitle="Add Product"
-        modalId="add-sustainibility-company"
-        modalForm={<ProductForm />}
-        modalSize="modal-lg"
+        pageLink="/create-products"
         isAllowPagination
         paginationFunction={handlePagination}
         page={filters?.page}

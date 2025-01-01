@@ -122,7 +122,7 @@ const CategoryForm = ({ data }) => {
     >
       <div className="row gy-3">
         <div className="col-12">
-          <label>Upload Banner Image</label>
+          <label>Upload Banner Image (only PNG , max 5MB)</label>
           <div className="upload-image-wrapper d-flex align-items-center gap-3">
             {/* Image preview section */}
             {imagePreview ? (

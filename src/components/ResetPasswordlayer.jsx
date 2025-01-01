@@ -9,7 +9,12 @@ import Loader from "./custom/extra/loader";
 
 const ResetPasswordSchema = z.object({
   passwordResetToken: z.string().length(6, "Invalid OTP , OTP must be 6 digit"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  password: z
+    .string()
+    .regex(
+      /^(?=.*[A-Z])(?=.*\d)(?=.*[^\w\d\s]).{6,}$/,
+      "Password must contain at least one uppercase letter, one number, and one symbol"
+    ),
 });
 const ResetPasswordLayer = () => {
   const navigate = useNavigate();

@@ -176,7 +176,7 @@ const ContentCreator = () => {
       <div
         class="modal fade "
         id={"content-reward-points"}
-        tabindex="-1"
+        tabIndex="-1"
         aria-labelledby={"content-points-label"}
         aria-hidden="true"
         tabIndex={-1}

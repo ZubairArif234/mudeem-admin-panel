@@ -38,9 +38,10 @@ const ViewProduct = () => {
           </div>
           <div className="col-6">
             <div className="d-flex gap-2 mb-1">
-              {["red", "purple", "cyan"]?.map((item) => {
+              {["red", "purple", "cyan"]?.map((item, i) => {
                 return (
                   <span
+                    key={i}
                     style={{
                       backgroundColor: item,
                       height: "25px",

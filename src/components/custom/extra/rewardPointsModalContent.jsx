@@ -6,7 +6,7 @@ const RewardPointsModalContent = (modalId) => {
       class="modal fade "
       id={modalId}
       // id={"innovation-reward-points"}
-      tabindex="-1"
+      tabIndex="-1"
       aria-labelledby={`${modalId}-label`}
       // aria-labelledby={"reward-points-label"}
       aria-hidden="true"

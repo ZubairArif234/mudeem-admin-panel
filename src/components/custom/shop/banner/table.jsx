@@ -31,7 +31,7 @@ const BannerTable = ({ isSelectable, rows }) => {
       </thead>
       <tbody>
         {rows.map((item, i) => (
-          <tr>
+          <tr key={i}>
             {isSelectable && (
               <td>
                 <div className="form-check style-check d-flex align-items-center">

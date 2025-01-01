@@ -1,9 +1,55 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useState } from "react";
 import { useGetMe } from "../hook/apis/auth/useMe";
+import { useUpdatePassword } from "../hook/apis/auth/useUpdatePassword";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import Loader from "./custom/extra/loader";
+const UpdatePasswordSchema = z.object({
+  currentPassword: z
+    .string()
+    .regex(
+      /^(?=.*[A-Z])(?=.*\d)(?=.*[^\w\d\s]).{6,}$/,
+      "Current password must contain at least one uppercase letter, one number, and one symbol"
+    ),
+  newPassword: z
+    .string()
+    .regex(
+      /^(?=.*[A-Z])(?=.*\d)(?=.*[^\w\d\s]).{6,}$/,
+      "New password must contain at least one uppercase letter, one number, and one symbol"
+    ),
+});
+const UpdateProfileSchema = z.object({
+  name: z.string().min(3, "Name atleast contain 3 characters"),
+  email: z
+    .string()
+    .regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Invalid email address"),
 
+  phone: z.string("Phone number is invalid"),
+});
 const ViewProfileLayer = () => {
+  const [tab, setTab] = useState("edit-profile");
   const { me } = useGetMe();
+  const { updatePassword, isPending } = useUpdatePassword();
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(
+      tab == "edit-profile" ? UpdateProfileSchema : UpdatePasswordSchema
+    ),
+  });
+  const handleFormSubmit = async (data) => {
+    try {
+      const res = await updatePassword(data);
+    } catch (err) {
+      console.error("Update password failed:", err);
+    }
+  };
 
   const [imagePreview, setImagePreview] = useState(
     "assets/images/user-grid/user-grid-img13.png"
@@ -132,6 +178,7 @@ const ViewProfileLayer = () => {
             >
               <li className="nav-item" role="presentation">
                 <button
+                  onClick={() => setTab("edit-profile")}
                   className="nav-link d-flex align-items-center px-24 active"
                   id="pills-edit-profile-tab"
                   data-bs-toggle="pill"
@@ -146,6 +193,7 @@ const ViewProfileLayer = () => {
               </li>
               <li className="nav-item" role="presentation">
                 <button
+                  onClick={() => setTab("change-password")}
                   className="nav-link d-flex align-items-center px-24"
                   id="pills-change-passwork-tab"
                   data-bs-toggle="pill"
@@ -214,7 +262,6 @@ const ViewProfileLayer = () => {
                           className="form-label fw-semibold text-primary-light text-sm mb-8"
                         >
                           Full Name
-                          <span className="text-danger-600">*</span>
                         </label>
                         <input
                           type="text"
@@ -222,7 +269,14 @@ const ViewProfileLayer = () => {
                           id="name"
                           placeholder="Enter Full Name"
                           defaultValue={me?.user?.name}
+                          data-error={errors?.name ? "true" : "false"}
+                          {...register("name")}
                         />
+                        {errors?.name && (
+                          <p className="text-danger-500">
+                            {errors?.name?.message}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="col-sm-6">
@@ -231,15 +285,24 @@ const ViewProfileLayer = () => {
                           htmlFor="email"
                           className="form-label fw-semibold text-primary-light text-sm mb-8"
                         >
-                          Email <span className="text-danger-600">*</span>
+                          Email
                         </label>
                         <input
+                          readOnly
+                          disabled
                           type="email"
                           className="form-control radius-8"
                           id="email"
                           placeholder="Enter email address"
                           defaultValue={me?.user?.email}
+                          data-error={errors?.email ? "true" : "false"}
+                          {...register("email")}
                         />
+                        {errors?.email && (
+                          <p className="text-danger-500">
+                            {errors?.email?.message}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="col-sm-6">
@@ -256,13 +319,20 @@ const ViewProfileLayer = () => {
                           id="number"
                           placeholder="Enter phone number"
                           defaultValue={me?.user?.phone}
+                          data-error={errors?.phone ? "true" : "false"}
+                          {...register("phone")}
                         />
+                        {errors?.phone && (
+                          <p className="text-danger-500">
+                            {errors?.phone?.message}
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>
                   <div className="d-flex align-items-center justify-content-end gap-3">
                     <button
-                      type="button"
+                      type="submit"
                       className="btn btn-success border border-success-600 text-md px-56 py-12 radius-8"
                     >
                       Save
@@ -277,53 +347,82 @@ const ViewProfileLayer = () => {
                 aria-labelledby="pills-change-passwork-tab"
                 tabIndex="0"
               >
-                <div className="mb-20">
-                  <label
-                    htmlFor="your-password"
-                    className="form-label fw-semibold text-primary-light text-sm mb-8"
-                  >
-                    New Password <span className="text-danger-600">*</span>
-                  </label>
-                  <div className="position-relative">
-                    <input
-                      type={passwordVisible ? "text" : "password"}
-                      className="form-control radius-8"
-                      id="your-password"
-                      placeholder="Enter New Password*"
-                    />
-                    <span
-                      className={`toggle-password ${
-                        passwordVisible ? "ri-eye-off-line" : "ri-eye-line"
-                      } cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light`}
-                      onClick={togglePasswordVisibility}
-                    ></span>
+                <form onSubmit={handleSubmit(handleFormSubmit)}>
+                  <div className="mb-20">
+                    <label
+                      htmlFor="your-password"
+                      className="form-label fw-semibold text-primary-light text-sm mb-8"
+                    >
+                      Current Password
+                    </label>
+                    <div className="position-relative">
+                      <input
+                        type={passwordVisible ? "text" : "password"}
+                        className="form-control radius-8"
+                        id="your-password"
+                        placeholder="Enter Current Password"
+                        data-error={errors?.currentPassword ? "true" : "false"}
+                        {...register("currentPassword")}
+                      />
+                      <span
+                        className={`toggle-password ${
+                          passwordVisible ? "ri-eye-off-line" : "ri-eye-line"
+                        } cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light`}
+                        onClick={togglePasswordVisibility}
+                      ></span>
+                    </div>
+                    {errors?.currentPassword && (
+                      <p className="text-danger-500">
+                        {errors?.currentPassword?.message}
+                      </p>
+                    )}
                   </div>
-                </div>
 
-                <div className="mb-20">
-                  <label
-                    htmlFor="confirm-password"
-                    className="form-label fw-semibold text-primary-light text-sm mb-8"
-                  >
-                    Confirm Password <span className="text-danger-600">*</span>
-                  </label>
-                  <div className="position-relative">
-                    <input
-                      type={confirmPasswordVisible ? "text" : "password"}
-                      className="form-control radius-8"
-                      id="confirm-password"
-                      placeholder="Confirm Password*"
-                    />
-                    <span
-                      className={`toggle-password ${
-                        confirmPasswordVisible
-                          ? "ri-eye-off-line"
-                          : "ri-eye-line"
-                      } cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light`}
-                      onClick={toggleConfirmPasswordVisibility}
-                    ></span>
+                  <div className="mb-20">
+                    <label
+                      htmlFor="new-password"
+                      className="form-label fw-semibold text-primary-light text-sm mb-8"
+                    >
+                      New Password
+                    </label>
+                    <div className="position-relative">
+                      <input
+                        type={confirmPasswordVisible ? "text" : "password"}
+                        className="form-control radius-8"
+                        id="new-password"
+                        placeholder="Enter New Password"
+                        data-error={errors?.newPassword ? "true" : "false"}
+                        {...register("newPassword")}
+                      />
+                      <span
+                        className={`toggle-password ${
+                          confirmPasswordVisible
+                            ? "ri-eye-off-line"
+                            : "ri-eye-line"
+                        } cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light`}
+                        onClick={toggleConfirmPasswordVisibility}
+                      ></span>
+                    </div>
+                    {errors?.newPassword && (
+                      <p className="text-danger-500">
+                        {errors?.newPassword?.message}
+                      </p>
+                    )}
                   </div>
-                </div>
+
+                  <div className="d-flex align-items-center justify-content-end  gap-3">
+                    <button
+                      type="submit"
+                      className="btn bg-success-600 text-white "
+                    >
+                      {isPending ? (
+                        <Loader loading={isPending} />
+                      ) : (
+                        "Update Password"
+                      )}
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
           </div>

@@ -7,7 +7,7 @@ const Modal = ({ id, button, body, title, size }) => {
       <div
         class="modal fade "
         id={id}
-        tabindex="-1"
+        tabIndex="-1"
         aria-labelledby={id + "-label"}
         aria-hidden="true"
         tabIndex={-1}
