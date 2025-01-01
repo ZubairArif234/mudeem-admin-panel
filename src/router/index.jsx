@@ -122,16 +122,16 @@ const Router = () => {
   }, []);
 
   // Trigger loading again when navigating to new routes
-  useEffect(() => {
-    if (location.pathname !== "/") {
-      setIsLoading(true); // Show pre-loader on route change
-      const timer = setTimeout(() => {
-        setIsLoading(false); // Stop loading after 2 seconds on route change
-      }, 2000);
+  // useEffect(() => {
+  //   if (location.pathname == "/") {
+  //     setIsLoading(true); // Show pre-loader on route change
+  //     const timer = setTimeout(() => {
+  //       setIsLoading(false); // Stop loading after 2 seconds on route change
+  //     }, 2000);
 
-      return () => clearTimeout(timer); // Cleanup the timeout
-    }
-  }, [location]); // Runs on every route change
+  //     return () => clearTimeout(timer); // Cleanup the timeout
+  //   }
+  // }, []); // Runs on every route change
   return (
     <>
       <RouteScrollToTop />

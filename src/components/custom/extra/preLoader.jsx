@@ -13,6 +13,7 @@ const PreLoader = () => {
   const handleCheckAuthorization = async () => {
     try {
       const res = await me();
+      navigate("/dashboard");
     } catch (err) {
       navigate("/");
     }

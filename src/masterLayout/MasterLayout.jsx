@@ -14,17 +14,18 @@ const MasterLayout = ({ children }) => {
   const navigate = useNavigate();
   const { me } = useGetMe();
 
-  const handleCheckAuthorization = async () => {
-    try {
-      const res = await me();
-    } catch (err) {
-      navigate("/");
-    }
-  };
+  // const handleCheckAuthorization = async () => {
+  //   try {
+  //     const res = await me();
+  //     navigate("/dashboard");
+  //   } catch (err) {
+  //     navigate("/");
+  //   }
+  // };
 
-  useEffect(() => {
-    handleCheckAuthorization();
-  }, []);
+  // useEffect(() => {
+  //   handleCheckAuthorization();
+  // }, []);
   const handleLogut = async () => {
     try {
       await logout();
