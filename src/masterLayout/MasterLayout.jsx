@@ -87,6 +87,7 @@ const MasterLayout = ({ children }) => {
   let mobileMenuControl = () => {
     setMobileMenu(!mobileMenu);
   };
+  console.log(me);
 
   const handleCheckAuthorization = async () => {
     try {
