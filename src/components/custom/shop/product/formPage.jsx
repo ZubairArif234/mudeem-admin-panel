@@ -7,6 +7,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useCreateProduct } from "../../../../hook/apis/shop/product/useCreateProduct";
 import Loader from "../../extra/loader";
 import { use } from "react";
+import { useGetCategory } from "../../../../hook/apis/shop/category/useGetCategory";
 const SizeSchema = z.object({
   size: z.string().min(1, "Size is required"),
   stock: z.string().min(1, "Stock is required"),
@@ -70,6 +71,7 @@ const FormPage = () => {
       ],
     },
   ]);
+  const { categories } = useGetCategory();
 
   const { createProduct, isPending } = useCreateProduct();
 
@@ -226,7 +228,7 @@ const FormPage = () => {
             ],
           },
         ]);
-        navigate("/dashboard/shop-products");
+        navigate("/shop-products");
       } catch (err) {
         console.error("Product creation failed:", err);
       }
@@ -365,10 +367,17 @@ const FormPage = () => {
                     {...register("category")}
                   >
                     <option disabled>Select Category</option>
-                    <option value={"hjjd7jd8"}>Clothings</option>
-                    <option>Electronics</option>
-                    <option>Soap</option>
-                    <option>Watches</option>
+                    {categories?.map((item, i) => {
+                      return (
+                        <option
+                          key={i}
+                          value={item?._id}
+                          className="text-capitalize"
+                        >
+                          {item?.name}
+                        </option>
+                      );
+                    })}
                   </select>
                   {errors?.category && (
                     <p className="text-danger-500">
