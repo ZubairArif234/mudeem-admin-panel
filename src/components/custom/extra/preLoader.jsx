@@ -13,7 +13,7 @@ const PreLoader = () => {
 
   useEffect(() => {
     if (me?.user?._id) {
-      navigate("/dashboard");
+      navigate(-1);
     } else {
       navigate("/");
     }
