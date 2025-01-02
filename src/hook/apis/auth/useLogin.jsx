@@ -32,8 +32,10 @@ export const useLogin = () => {
       try {
         const response = await custAxios.post("/auth/login", payload);
         toast.success("Login successful");
-
-        return response?.data?.data;
+        console.log(response);
+        if (response?.status) {
+          localStorage.setItem("logged in", true);
+        }
       } catch (err) {
         toast.error(err.response?.data?.message || "Login failed");
         throw err; // Rethrow to let the caller handle it

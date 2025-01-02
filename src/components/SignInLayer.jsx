@@ -31,7 +31,6 @@ const SignInLayer = () => {
   const handleFormSubmit = async (data) => {
     try {
       const res = await login(data);
-
       navigate("/dashboard");
     } catch (err) {
       console.error("Login failed:", err);

@@ -88,18 +88,23 @@ const MasterLayout = ({ children }) => {
     setMobileMenu(!mobileMenu);
   };
 
-  // const handleCheckAuthorization = async () => {
-  //   try {
-  //     const res = await me();
-  //     navigate("/dashboard");
-  //   } catch (err) {
-  //     navigate("/");
-  //   }
-  // };
+  const handleCheckAuthorization = async () => {
+    try {
+      const res = await me();
+      console.log(res);
+      if (res?.user?._id) {
+        navigate("/dashboard");
+      } else {
+        navigate("/");
+      }
+    } catch (err) {
+      navigate("/");
+    }
+  };
 
-  // useEffect(() => {
-  //   handleCheckAuthorization();
-  // }, []);
+  useEffect(() => {
+    handleCheckAuthorization();
+  }, []);
 
   return (
     <section className={mobileMenu ? "overlay active" : "overlay "}>

@@ -10,24 +10,7 @@ const PreLoader = () => {
     display: "block",
     margin: "0 auto",
   };
-  const handleCheckAuthorization = async () => {
-    try {
-      const res = await me();
-      console.log(res);
 
-      if (res.ok) {
-        navigate("/dashboard");
-      } else {
-        navigate("/");
-      }
-    } catch (err) {
-      navigate("/");
-    }
-  };
-
-  useEffect(() => {
-    handleCheckAuthorization();
-  }, []);
   return (
     <div
       style={{ height: "100vh", width: "100vw" }}
