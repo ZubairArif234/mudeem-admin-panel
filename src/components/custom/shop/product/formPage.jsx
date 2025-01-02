@@ -71,8 +71,6 @@ const FormPage = () => {
     },
   ]);
 
-  console.log(state);
-
   const { createProduct, isPending } = useCreateProduct();
 
   const {
@@ -91,7 +89,6 @@ const FormPage = () => {
       variants,
     },
   });
-  console.log(errors);
 
   const handleFileChange = (e) => {
     if (uploadedImagesFiles.length < 2) {
@@ -512,8 +509,8 @@ const FormPage = () => {
                                 <input
                                   type="radio"
                                   className="btn-check"
-                                  name={`size${j + i}`}
-                                  id={`btnradio1${j + 1}`}
+                                  name={`size${j + "," + i}`}
+                                  id={`btnradio1${j + 1 + i}`}
                                   defaultChecked=""
                                   value={"large"}
                                   {...register(
@@ -522,7 +519,7 @@ const FormPage = () => {
                                 />
                                 <label
                                   className="btn btn-outline-success-600 px-10 py-8 radius-8"
-                                  htmlFor={`btnradio1${j + 1}`}
+                                  htmlFor={`btnradio1${j + 1 + i}`}
                                 >
                                   L
                                 </label>
@@ -530,8 +527,8 @@ const FormPage = () => {
                                 <input
                                   type="radio"
                                   className="btn-check"
-                                  name={`size${j + i}`}
-                                  id={`btnradio2${j + 1}`}
+                                  name={`size${j + "," + i}`}
+                                  id={`btnradio2${j - 2 + i}`}
                                   value={"medium"}
                                   {...register(
                                     `variants[${i}].sizes[${j}].size`
@@ -539,7 +536,7 @@ const FormPage = () => {
                                 />
                                 <label
                                   className="btn btn-outline-success-600 px-10 py-8 radius-8"
-                                  htmlFor={`btnradio2${j + 1}`}
+                                  htmlFor={`btnradio2${j - 2 + i}`}
                                 >
                                   M
                                 </label>
@@ -547,8 +544,8 @@ const FormPage = () => {
                                 <input
                                   type="radio"
                                   className="btn-check"
-                                  name={`size${j + i}`}
-                                  id={`btnradio3${j + 1}`}
+                                  name={`size${j + "," + i}`}
+                                  id={`btnradio3${j + 3 + i}`}
                                   value={"small"}
                                   {...register(
                                     `variants[${i}].sizes[${j}].size`
@@ -556,7 +553,7 @@ const FormPage = () => {
                                 />
                                 <label
                                   className="btn btn-outline-success-600 px-10 py-8 radius-8"
-                                  htmlFor={`btnradio3${j + 1}`}
+                                  htmlFor={`btnradio3${j + 3 + i}`}
                                 >
                                   S
                                 </label>
