@@ -3,9 +3,10 @@ import React, { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useCreateProduct } from "../../../../hook/apis/shop/product/useCreateProduct";
-
+import Loader from "../../extra/loader";
+import { use } from "react";
 const SizeSchema = z.object({
   size: z.string().min(1, "Size is required"),
   stock: z.string().min(1, "Stock is required"),
@@ -47,6 +48,8 @@ const imageValidation = (file) => {
 
 const FormPage = () => {
   const { id } = useParams();
+  const { state } = useLocation();
+  const navigate = useNavigate();
   const [uploadedImages, setUploadedImages] = useState([]);
   const [uploadedImagesFiles, setUploadedImagesFiles] = useState([""]);
   const [variants, setVariants] = useState([
@@ -68,6 +71,8 @@ const FormPage = () => {
     },
   ]);
 
+  console.log(state);
+
   const { createProduct, isPending } = useCreateProduct();
 
   const {
@@ -77,11 +82,21 @@ const FormPage = () => {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(ProductSchema),
-    defaultValues: { variants },
+    defaultValues: {
+      name: state?.data?.name || "",
+      brand: state?.data?.brand || "",
+      greenPointsPerUnit: state?.data?.greenPointsPerUnit || "",
+      category: state?.data?.category || "",
+      description: state?.data?.description || "",
+      variants,
+    },
   });
   console.log(errors);
 
   const handleFileChange = (e) => {
+    if (uploadedImagesFiles.length < 2) {
+      setUploadedImagesFiles([]);
+    }
     const files = Array.from(e.target.files);
     const newImages = files.map((file) => {
       if (imageValidation(file)) {
@@ -177,6 +192,9 @@ const FormPage = () => {
 
   const onSubmit = async (data) => {
     const formData = new FormData();
+    // uploadedImagesFiles.forEach((file) => {
+    //   formData.append("images[]", file);
+    // });
     formData.append("name", data.name);
     formData.append("brand", data.brand);
     formData.append("category", "6764067422a914142b3ae5d3");
@@ -193,6 +211,25 @@ const FormPage = () => {
         setUploadedImagesFiles([""]);
         console.log("Form Submitted", data, uploadedImages);
         reset();
+        setVariants([
+          {
+            name: "",
+            price: "",
+            sizes: [
+              {
+                size: "",
+                stock: "",
+              },
+            ],
+            colors: [
+              {
+                color: "",
+                stock: "",
+              },
+            ],
+          },
+        ]);
+        navigate("/dashboard/shop-products");
       } catch (err) {
         console.error("Product creation failed:", err);
       }
@@ -714,7 +751,13 @@ const FormPage = () => {
           {/* form button */}
           <div className="d-flex justify-content-end my-8">
             <button type="submit" className="btn bg-success-600 text-white">
-              {id ? "Update" : "Create"} Product
+              {isPending ? (
+                <Loader loading={isPending} />
+              ) : id ? (
+                "Update Product"
+              ) : (
+                "Create Product"
+              )}
             </button>
           </div>
         </form>

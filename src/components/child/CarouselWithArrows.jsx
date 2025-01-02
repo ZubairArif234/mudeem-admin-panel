@@ -11,7 +11,10 @@ function SampleNextArrow(props) {
       className={`${className} slick-next slick-arrow`}
       style={{}}
     >
-      <Icon icon="ic:outline-keyboard-arrow-right" className="menu-icon" />
+      <Icon
+        icon="ic:outline-keyboard-arrow-right"
+        className="menu-icon text-black"
+      />
     </button>
   );
 }
@@ -25,7 +28,10 @@ function SamplePrevArrow(props) {
       className={`${className} slick-prev slick-arrow`}
       style={{}}
     >
-      <Icon icon="ic:outline-keyboard-arrow-left" className="menu-icon" />
+      <Icon
+        icon="ic:outline-keyboard-arrow-left"
+        className="menu-icon  text-black"
+      />
     </button>
   );
 }
@@ -121,7 +127,7 @@ export const CarouselWithArrowsOnlyImage = ({ images }) => {
   return (
     <div className="">
       <Slider {...settings}>
-        {[0, 1, 2]?.map((item, i) => {
+        {images?.map((item, i) => {
           return (
             <div
               key={i}
@@ -129,7 +135,7 @@ export const CarouselWithArrowsOnlyImage = ({ images }) => {
             >
               <img
                 height={"400px"}
-                src={images}
+                src={item}
                 alt=""
                 className=" object-fit-contain"
               />

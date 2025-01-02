@@ -1,34 +1,36 @@
 import React from "react";
 import { CarouselWithArrowsOnlyImage } from "../../../child/CarouselWithArrows";
 
-const ViewProduct = () => {
+const ViewProduct = ({ data }) => {
   return (
     <div className="row gy-3">
       <div className="col-lg-6">
         {/* <div className="d-flex justify-content-center"> */}
-        <CarouselWithArrowsOnlyImage images={"/assets/images/product.png"} />
+        <CarouselWithArrowsOnlyImage images={data?.images} />
         {/* <img src="/assets/images/product.png" width={"100%"} /> */}
         {/* </div> */}
         <div className="d-flex gap-2 my-3">
           <span className="badge text-sm fw-semibold text-success-600 bg-success-100 px-20 py-9 radius-4 text-white">
-            In Stock
+            {data?.stock ? "In Stock" : "Out of Stock"}
           </span>
           <span className="badge text-sm fw-semibold text-success-600 bg-success-100 px-20 py-9 radius-4 text-white">
             Clothing
           </span>
-          <span className="badge text-sm fw-semibold text-success-600 bg-success-100 px-20 py-9 radius-4 text-white">
-            Girls
-          </span>
+          {data?.featured && (
+            <span className="badge text-sm fw-semibold text-warning-600 bg-warning-100 px-20 py-9 radius-4 text-white">
+              Featured
+            </span>
+          )}
         </div>
       </div>
       <div className="col-lg-6">
-        <p className="text-xxl fw-bold mb-0 ">
-          Elegant Black Muslim Abaya with Modern Design
-        </p>
-        <p className="mb-0">ChAmkpr</p>
+        <p className="text-xxl fw-bold mb-0 ">{data?.name}</p>
+        <p className="mb-0">{data?.brand}</p>
         <div className="d-flex gap-2">
-          <p className="mb-0 text-sm text-warning-500">4.8 ratings</p>
-          <p className="mb-0 text-sm">Reviews (122)</p>
+          <p className="mb-0 text-sm text-warning-500">
+            {data?.rating?.stars} ratings
+          </p>
+          <p className="mb-0 text-sm">Reviews ({data?.rating?.total})</p>
         </div>
 
         <div className="row align-items-center">
@@ -64,20 +66,13 @@ const ViewProduct = () => {
           </div> */}
         </div>
 
-        <p className="text-sm">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard dummy text ever
-          since the 1500s, when an unknown printer took a galley of type and
-          scrambled it to make a type specimen book. It has survived not only
-          five centuries, but also the leap into electronic typesetting,
-          remaining essentially unchanged.
-        </p>
+        <p className="text-sm">{data?.description}</p>
 
         <div className="border-top my-8"></div>
 
         <div className="">
           <p className="mb-0 text-sm">Green Points</p>
-          <p className="text-xl fw-bold">400.00 pts</p>
+          <p className="text-xl fw-bold">{data?.greenPointsPerUnit} pts</p>
         </div>
       </div>
     </div>

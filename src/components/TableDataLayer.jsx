@@ -20,6 +20,8 @@ const TableDataLayer = ({
   page,
   isFilter,
   pageLink,
+  categoryFunction,
+  categories,
 }) => {
   // useEffect(() => {
   //   const table = $("#dataTable").DataTable({
@@ -47,13 +49,22 @@ const TableDataLayer = ({
               </span>
               <select
                 style={{ minWidth: "200px" }}
+                onClick={(e) => categoryFunction(e?.target?.value)}
                 className="text-capitalize form-control  bg-neutral-50 radius-12 "
               >
-                <option disabled>Select Status</option>
-                <option>Pending</option>
-                <option className="text-capitalize">confirmed</option>
-                <option className="text-capitalize">shipped</option>
-                <option className="text-capitalize">delivered</option>
+                <option value={""}>Select Status</option>
+
+                {categories?.map((item, i) => {
+                  return (
+                    <option
+                      key={i}
+                      value={item?._id}
+                      className="text-capitalize"
+                    >
+                      {item?.name}
+                    </option>
+                  );
+                })}
               </select>
             </div>
           )}

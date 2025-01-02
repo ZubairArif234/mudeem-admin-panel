@@ -7,8 +7,14 @@ import ProductForm from "../../../components/custom/shop/product/form";
 import { useGetProduct } from "../../../hook/apis/shop/product/useGetProduct";
 import Loader from "../../../components/custom/extra/loader";
 import DataNotFound from "../../../components/custom/extra/dataNotFound";
+import { useGetCategory } from "../../../hook/apis/shop/category/useGetCategory";
 const Products = () => {
-  const [filters, setFilters] = useState({ search: "", page: 1, limit: 10 });
+  const [filters, setFilters] = useState({
+    search: "",
+    category: "",
+    page: 1,
+    limit: 10,
+  });
   const tableRows = [
     {
       id: "453",
@@ -101,10 +107,16 @@ const Products = () => {
       price: "400.00",
     },
   ];
+
+  const { categories } = useGetCategory();
+
   const { products, isPending } = useGetProduct(filters);
 
   const handleSearch = (value) => {
     setFilters((prev) => ({ ...prev, search: value }));
+  };
+  const hanleCategory = (value) => {
+    setFilters((prev) => ({ ...prev, category: value }));
   };
 
   const handlePagination = (page) => {
@@ -126,7 +138,7 @@ const Products = () => {
               <Loader loading={isPending} size={150} color="#15803d" />
             </div>
           ) : tableRows?.length > 0 ? (
-            <ProductsTable rows={tableRows} />
+            <ProductsTable rows={products} />
           ) : (
             <DataNotFound
               heading={"Products Not Found"}
@@ -137,10 +149,13 @@ const Products = () => {
         isCustomHeaderButton
         modalTitle="Add Product"
         pageLink="/create-products"
-        isAllowPagination
+        isAllowPagination={products?.length > 10 ? true : false}
         paginationFunction={handlePagination}
         page={filters?.page}
         isFilter
+        categoryFunction={hanleCategory}
+        searchFunction={handleSearch}
+        categories={categories}
       />
     </MasterLayout>
   );

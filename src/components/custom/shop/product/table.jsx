@@ -56,15 +56,26 @@ const ProductsTable = ({ isSelectable, rows }) => {
                 </div>
               </td>
             )}
-            <td>#{item?.id + 1 * 2087}</td>
+            <td>#{item?._id.slice(0, 6) + i}</td>
             <td className="text-capitalize">
               <div className="d-flex gap-1 align-items-center">
-                <img src="/assets/images/product.png" width={50} />
-
-                <SingleDefaultTooltipThree
-                  title={item?.product}
-                  child={item?.product?.slice(0, 25) + "..."}
-                />
+                <img src={item?.images[0]} width={50} />
+                {item?.featured && (
+                  <Icon
+                    className="text-warning-500"
+                    icon="material-symbols:crown-rounded"
+                    width="24"
+                    height="24"
+                  />
+                )}
+                {item?.name?.length > 24 ? (
+                  <SingleDefaultTooltipThree
+                    title={item?.name}
+                    child={item?.name?.slice(0, 25) + "..."}
+                  />
+                ) : (
+                  item?.name
+                )}
               </div>
             </td>
             <td className="text-capitalize"> {item?.brand}</td>
@@ -73,30 +84,26 @@ const ProductsTable = ({ isSelectable, rows }) => {
             </td>
 
             <td
-              className={
-                item?.availibility === "In Stock"
-                  ? "text-success-500"
-                  : "text-danger-500"
-              }
+              className={item?.stock ? "text-success-500" : "text-danger-500"}
             >
               {" "}
-              {item?.availibility}
+              {item?.stock ? "In Stock" : "Out of Stock"}
             </td>
-            <td> {item?.price} pts</td>
+            <td> {item?.greenPointsPerUnit} pts</td>
             <td>
               <div className="d-flex gap-2 align-items-start">
                 <Modal
-                  id="view-product"
+                  id={`view-product-${item._id}`}
                   button={
                     <Icon
                       icon="uil:eye"
                       className="text-primary-500 cursor-pointer"
                       type="button"
                       data-bs-toggle="modal"
-                      data-bs-target="#view-product"
+                      data-bs-target={`#view-product-${item._id}`}
                     />
                   }
-                  body={<ViewProduct />}
+                  body={<ViewProduct data={item} key={i} />}
                   title="View Product"
                   size="modal-lg"
                 />
@@ -116,7 +123,10 @@ const ProductsTable = ({ isSelectable, rows }) => {
                   body={<ProductForm />}
                   size={"modal-lg"}
                 /> */}
-                <Link to={`/create-products/${"jkjjdd789"}`}>
+                <Link
+                  to={`/create-products/${item._id}`}
+                  state={{ data: item }}
+                >
                   <button>
                     <Icon
                       icon="mage:edit"
@@ -127,14 +137,14 @@ const ProductsTable = ({ isSelectable, rows }) => {
                 </Link>
 
                 <Modal
-                  id="delete-product"
+                  id={`delete-product-${item._id}`}
                   button={
                     <Icon
                       icon="mage:trash"
                       className="text-danger-500 cursor-pointer"
                       type="button"
                       data-bs-toggle="modal"
-                      data-bs-target="#delete-product"
+                      data-bs-target={`#delete-product-${item._id}`}
                     />
                   }
                   body={
