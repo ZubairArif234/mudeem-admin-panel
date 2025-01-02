@@ -92,13 +92,15 @@ const MasterLayout = ({ children }) => {
     try {
       const res = await me();
       console.log(res);
-      if (res?.user?._id) {
-        navigate("/dashboard");
-      } else {
-        navigate("/");
-      }
+      // if (res?.user?._id) {
+      //   navigate("/dashboard");
+      // } else {
+      //   navigate("/");
+      // }
     } catch (err) {
-      navigate("/");
+      console.log("hello");
+
+      // navigate("/");
     }
   };
 
