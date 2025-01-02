@@ -11,6 +11,13 @@ const PreLoader = () => {
     margin: "0 auto",
   };
 
+  useEffect(() => {
+    if (me?.user?._id) {
+      navigate("/dashboard");
+    } else {
+      navigate("/");
+    }
+  }, []);
   return (
     <div
       style={{ height: "100vh", width: "100vw" }}

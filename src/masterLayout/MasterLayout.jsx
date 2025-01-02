@@ -89,26 +89,6 @@ const MasterLayout = ({ children }) => {
   };
   console.log(me);
 
-  const handleCheckAuthorization = async () => {
-    try {
-      const res = await me();
-      console.log(res);
-      // if (res?.user?._id) {
-      //   navigate("/dashboard");
-      // } else {
-      //   navigate("/");
-      // }
-    } catch (err) {
-      console.log("hello");
-
-      // navigate("/");
-    }
-  };
-
-  useEffect(() => {
-    handleCheckAuthorization();
-  }, []);
-
   return (
     <section className={mobileMenu ? "overlay active" : "overlay "}>
       {/* sidebar */}
