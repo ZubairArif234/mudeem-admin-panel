@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useCreateProduct } from "../../../../hook/apis/shop/product/useCreateProduct";
 import Loader from "../../extra/loader";
-import { use } from "react";
 import { useGetCategory } from "../../../../hook/apis/shop/category/useGetCategory";
 const SizeSchema = z.object({
   size: z.string().min(1, "Size is required"),

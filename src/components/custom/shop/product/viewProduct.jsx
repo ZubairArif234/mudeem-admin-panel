@@ -5,10 +5,8 @@ const ViewProduct = ({ data }) => {
   return (
     <div className="row gy-3">
       <div className="col-lg-6">
-        {/* <div className="d-flex justify-content-center"> */}
         <CarouselWithArrowsOnlyImage images={data?.images} />
-        {/* <img src="/assets/images/product.png" width={"100%"} /> */}
-        {/* </div> */}
+
         <div className="d-flex gap-2 my-3">
           <span className="badge text-sm fw-semibold text-success-600 bg-success-100 px-20 py-9 radius-4 text-white">
             {data?.stock ? "In Stock" : "Out of Stock"}

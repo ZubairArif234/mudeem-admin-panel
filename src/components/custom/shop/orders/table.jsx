@@ -1,15 +1,7 @@
-import { Icon } from "@iconify/react/dist/iconify.js";
 import React from "react";
 import Modal from "../../extra/modal";
-import { SingleDefaultTooltipThree } from "../../../child/DefaultTooltipThree";
-import DeleteModalContent from "../../extra/deleteModalContent";
-// import OrderDetail from "./orderDetail";
-import ProductsTable from "../product/table";
-import OrderDetailTable from "./orderDetailTable";
 import OrderDetail from "./orderDetail";
 import { useUpdateOrderStatus } from "../../../../hook/apis/shop/order/useUpdateStatus";
-// import ViewProduct from "./viewProduct";
-// import ProductForm from "./form";
 
 const OrdersTable = ({ isSelectable, rows }) => {
   const { updateOrderStatus } = useUpdateOrderStatus();
@@ -21,6 +13,7 @@ const OrdersTable = ({ isSelectable, rows }) => {
       console.log(err);
     }
   };
+
   return (
     <table
       className="table bordered-table mb-0"

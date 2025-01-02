@@ -26,6 +26,7 @@ const BannerForm = () => {
       }
     };
   }, [imagePreview]);
+
   return (
     <form>
       <div className="row gy-3">

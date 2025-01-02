@@ -4,7 +4,6 @@ import Modal from "../../extra/modal";
 import { SingleDefaultTooltipThree } from "../../../child/DefaultTooltipThree";
 import DeleteModalContent from "../../extra/deleteModalContent";
 import ViewProduct from "./viewProduct";
-import ProductForm from "./form";
 import { Link } from "react-router-dom";
 import { useDeletedProduct } from "../../../../hook/apis/shop/product/useDeleteProduct";
 const ProductsTable = ({ isSelectable, rows }) => {
@@ -39,6 +38,7 @@ const ProductsTable = ({ isSelectable, rows }) => {
           <th scope="col">Product Name</th>
           <th scope="col">Brand Name</th>
           <th scope="col">Descripton</th>
+          <th scope="col">Category</th>
           <th scope="col">Availibility</th>
 
           <th scope="col">Green Points</th>
@@ -68,10 +68,10 @@ const ProductsTable = ({ isSelectable, rows }) => {
                     height="24"
                   />
                 )}
-                {item?.name?.length > 24 ? (
+                {item?.name?.length > 15 ? (
                   <SingleDefaultTooltipThree
                     title={item?.name}
-                    child={item?.name?.slice(0, 25) + "..."}
+                    child={item?.name?.slice(0, 15) + "..."}
                   />
                 ) : (
                   item?.name
@@ -82,6 +82,7 @@ const ProductsTable = ({ isSelectable, rows }) => {
             <td className="text-capitalize">
               {item?.description?.slice(0, 25) + "..."}
             </td>
+            <td className="text-capitalize">Toy</td>
 
             <td
               className={item?.stock ? "text-success-500" : "text-danger-500"}

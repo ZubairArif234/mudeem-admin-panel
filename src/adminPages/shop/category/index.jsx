@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import MasterLayout from "../../../masterLayout/MasterLayout";
 import Breadcrumb from "../../../components/Breadcrumb";
 import TableDataLayer from "../../../components/TableDataLayer";
 import CategoryTable from "../../../components/custom/shop/category/table";
 import CategoryForm from "../../../components/custom/shop/category/form";
-import { useCreateCategory } from "../../../hook/apis/shop/category/useCreateCategory";
 import { useGetCategory } from "../../../hook/apis/shop/category/useGetCategory";
 import DataNotFound from "../../../components/custom/extra/dataNotFound";
 import Loader from "../../../components/custom/extra/loader";
