@@ -11,7 +11,6 @@ const LoginSchema = z.object({
   email: z
     .string()
     .regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Invalid email address"),
-
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
@@ -30,7 +29,7 @@ const SignInLayer = () => {
 
   const handleFormSubmit = async (data) => {
     try {
-      const res = await login(data);
+      await login(data);
       navigate("/dashboard");
     } catch (err) {
       console.error("Login failed:", err);
@@ -88,7 +87,7 @@ const SignInLayer = () => {
                     className="form-control h-56-px bg-neutral-50 radius-12"
                     id="password"
                     placeholder="Password"
-                    defaultValue="admin123"
+                    defaultValue="Password@123"
                     data-error={errors?.password ? "true" : "false"}
                     {...register("password")}
                   />

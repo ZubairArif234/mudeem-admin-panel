@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import ThemeToggleButton from "../helper/ThemeToggleButton";
 import { useGetMe } from "../hook/apis/auth/useMe";
 import { useLogout } from "../hook/apis/auth/useLogout";
@@ -10,7 +10,6 @@ const MasterLayout = ({ children }) => {
   let [mobileMenu, setMobileMenu] = useState(false);
   const location = useLocation(); // Hook to get the current route
   const { logout } = useLogout();
-  const navigate = useNavigate();
   const { me } = useGetMe();
 
   const handleLogut = async () => {
@@ -87,7 +86,6 @@ const MasterLayout = ({ children }) => {
   let mobileMenuControl = () => {
     setMobileMenu(!mobileMenu);
   };
-  console.log(me);
 
   return (
     <section className={mobileMenu ? "overlay active" : "overlay "}>

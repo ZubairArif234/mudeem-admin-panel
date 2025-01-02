@@ -17,7 +17,7 @@ const PreLoader = () => {
     } else {
       navigate("/");
     }
-  }, []);
+  }, [me?.user?._id]);
   return (
     <div
       style={{ height: "100vh", width: "100vw" }}
