@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import GridLoader from "react-spinners/GridLoader";
-import { useGetMe } from "../../../hook/apis/auth/useMe";
 import { useNavigate } from "react-router-dom";
+import { useGetMe } from "../../../hook/apis/auth/useMe";
 
 const PreLoader = () => {
   const navigate = useNavigate();
@@ -13,7 +13,13 @@ const PreLoader = () => {
   const handleCheckAuthorization = async () => {
     try {
       const res = await me();
-      navigate("/dashboard");
+      console.log(res);
+
+      if (res.ok) {
+        navigate("/dashboard");
+      } else {
+        navigate("/");
+      }
     } catch (err) {
       navigate("/");
     }
