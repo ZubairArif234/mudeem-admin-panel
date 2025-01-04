@@ -136,7 +136,7 @@ const Products = () => {
             >
               <Loader loading={isPending} size={150} color="#15803d" />
             </div>
-          ) : tableRows?.length > 0 ? (
+          ) : products?.length > 0 ? (
             <ProductsTable rows={products} />
           ) : (
             <DataNotFound
