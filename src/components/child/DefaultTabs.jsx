@@ -119,7 +119,6 @@ const DefaultTabs = ({ tabList, bodyType, data }) => {
         tabIndex="-1"
         aria-labelledby={"reward-points-label"}
         aria-hidden="true"
-        tabIndex={-1}
       >
         <div class={`modal-dialog modal-dialog-centered `}>
           <div class="modal-content">

@@ -85,7 +85,7 @@ const FormPage = () => {
       name: state?.data?.name || "",
       brand: state?.data?.brand || "",
       greenPointsPerUnit: state?.data?.greenPointsPerUnit || "",
-      category: state?.data?.category || "",
+      category: state?.data?.category || "Select Category",
       description: state?.data?.description || "",
       variants,
     },
@@ -362,10 +362,13 @@ const FormPage = () => {
 
                   <select
                     className="form-control form-control-sm"
-                    data-error={errors?.category ? "true" : "false"}
+                    placeholder="Select Category"
+                    // data-error={errors?.category ? "true" : "false"}
                     {...register("category")}
                   >
-                    <option disabled>Select Category</option>
+                    <option value={"Select Category"} disabled>
+                      Select Category
+                    </option>
                     {categories?.map((item, i) => {
                       return (
                         <option

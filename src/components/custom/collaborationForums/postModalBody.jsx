@@ -8,7 +8,12 @@ const PostModalBody = ({ data }) => {
   return (
     <div>
       <div className="bg-neutral-300">
-        <CarouselWithArrowsOnlyImage images={data?.postImage} />
+        <CarouselWithArrowsOnlyImage
+          images={[
+            "https://media.istockphoto.com/id/1394781347/photo/hand-holdig-plant-growing-on-green-background-with-sunshine.jpg?s=612x612&w=0&k=20&c=COX7-_QX8cLlL-oFKQYJgG5CEItpIN4JBbtcjPap1cA=",
+            "https://media.istockphoto.com/id/1394781347/photo/hand-holdig-plant-growing-on-green-background-with-sunshine.jpg?s=612x612&w=0&k=20&c=COX7-_QX8cLlL-oFKQYJgG5CEItpIN4JBbtcjPap1cA=",
+          ]}
+        />
       </div>
       <div className="d-flex align-items-center gap-2 my-3">
         <img

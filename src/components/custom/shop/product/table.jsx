@@ -59,7 +59,7 @@ const ProductsTable = ({ isSelectable, rows }) => {
             <td>#{item?._id.slice(0, 6) + i}</td>
             <td className="text-capitalize">
               <div className="d-flex gap-1 align-items-center">
-                <img src={item?.images[0]} width={50} />
+                <img src={item?.images[0]} className="table-row-image" />
                 {item?.featured && (
                   <Icon
                     className="text-warning-500"
@@ -80,7 +80,7 @@ const ProductsTable = ({ isSelectable, rows }) => {
             </td>
             <td className="text-capitalize"> {item?.brand}</td>
             <td className="text-capitalize">
-              {item?.description?.slice(0, 25) + "..."}
+              {item?.description?.slice(0, 20) + "..."}
             </td>
             <td className="text-capitalize">Toy</td>
 

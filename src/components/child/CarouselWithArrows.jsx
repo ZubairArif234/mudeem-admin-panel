@@ -133,12 +133,7 @@ export const CarouselWithArrowsOnlyImage = ({ images }) => {
               key={i}
               className=" d-flex justify-content-center align-items-center"
             >
-              <img
-                height={"400px"}
-                src={item}
-                alt=""
-                className=" object-fit-contain"
-              />
+              <img src={item} alt="" className="product-detail-image" />
             </div>
           );
         })}

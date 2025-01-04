@@ -50,12 +50,12 @@ const UserTable = ({ isSelectable, rows }) => {
                   className="form-check-input"
                   type="checkbox"
                   role="switch"
-                  id="switch1"
+                  id={"switch" + i}
                   defaultChecked={true}
                 />
                 <label
                   className="form-check-label line-height-1 fw-medium text-secondary-light"
-                  htmlFor="switch1"
+                  htmlFor={"switch" + i}
                 >
                   Activate
                 </label>

@@ -54,7 +54,11 @@ const CategoryTable = ({ isSelectable, rows }) => {
             <td>#{item?._id.slice(0, 6) + i}</td>
             <td>
               {" "}
-              <img src={item?.image} alt={item?.name} width={80} height={80} />
+              <img
+                src={item?.image}
+                alt={item?.name}
+                className="table-row-image"
+              />
             </td>
             <td className="text-capitalize">{item?.name}</td>
 
