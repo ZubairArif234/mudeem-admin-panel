@@ -9,7 +9,7 @@ export const useGetCategory = (filters) => {
       });
       return data?.data?.data;
     },
-    queryKey: ["category", filters],
+    queryKey: ["category", JSON.stringify(filters)],
     refetchOnWindowFocus: false,
     staleTime: Infinity,
     retry: 3,
