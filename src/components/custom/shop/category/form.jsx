@@ -197,14 +197,14 @@ const CategoryForm = ({ data }) => {
           <button
             onClick={handleClose}
             type="button"
-            class="btn btn-danger-600"
+            className="btn btn-danger-600"
             data-bs-dismiss="modal"
           >
             Close
           </button>
           <button
             type="submit"
-            class="btn btn-success-600"
+            className="btn btn-success-600"
             data-bs-dismiss={data && "modal"}
           >
             {isPending || updatePending ? (

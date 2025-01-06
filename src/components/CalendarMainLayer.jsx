@@ -480,11 +480,11 @@ const CalendarMainLayer = () => {
                     <button
                       type="reset"
                       data-bs-dismiss="modal"
-                      class="btn btn-danger-600"
+                      className="btn btn-danger-600"
                     >
                       Cancel
                     </button>
-                    <button type="submit" class="btn btn-success-600 ">
+                    <button type="submit" className="btn btn-success-600 ">
                       Save
                     </button>
                   </div>
@@ -740,11 +740,11 @@ const CalendarMainLayer = () => {
                     <button
                       type="reset"
                       data-bs-dismiss="modal"
-                      class="btn btn-danger-600"
+                      className="btn btn-danger-600"
                     >
                       Cancel
                     </button>
-                    <button type="submit" class="btn btn-success-600 ">
+                    <button type="submit" className="btn btn-success-600 ">
                       Save
                     </button>
                   </div>
@@ -763,11 +763,11 @@ const CalendarMainLayer = () => {
       >
         <div className="modal-dialog  modal-dialog modal-dialog-centered">
           <div className="modal-content radius-16 bg-base">
-            <div class="modal-header">
-              <h6 class="modal-title">Delete Event</h6>
+            <div className="modal-header">
+              <h6 className="modal-title">Delete Event</h6>
               <button
                 type="button"
-                class="btn-close"
+                className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button>

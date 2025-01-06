@@ -351,12 +351,12 @@ const ProductForm = () => {
       <div className="mt-10 d-flex gap-2 justify-content-end">
         <button
           type="button"
-          class="btn btn-danger-600"
+          className="btn btn-danger-600"
           data-bs-dismiss="modal"
         >
           Close
         </button>
-        <button type="button" class="btn btn-success-600">
+        <button type="button" className="btn btn-success-600">
           Save changes
         </button>
       </div>

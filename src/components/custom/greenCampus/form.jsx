@@ -44,12 +44,12 @@ const Form = () => {
       <div className="mt-10 d-flex gap-2 justify-content-end">
         <button
           type="button"
-          class="btn btn-danger-600"
+          className="btn btn-danger-600"
           data-bs-dismiss="modal"
         >
           Close
         </button>
-        <button type="submit" class="btn btn-success-600">
+        <button type="submit" className="btn btn-success-600">
           Save changes
         </button>
       </div>

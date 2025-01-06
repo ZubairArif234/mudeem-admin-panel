@@ -81,7 +81,7 @@ const FarmDetail = () => {
       <div className="mt-10 d-flex gap-2 justify-content-end">
         <button
           type="button"
-          class="btn btn-danger-600"
+          className="btn btn-danger-600"
           data-bs-dismiss="modal"
         >
           Close
@@ -90,7 +90,7 @@ const FarmDetail = () => {
           data-bs-toggle="modal"
           data-bs-target="#reward-points"
           type="button"
-          class="btn btn-success-600"
+          className="btn btn-success-600"
         >
           Reward Points
         </button>

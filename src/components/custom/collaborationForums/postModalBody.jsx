@@ -31,14 +31,14 @@ const PostModalBody = ({ data }) => {
           data-bs-toggle="modal"
           data-bs-target="#reward-points"
           type="button"
-          class="btn btn-success-600 "
+          className="btn btn-success-600 "
         >
           Approve
         </button>
 
         <button
           type="button"
-          class="btn btn-danger-600"
+          className="btn btn-danger-600"
           data-bs-dismiss="modal"
         >
           Reject

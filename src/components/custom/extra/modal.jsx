@@ -5,17 +5,16 @@ const Modal = ({ id, button, body, title, size }) => {
     <div>
       {button}
       <div
-        class="modal fade "
+        className="modal fade "
         id={id}
         tabIndex="-1"
         aria-labelledby={id + "-label"}
         aria-hidden="true"
-        tabIndex={-1}
       >
-        <div class={`modal-dialog modal-dialog-centered ${size}`}>
-          <div class="modal-content">
-            <div class="modal-header">
-              <h6 class="modal-title" id={id + "-label"}>
+        <div className={`modal-dialog modal-dialog-centered ${size}`}>
+          <div className="modal-content">
+            <div className="modal-header">
+              <h6 className="modal-title" id={id + "-label"}>
                 {title}
               </h6>
               {/* <button
@@ -25,7 +24,7 @@ const Modal = ({ id, button, body, title, size }) => {
                 aria-label="Close"
               ></button> */}
             </div>
-            <div class="modal-body">{body}</div>
+            <div className="modal-body">{body}</div>
           </div>
         </div>
       </div>
