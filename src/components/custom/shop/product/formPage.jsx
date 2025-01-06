@@ -30,6 +30,7 @@ const ProductSchema = z.object({
   brand: z.string().min(3, "Product brand must be at least 3 characters"),
   category: z.string().min(3, "Product category is invalid"),
   greenPointsPerUnit: z.string().min(1, "Product green point is invalid"),
+  featured: z.boolean(),
   description: z
     .string()
     .min(10, "Product description must be at least 10 characters"),
@@ -87,6 +88,7 @@ const FormPage = () => {
       greenPointsPerUnit: state?.data?.greenPointsPerUnit || "",
       category: state?.data?.category || "Select Category",
       description: state?.data?.description || "",
+      featured: state?.data?.featured || "",
       variants,
     },
   });
@@ -199,6 +201,7 @@ const FormPage = () => {
     formData.append("description", data.description);
     formData.append("price", 123);
     formData.append("greenPointsPerUnit", data.greenPointsPerUnit);
+    formData.append("featured", data.featured);
     formData.append("variants", JSON.stringify(data.variants));
     if (uploadedImages?.length < 1) {
       setUploadedImagesFiles([]);
@@ -405,6 +408,25 @@ const FormPage = () => {
                       {errors?.description?.message}
                     </p>
                   )}
+                </div>
+
+                <div className="col-lg-6">
+                  <div className="form-switch switch-success d-flex align-items-center gap-3 mt-8">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      role="switch"
+                      id={"switch"}
+                      defaultChecked={false}
+                      {...register("featured")}
+                    />
+                    <label
+                      className="form-check-label line-height-1 fw-medium text-secondary-light"
+                      htmlFor={"switch"}
+                    >
+                      Feature Product
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>
