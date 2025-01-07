@@ -199,51 +199,63 @@ const FormPage = () => {
   //   };
 
   const onSubmit = async (data) => {
-    console.log(uploadedImagesFiles, uploadedImages);
+    console.log("Form submission started");
 
+    // Prepare FormData
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("brand", data.brand);
     formData.append("category", "6764067422a914142b3ae5d3");
     formData.append("description", data.description);
-    formData.append("price", 123);
+    formData.append("price", 123); // static price or use dynamic from data
     formData.append("greenPointsPerUnit", data.greenPointsPerUnit);
     formData.append("featured", data.featured);
     formData.append("variants", JSON.stringify(data.variants));
-    uploadedImages.forEach((file, i) => {
-      formData.append(`images[${i}]`, file?.file);
+
+    // Append images to FormData
+    uploadedImages.forEach((file) => {
+      formData.append("images", file?.file);
     });
+
+    // Clear the images array only if they are empty
     if (uploadedImages?.length < 1) {
-      setUploadedImagesFiles([]);
-    } else {
-      try {
-        await createProduct(formData);
-        setUploadedImages([]);
-        setUploadedImagesFiles([""]);
-        console.log("Form Submitted", data, uploadedImages);
-        reset();
-        setVariants([
-          {
-            name: "",
-            price: "",
-            sizes: [
-              {
-                size: "",
-                stock: "",
-              },
-            ],
-            colors: [
-              {
-                color: "",
-                stock: "",
-              },
-            ],
-          },
-        ]);
-        navigate("/shop-products");
-      } catch (err) {
-        console.error("Product creation failed:", err);
-      }
+      setUploadedImagesFiles([]); // Clear image files in the state
+    }
+
+    try {
+      // Send the data to createProduct API
+      await createProduct(formData);
+
+      // Reset the form and clear states after successful submission
+      setUploadedImages([]); // Clear uploaded images
+      setUploadedImagesFiles([]); // Clear image files state
+      reset(); // Reset form fields
+
+      // Reset the variants state to its default
+      setVariants([
+        {
+          name: "",
+          price: "",
+          sizes: [
+            {
+              size: "",
+              stock: "",
+            },
+          ],
+          colors: [
+            {
+              color: "",
+              stock: "",
+            },
+          ],
+        },
+      ]);
+
+      // Navigate to the product page after successful submission
+      navigate("/shop-products");
+    } catch (err) {
+      // Handle errors
+      console.error("Product creation failed:", err);
     }
   };
 
@@ -253,12 +265,7 @@ const FormPage = () => {
         <h5 className="card-title my-8">{id ? "Update" : "Create"} Product</h5>
       </div>
       <div className="card-body">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSubmit(onSubmit)(e);
-          }}
-        >
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="row gy-8">
             <div className="col-xl-6">
               <div className="row">
