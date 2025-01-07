@@ -80,7 +80,7 @@ const ProductsTable = ({ isSelectable, rows }) => {
             </td>
             <td className="text-capitalize"> {item?.brand}</td>
             <td className="text-capitalize">
-              {item?.description?.slice(0, 20) + "..."}
+              {item?.description?.slice(0, 16) + "..."}
             </td>
             <td className="text-capitalize">Toy</td>
 
@@ -90,7 +90,7 @@ const ProductsTable = ({ isSelectable, rows }) => {
               {" "}
               {item?.stock ? "In Stock" : "Out of Stock"}
             </td>
-            <td> {item?.greenPointsPerUnit} pts</td>
+            <td> {item?.greenPointsPerUnit}</td>
             <td>
               <div className="d-flex gap-2 align-items-start">
                 <Modal

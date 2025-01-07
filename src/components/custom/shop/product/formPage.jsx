@@ -98,17 +98,25 @@ const FormPage = () => {
       setUploadedImagesFiles([]);
     }
     const files = Array.from(e.target.files);
-    const newImages = files.map((file) => {
-      if (imageValidation(file)) {
-        setUploadedImagesFiles((prev) => [...prev, file]);
+    try {
+      const newImages = [];
+      const newFiles = [];
 
-        return {
-          src: URL.createObjectURL(file),
-          file,
-        };
-      }
-    });
-    setUploadedImages((prev) => [...prev, ...newImages]);
+      files.forEach((file) => {
+        if (imageValidation(file)) {
+          newFiles.push(file);
+          newImages.push({
+            src: URL.createObjectURL(file),
+            file,
+          });
+        }
+      });
+
+      setUploadedImages((prev) => [...prev, ...newImages]);
+      setUploadedImagesFiles((prev) => [...prev, ...newFiles]);
+    } catch (err) {
+      console.log(err);
+    }
     e.target.value = "";
   };
 
@@ -191,10 +199,9 @@ const FormPage = () => {
   //   };
 
   const onSubmit = async (data) => {
+    console.log(uploadedImagesFiles, uploadedImages);
+
     const formData = new FormData();
-    // uploadedImagesFiles.forEach((file) => {
-    //   formData.append("images[]", file);
-    // });
     formData.append("name", data.name);
     formData.append("brand", data.brand);
     formData.append("category", "6764067422a914142b3ae5d3");
@@ -203,6 +210,9 @@ const FormPage = () => {
     formData.append("greenPointsPerUnit", data.greenPointsPerUnit);
     formData.append("featured", data.featured);
     formData.append("variants", JSON.stringify(data.variants));
+    uploadedImages.forEach((file, i) => {
+      formData.append(`images[${i}]`, file?.file);
+    });
     if (uploadedImages?.length < 1) {
       setUploadedImagesFiles([]);
     } else {
@@ -769,6 +779,7 @@ const FormPage = () => {
               ))}
               {/* add new variants */}
               <button
+                // disabled
                 onClick={handleAddVariants}
                 type="button"
                 className="btn w-100 btn-outline-success-600 radius-8 px-20 py-11"
