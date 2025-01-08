@@ -126,12 +126,17 @@ const HorizontalCard = () => {
   );
 };
 
-export const SingleHorizontalCard = ({ data, number }) => {
+export const SingleHorizontalCard = ({
+  data,
+  number,
+  handleAcceptPost,
+  handleRejectedPost,
+}) => {
   return (
     <div className="card radius-12 overflow-hidden h-100  d-flex align-items-center flex-nowrap flex-row">
       <div className=" d-none d-md-flex flex-shrink-0  w-25 h-100 ">
         <img
-          src={data?.postImage}
+          src={data?.images[0]}
           className="h-100 w-100 object-fit-cover"
           alt=""
         />
@@ -144,11 +149,11 @@ export const SingleHorizontalCard = ({ data, number }) => {
             className="w-40 h-40 object-fit-cover rounded-circle"
           />
           <h5 className="card-title text-lg text-primary-light mb-6">
-            {data?.userName}
+            {data?.user?.name}
           </h5>
         </div>
         <p className="card-text text-neutral-600 mb-16 line-clamp">
-          {data?.postText}
+          {data?.content}
         </p>
         <Modal
           id={`read${number}`}
@@ -162,7 +167,13 @@ export const SingleHorizontalCard = ({ data, number }) => {
               <Icon icon="iconamoon:arrow-right-2" className="text-xl" />
             </p>
           }
-          body={<PostModalBody data={data} />}
+          body={
+            <PostModalBody
+              data={data}
+              handleAcceptPost={handleAcceptPost}
+              handleRejectedPost={handleRejectedPost}
+            />
+          }
           title="Post"
           size="modal-lg"
         />

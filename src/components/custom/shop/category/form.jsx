@@ -19,7 +19,7 @@ const imageValidation = (file) => {
   return isValidType && isValidSize ? file : null;
 };
 
-const ForgotPasswordSchema = z.object({
+const CategorySchema = z.object({
   name: z.string().min(3, "Invalid Category Name"),
 });
 
@@ -61,7 +61,7 @@ const CategoryForm = ({ data }) => {
     setValue,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(ForgotPasswordSchema),
+    resolver: zodResolver(CategorySchema),
     defaultValues: {
       name: data?.name || "",
     },

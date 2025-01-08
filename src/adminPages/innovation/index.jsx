@@ -1,79 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import MasterLayout from "../../masterLayout/MasterLayout";
 import Breadcrumb from "../../components/Breadcrumb";
 import InnovationCard from "../../components/custom/innovation/card";
+// import { useGetProjects } from "../../hook/apis/sustainableInnovation/useGetProjects";
 
 const Innovation = () => {
-  //   const tableHeadings = [
-  //     "ID",
-  //     "Driver",
-  //     "Pick up",
-  //     "Destination",
-  //     "Seats",
-  //     "Passengers",
-  //   ];
-  //   const tableRows = [
-  //     {
-  //       id: "453",
-  //       location: [51.90987, -1.87737],
-  //       category: "Dust bin",
-  //       points: 12,
-  //     },
-  //     {
-  //       id: "453",
-  //       location: [51.90987, -1.87737],
-  //       category: "Dust bin",
-  //       points: 12,
-  //     },
-  //     {
-  //       id: "453",
-  //       location: [51.90987, -1.87737],
-  //       category: "Dust bin",
-  //       points: 12,
-  //     },
-  //     {
-  //       id: "453",
-  //       location: [51.90987, -1.87737],
-  //       category: "Dust bin",
-  //       points: 12,
-  //     },
-  //     {
-  //       id: "453",
-  //       location: [51.90987, -1.87737],
-  //       category: "Dust bin",
-  //       points: 12,
-  //     },
-  //     {
-  //       id: "453",
-  //       location: [51.90987, -1.87737],
-  //       category: "Dust bin",
-  //       points: 12,
-  //     },
-  //     {
-  //       id: "453",
-  //       location: [51.90987, -1.87737],
-  //       category: "Dust bin",
-  //       points: 12,
-  //     },
-  //     {
-  //       id: "453",
-  //       location: [51.90987, -1.87737],
-  //       category: "Dust bin",
-  //       points: 12,
-  //     },
-  //     {
-  //       id: "453",
-  //       location: [51.90987, -1.87737],
-  //       category: "Dust bin",
-  //       points: 12,
-  //     },
-  //     {
-  //       id: "453",
-  //       location: [51.90987, -1.87737],
-  //       category: "Dust bin",
-  //       points: 12,
-  //     },
-  //   ];
+  const [filter, setFilter] = useState({
+    page: 0,
+    limit: 8,
+  });
+  // const { projects, isPending } = useGetProjects(filter);
   return (
     <div>
       <MasterLayout>

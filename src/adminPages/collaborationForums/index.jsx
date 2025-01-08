@@ -3,7 +3,7 @@ import DefaultTabs from "../../components/child/DefaultTabs";
 import MasterLayout from "../../masterLayout/MasterLayout";
 import Breadcrumb from "../../components/Breadcrumb";
 const CollaborateForums = () => {
-  const tabList = ["Requested", "Accepted", "Rejected"];
+  const tabList = ["requested", "accepted", "rejected"];
 
   const data = {
     userName: "Mary Bones",

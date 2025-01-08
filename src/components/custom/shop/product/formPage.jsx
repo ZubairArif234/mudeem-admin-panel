@@ -7,6 +7,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useCreateProduct } from "../../../../hook/apis/shop/product/useCreateProduct";
 import Loader from "../../extra/loader";
 import { useGetCategory } from "../../../../hook/apis/shop/category/useGetCategory";
+import { useUpdateProduct } from "../../../../hook/apis/shop/product/useUpdateProduct";
 const SizeSchema = z.object({
   size: z.string().min(1, "Size is required"),
   stock: z.string().min(1, "Stock is required"),
@@ -72,6 +73,7 @@ const FormPage = () => {
     },
   ]);
   const { categories } = useGetCategory();
+  const { updateCategory, updatePending } = useUpdateProduct();
 
   const { createProduct, isPending } = useCreateProduct();
 
@@ -210,7 +212,11 @@ const FormPage = () => {
     formData.append("price", 123); // static price or use dynamic from data
     formData.append("greenPointsPerUnit", data.greenPointsPerUnit);
     formData.append("featured", data.featured);
-    formData.append("variants", JSON.stringify(data.variants));
+    if (state?.data?.variants) {
+      formData.append("newVariants", JSON.stringify(data.variants));
+    } else {
+      formData.append("variants", JSON.stringify(data.variants));
+    }
 
     // Append images to FormData
     uploadedImages.forEach((file) => {
@@ -224,7 +230,11 @@ const FormPage = () => {
 
     try {
       // Send the data to createProduct API
-      await createProduct(formData);
+      if (state?.data?.name) {
+        await updateCategory(formData);
+      } else {
+        await createProduct(formData);
+      }
 
       // Reset the form and clear states after successful submission
       setUploadedImages([]); // Clear uploaded images

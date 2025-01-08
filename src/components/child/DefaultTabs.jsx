@@ -1,7 +1,79 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SingleHorizontalCard } from "./HorizontalCard";
+import { useGetForums } from "../../hook/apis/collaborationForums/useGetForums";
+import { useChangeStatus } from "../../hook/apis/collaborationForums/useChangeStatus";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import Loader from "../custom/extra/loader";
+import DataNotFound from "../custom/extra/dataNotFound";
+import { SquarePagination } from "../PaginationLayer";
+const RewardSchema = z.object({
+  points: z.coerce.number().min(1, "Points should be greater then 0"),
+});
 
-const DefaultTabs = ({ tabList, bodyType, data }) => {
+const DefaultTabs = ({ tabList, bodyType }) => {
+  const [filter, setFilter] = useState({
+    page: 0,
+    limit: 8,
+  });
+  const [selectedTab, setSelectedTab] = useState("requested");
+  const [formId, setFormId] = useState("");
+  const { forums, isPending } = useGetForums({
+    ...filter,
+    status: selectedTab,
+  });
+  console.log(forums);
+
+  const { changeStatus } = useChangeStatus(filter);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(RewardSchema),
+  });
+
+  const handleAcceptPost = (id) => {
+    setFormId(id);
+  };
+
+  const handleRejectedPost = async (id) => {
+    try {
+      const payload = {
+        status: "rejected",
+      };
+      const res = await changeStatus({ payload: payload, id: id });
+      if (res) {
+        toast.success("Post rejected succssfully");
+      }
+    } catch (err) {
+      toast.success(err || "Post rejected failed");
+    }
+  };
+
+  const handleRewardPost = async (data) => {
+    try {
+      const payload = {
+        status: "accepted",
+        points: data?.points,
+      };
+      const res = await changeStatus({ payload: payload, id: formId });
+      reset();
+      toast.success("Post accepted succssfully");
+    } catch (err) {
+      toast.success(err || "Post accepted failed");
+    }
+  };
+
+  const handlePagination = (number) => {
+    setFilter((prev) => ({ ...prev, page: number }));
+  };
+  // console.log();
+
   return (
     <div className="">
       <div className="card p-0 overflow-auto position-relative radius-12 h-100">
@@ -18,15 +90,19 @@ const DefaultTabs = ({ tabList, bodyType, data }) => {
               return (
                 <li key={i} className="nav-item" role="presentation">
                   <button
-                    className={`nav-link px-16 py-10 ${
-                      item === "Requested" && "active"
+                    onClick={() => {
+                      setFilter((prev) => ({ ...prev, page: 0 }));
+                      setSelectedTab(item);
+                    }}
+                    className={`nav-link px-16 py-10 text-capitalize ${
+                      selectedTab === item && "active"
                     }`}
-                    id={item}
+                    id={selectedTab}
                     data-bs-toggle="pill"
-                    data-bs-target={`#pills-${item}`}
+                    data-bs-target={`#pills-${selectedTab}`}
                     type="button"
                     role="tab"
-                    aria-controls={`pills-${item}`}
+                    aria-controls={`pills-${selectedTab}`}
                     aria-selected="true"
                   >
                     {item}
@@ -35,82 +111,68 @@ const DefaultTabs = ({ tabList, bodyType, data }) => {
               );
             })}
           </ul>
-          <div className="tab-content" id="pills-tabContent">
-            {tabList?.map((item, i) => {
-              return (
-                <div
-                  key={i}
-                  className={`tab-pane fade show ${
-                    item === "Requested" && "active"
-                  }`}
-                  id={`pills-${item}`}
-                  role="tabpanel"
-                  aria-labelledby={item}
-                  tabIndex={0}
-                >
-                  <div>
-                    {bodyType === "card" ? (
-                      <div className="row gy-4">
-                        {[0, 1, 2, 3, 4, 5]?.map((_, j) => {
-                          return (
-                            <div key={j} className=" col-xl-6">
-                              <SingleHorizontalCard data={data} number={item} />
-                            </div>
-                          );
-                        })}
-                      </div>
-                    ) : null}
-                  </div>
-                </div>
-              );
-            })}
-            {/* <div
-              className="tab-pane fade"
-              id="pills-Accepted"
-              role="tabpanel"
-              aria-labelledby="Accepted"
-              tabIndex={0}
-            >
-              <div>
-                <h6 className="text-lg mb-8">Details</h6>
-                <p className="text-secondary-light mb-16">
-                  Lorem Ipsum&nbsp;is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry's
-                  standard dummy text ever since the 1500s, when an unknown
-                  printer took a galley of type and scrambled it to make a type
-                  specimen book. It has survived not{" "}
-                </p>
-                <p className="text-secondary-light mb-0">
-                  It was popularised in the 1960s with the release of Letraset
-                  sheets containing Lorem Ipsum passages, and more recently with
-                  desktop
-                </p>
-              </div>
-            </div>
+          {isPending ? (
             <div
-              className="tab-pane fade"
-              id="pills-Rejected"
-              role="tabpanel"
-              aria-labelledby="Rejected"
-              tabIndex={0}
+              style={{ minHeight: "59vh" }}
+              className="d-flex justify-content-center align-items-center"
             >
-              <div>
-                <h6 className="text-lg mb-8">Title</h6>
-                <p className="text-secondary-light mb-16">
-                  Lorem Ipsum&nbsp;is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry's
-                  standard dummy text ever since the 1500s, when an unknown
-                  printer took a galley of type and scrambled it to make a type
-                  specimen book. It has survived not{" "}
-                </p>
-                <p className="text-secondary-light mb-0">
-                  It was popularised in the 1960s with the release of Letraset
-                  sheets containing Lorem Ipsum passages, and more recently with
-                  desktop
-                </p>
-              </div>
-            </div> */}
-          </div>
+              <Loader loading={isPending} size={150} color="#15803d" />
+            </div>
+          ) : forums[0]?.totalDocs[0]?.count > 0 ? (
+            <div className="tab-content" id="pills-tabContent">
+              {tabList?.map((item, i) => {
+                return (
+                  <div
+                    key={i}
+                    className={`tab-pane fade show ${
+                      selectedTab === item && "active"
+                    }`}
+                    id={`pills-${item}`}
+                    role="tabpanel"
+                    aria-labelledby={item}
+                    tabIndex={0}
+                  >
+                    <div>
+                      {bodyType === "card" ? (
+                        <div className="row gy-4">
+                          {forums[0]?.posts?.map((data, j) => {
+                            return (
+                              <div key={j} className=" col-xl-6">
+                                <SingleHorizontalCard
+                                  data={data}
+                                  number={item}
+                                  handleAcceptPost={handleAcceptPost}
+                                  handleRejectedPost={handleRejectedPost}
+                                />
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                );
+              })}
+              {forums[0]?.totalDocs[0]?.count > 8 && (
+                <div className="d-flex justify-content-end">
+                  <SquarePagination
+                    totalPages={
+                      Math.ceil(
+                        forums[0]?.totalDocs[0]?.count / filter.limit
+                      ) || 1
+                    }
+                    current={filter?.page}
+                    handlePagination={handlePagination}
+                  />
+                </div>
+              )}
+            </div>
+          ) : (
+            <DataNotFound
+              heading={"Forum Posts Not Found"}
+              text={"There is no forum posts found , based on your search!"}
+            />
+          )}
         </div>
       </div>
       <div
@@ -127,6 +189,7 @@ const DefaultTabs = ({ tabList, bodyType, data }) => {
                 Reward Points
               </h6>
               <button
+                onClick={() => reset()}
                 type="button"
                 className="btn-close"
                 data-bs-dismiss="modal"
@@ -134,16 +197,33 @@ const DefaultTabs = ({ tabList, bodyType, data }) => {
               ></button>
             </div>
             <div className="modal-body">
-              <form>
-                <label>Enter Green Points</label>
-                <input
-                  type="text"
-                  name="#0"
-                  className="form-control form-control-sm"
-                  placeholder="Enter Green Points.."
-                />
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+
+                  handleSubmit(handleRewardPost)(e);
+                }}
+              >
+                <div>
+                  <label>Enter Green Points</label>
+                  <input
+                    type="number"
+                    name="points"
+                    className="form-control form-control-sm"
+                    placeholder="Enter Green Points.."
+                    data-error={errors?.points ? "true" : "false"}
+                    {...register("points")}
+                  />
+                  {errors?.points && (
+                    <p className="text-danger-500">{errors?.points?.message}</p>
+                  )}
+                </div>
                 <div className="mt-3 d-flex justify-content-end align-items-center gap-3">
-                  <button type="button" className="btn btn-success-600 ">
+                  <button
+                    type="submit"
+                    data-bs-dismiss="modal"
+                    className="btn btn-success-600 "
+                  >
                     Reward & Approve
                   </button>
 
