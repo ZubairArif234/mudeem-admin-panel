@@ -4,7 +4,7 @@ import custAxios from "../../../config/axios.config";
 export const useGetForums = (filters) => {
   const { data, ...rest } = useQuery({
     queryFn: async () => {
-      const data = await custAxios.get("/collab-forum/getPostForAdmin", {
+      const data = await custAxios.get("/collab-forum", {
         params: filters,
       });
       return data?.data?.data;

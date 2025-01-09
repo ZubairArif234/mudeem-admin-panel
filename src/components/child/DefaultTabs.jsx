@@ -118,7 +118,7 @@ const DefaultTabs = ({ tabList, bodyType }) => {
             >
               <Loader loading={isPending} size={150} color="#15803d" />
             </div>
-          ) : forums[0]?.totalDocs[0]?.count > 0 ? (
+          ) : forums?.length > 0 && forums[0]?.totalDocs[0]?.count > 0 ? (
             <div className="tab-content" id="pills-tabContent">
               {tabList?.map((item, i) => {
                 return (
@@ -153,7 +153,7 @@ const DefaultTabs = ({ tabList, bodyType }) => {
                   </div>
                 );
               })}
-              {forums[0]?.totalDocs[0]?.count > 8 && (
+              {forums?.length > 0 && forums[0]?.totalDocs[0]?.count > 8 && (
                 <div className="d-flex justify-content-end">
                   <SquarePagination
                     totalPages={
