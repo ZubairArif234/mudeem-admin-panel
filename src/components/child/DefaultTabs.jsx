@@ -140,7 +140,7 @@ const DefaultTabs = ({ tabList, bodyType }) => {
                               <div key={j} className=" col-xl-6">
                                 <SingleHorizontalCard
                                   data={data}
-                                  number={item}
+                                  number={j}
                                   handleAcceptPost={handleAcceptPost}
                                   handleRejectedPost={handleRejectedPost}
                                 />
