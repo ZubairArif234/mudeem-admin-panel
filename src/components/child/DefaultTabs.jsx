@@ -19,12 +19,11 @@ const DefaultTabs = ({ tabList, bodyType }) => {
     limit: 8,
   });
   const [selectedTab, setSelectedTab] = useState("requested");
-  const [formId, setFormId] = useState("");
   const { forums, isPending } = useGetForums({
     ...filter,
     status: selectedTab,
   });
-  console.log(forums);
+  const [formId, setFormId] = useState("");
 
   const { changeStatus } = useChangeStatus(filter);
 
@@ -140,7 +139,7 @@ const DefaultTabs = ({ tabList, bodyType }) => {
                               <div key={j} className=" col-xl-6">
                                 <SingleHorizontalCard
                                   data={data}
-                                  number={j}
+                                  number={item}
                                   handleAcceptPost={handleAcceptPost}
                                   handleRejectedPost={handleRejectedPost}
                                 />
@@ -173,6 +172,71 @@ const DefaultTabs = ({ tabList, bodyType }) => {
               text={"There is no forum posts found , based on your search!"}
             />
           )}
+        </div>
+      </div>
+      <div
+        className="modal fade "
+        id={"reward-points"}
+        tabIndex="-1"
+        aria-labelledby={"reward-points-label"}
+        aria-hidden="true"
+      >
+        <div className={`modal-dialog modal-dialog-centered `}>
+          <div className="modal-content">
+            <div className="modal-header">
+              <h6 className="modal-title" id={"reward-points-label"}>
+                Reward Points
+              </h6>
+              <button
+                onClick={() => reset()}
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+
+                  handleSubmit(handleRewardPost)(e);
+                }}
+              >
+                <div>
+                  <label>Enter Green Points</label>
+                  <input
+                    type="number"
+                    name="points"
+                    className="form-control form-control-sm"
+                    placeholder="Enter Green Points.."
+                    data-error={errors?.points ? "true" : "false"}
+                    {...register("points")}
+                  />
+                  {errors?.points && (
+                    <p className="text-danger-500">{errors?.points?.message}</p>
+                  )}
+                </div>
+                <div className="mt-3 d-flex justify-content-end align-items-center gap-3">
+                  <button
+                    type="submit"
+                    data-bs-dismiss="modal"
+                    className="btn btn-success-600 "
+                  >
+                    Reward & Approve
+                  </button>
+
+                  {/* <button
+                    type="button"
+                    class="btn btn-danger-600"
+                    data-bs-dismiss="modal"
+                  >
+                    Reject
+                  </button> */}
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
       <div

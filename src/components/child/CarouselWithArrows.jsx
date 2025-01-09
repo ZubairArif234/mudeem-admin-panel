@@ -124,6 +124,8 @@ export const CarouselWithArrowsOnlyImage = ({ images }) => {
     nextArrow: <SampleNextArrow />,
     prevArrow: <SamplePrevArrow />,
   };
+  console.log(images);
+
   return (
     <div className="">
       <Slider {...settings}>

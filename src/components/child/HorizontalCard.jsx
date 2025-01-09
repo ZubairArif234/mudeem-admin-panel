@@ -156,11 +156,11 @@ export const SingleHorizontalCard = ({
           {data?.content}
         </p>
         <Modal
-          id={`read${number}`}
+          id={`read-${data?._id}-${number}`}
           button={
             <p
               data-bs-toggle="modal"
-              data-bs-target={`#read${number}`}
+              data-bs-target={`#read-${data?._id}-${number}`}
               className="btn text-success-600 hover-text-success p-0 d-inline-flex align-items-center gap-2"
             >
               Read More{" "}
