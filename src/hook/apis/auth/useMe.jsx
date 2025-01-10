@@ -8,8 +8,8 @@ export const useGetMe = () => {
       return data?.data?.data;
     },
     queryKey: "user",
-    // refetchOnWindowFocus: false,
-    retry: 3,
+    refetchOnWindowFocus: false,
+    retry: 0,
   });
   return { me: data, ...rest };
 };

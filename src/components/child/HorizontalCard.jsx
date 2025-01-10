@@ -155,28 +155,15 @@ export const SingleHorizontalCard = ({
         <p className="card-text text-neutral-600 mb-16 line-clamp">
           {data?.content}
         </p>
-        <Modal
-          id={`read-${data?._id}-${number}`}
-          button={
-            <p
-              data-bs-toggle="modal"
-              data-bs-target={`#read-${data?._id}-${number}`}
-              className="btn text-success-600 hover-text-success p-0 d-inline-flex align-items-center gap-2"
-            >
-              Read More{" "}
-              <Icon icon="iconamoon:arrow-right-2" className="text-xl" />
-            </p>
-          }
-          body={
-            <PostModalBody
-              data={data}
-              handleAcceptPost={handleAcceptPost}
-              handleRejectedPost={handleRejectedPost}
-            />
-          }
-          title="Post"
-          size="modal-lg"
-        />
+
+        <p
+          onClick={() => handleAcceptPost(data?._id, data)}
+          data-bs-toggle="modal"
+          data-bs-target={`#read-post`}
+          className="btn text-success-600 hover-text-success p-0 d-inline-flex align-items-center gap-2"
+        >
+          Read More <Icon icon="iconamoon:arrow-right-2" className="text-xl" />
+        </p>
       </div>
     </div>
   );

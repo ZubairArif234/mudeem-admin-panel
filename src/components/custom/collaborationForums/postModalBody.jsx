@@ -1,16 +1,18 @@
 import React from "react";
 import { CarouselWithArrowsOnlyImage } from "../../child/CarouselWithArrows";
-import Modal from "../extra/modal";
-import { SingleTooltipTextPopup } from "../../child/TooltipTextPopup";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { useChangeStatus } from "../../../hook/apis/collaborationForums/useChangeStatus";
-import { toast } from "sonner";
 
 const PostModalBody = ({ data, handleAcceptPost, handleRejectedPost }) => {
   return (
     <div>
       <div className="bg-neutral-300">
-        <CarouselWithArrowsOnlyImage images={data?.images} />
+        {data?.images?.length > 1 ? (
+          <CarouselWithArrowsOnlyImage
+            images={data?.images}
+            imageClass={"post-detail-image"}
+          />
+        ) : (
+          <img src={data?.images[0]} alt="" className="post-detail-image" />
+        )}
       </div>
       <div className="d-flex align-items-center gap-2 my-3">
         <img

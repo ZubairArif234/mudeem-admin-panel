@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,7 +31,7 @@ const ProductSchema = z.object({
   brand: z.string().min(3, "Product brand must be at least 3 characters"),
   category: z.string().min(3, "Product category is invalid"),
   greenPointsPerUnit: z.string().min(1, "Product green point is invalid"),
-  featured: z.boolean(),
+  featured: z.boolean().optional(),
   description: z
     .string()
     .min(10, "Product description must be at least 10 characters"),
@@ -73,9 +73,17 @@ const FormPage = () => {
     },
   ]);
   const { categories } = useGetCategory();
-  const { updateCategory, updatePending } = useUpdateProduct();
+  const { updateProduct, updatePending } = useUpdateProduct();
 
   const { createProduct, isPending } = useCreateProduct();
+  console.log(typeof state?.data?.featured);
+
+  useEffect(() => {
+    if (state?.data?.images?.length > 0) {
+      setUploadedImages(state?.data?.images);
+      setUploadedImagesFiles(state?.data?.images);
+    }
+  }, [state]);
 
   const {
     register,
@@ -87,11 +95,22 @@ const FormPage = () => {
     defaultValues: {
       name: state?.data?.name || "",
       brand: state?.data?.brand || "",
-      greenPointsPerUnit: state?.data?.greenPointsPerUnit || "",
-      category: state?.data?.category || "Select Category",
+      greenPointsPerUnit: String(state?.data?.greenPointsPerUnit) || "",
+      category: state?.data?.category?._id || "Select Category",
       description: state?.data?.description || "",
-      featured: state?.data?.featured || "",
-      variants,
+      featured: state?.data?.featured ? true : false || "",
+      variants: state?.data?.variants?.map((item) => ({
+        name: item?.name || "",
+        price: String(item?.price),
+        sizes: item?.sizes?.map((val) => ({
+          size: val?.size,
+          stock: String(val?.stock),
+        })),
+        colors: item?.colors?.map((val) => ({
+          color: val?.color,
+          stock: String(val?.stock),
+        })),
+      })),
     },
   });
 
@@ -107,10 +126,7 @@ const FormPage = () => {
       files.forEach((file) => {
         if (imageValidation(file)) {
           newFiles.push(file);
-          newImages.push({
-            src: URL.createObjectURL(file),
-            file,
-          });
+          newImages.push(URL.createObjectURL(file));
         }
       });
 
@@ -123,7 +139,7 @@ const FormPage = () => {
   };
 
   const removeImage = (src) => {
-    setUploadedImages((prev) => prev.filter((image) => image.src !== src));
+    setUploadedImages((prev) => prev.filter((image) => image !== src));
     URL.revokeObjectURL(src);
   };
 
@@ -201,13 +217,11 @@ const FormPage = () => {
   //   };
 
   const onSubmit = async (data) => {
-    console.log("Form submission started");
-
     // Prepare FormData
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("brand", data.brand);
-    formData.append("category", "6764067422a914142b3ae5d3");
+    formData.append("category", data.category);
     formData.append("description", data.description);
     formData.append("price", 123); // static price or use dynamic from data
     formData.append("greenPointsPerUnit", data.greenPointsPerUnit);
@@ -231,7 +245,7 @@ const FormPage = () => {
     try {
       // Send the data to createProduct API
       if (state?.data?.name) {
-        await updateCategory(formData);
+        await updateProduct({ payload: formData, id: id });
       } else {
         await createProduct(formData);
       }
@@ -291,7 +305,7 @@ const FormPage = () => {
                           <button
                             type="button"
                             className="uploaded-img__remove position-absolute top-0 end-0 z-1 text-2xxl line-height-1 me-8 mt-8 d-flex"
-                            onClick={() => removeImage(image.src)}
+                            onClick={() => removeImage(image)}
                           >
                             <Icon
                               icon="radix-icons:cross-2"
@@ -300,7 +314,7 @@ const FormPage = () => {
                           </button>
                           <img
                             className="w-100 h-100 object-fit-cover"
-                            src={image.src}
+                            src={image}
                             alt="Uploaded Preview"
                           />
                         </div>
@@ -393,7 +407,6 @@ const FormPage = () => {
                   <select
                     className="form-control form-control-sm"
                     placeholder="Select Category"
-                    // data-error={errors?.category ? "true" : "false"}
                     {...register("category")}
                   >
                     <option value={"Select Category"} disabled>
@@ -809,8 +822,8 @@ const FormPage = () => {
           {/* form button */}
           <div className="d-flex justify-content-end my-8">
             <button type="submit" className="btn bg-success-600 text-white">
-              {isPending ? (
-                <Loader loading={isPending} />
+              {isPending || updatePending ? (
+                <Loader loading={isPending || updatePending} />
               ) : id ? (
                 "Update Product"
               ) : (

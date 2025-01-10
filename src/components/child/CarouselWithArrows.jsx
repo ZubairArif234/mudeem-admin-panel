@@ -111,7 +111,10 @@ const CarouselWithArrows = () => {
   );
 };
 
-export const CarouselWithArrowsOnlyImage = ({ images }) => {
+export const CarouselWithArrowsOnlyImage = ({
+  images,
+  imageClass = "product-detail-image",
+}) => {
   const settings = {
     dots: false,
     arrows: true,
@@ -135,7 +138,7 @@ export const CarouselWithArrowsOnlyImage = ({ images }) => {
               key={i}
               className=" d-flex justify-content-center align-items-center"
             >
-              <img src={item} alt="" className="product-detail-image" />
+              <img src={item} alt="" className={imageClass} />
             </div>
           );
         })}

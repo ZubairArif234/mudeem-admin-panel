@@ -38,6 +38,14 @@
   background-color: #dbdbdb;
   border-radius: 10px;
 }
+.post-detail-image {
+  width: 500px;
+  height: 300px;
+  object-fit: contain;
+  aspect-ratio: 1/1;
+  background-color: #dbdbdb;
+  border-radius: 10px;
+}
 
 @media (max-width: 768px) {
   .fc .fc-toolbar {
