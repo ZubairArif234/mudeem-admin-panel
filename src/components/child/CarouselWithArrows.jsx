@@ -127,7 +127,6 @@ export const CarouselWithArrowsOnlyImage = ({
     nextArrow: <SampleNextArrow />,
     prevArrow: <SamplePrevArrow />,
   };
-  console.log(images);
 
   return (
     <div className="">

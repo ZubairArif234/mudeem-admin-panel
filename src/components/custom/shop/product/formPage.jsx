@@ -8,6 +8,7 @@ import { useCreateProduct } from "../../../../hook/apis/shop/product/useCreatePr
 import Loader from "../../extra/loader";
 import { useGetCategory } from "../../../../hook/apis/shop/category/useGetCategory";
 import { useUpdateProduct } from "../../../../hook/apis/shop/product/useUpdateProduct";
+import { useGetProductById } from "../../../../hook/apis/shop/product/useGetproductById";
 const SizeSchema = z.object({
   size: z.string().min(1, "Size is required"),
   stock: z.string().min(1, "Stock is required"),
@@ -78,12 +79,14 @@ const FormPage = () => {
   const { createProduct, isPending } = useCreateProduct();
   console.log(typeof state?.data?.featured);
 
-  // useEffect(() => {
-  //   if (state?.data?.images?.length > 0) {
-  //     setUploadedImages(state?.data?.images);
-  //     setUploadedImagesFiles(state?.data?.images);
-  //   }
-  // }, [state]);
+  const { productDetail } = useGetProductById(state?.data?._id);
+
+  useEffect(() => {
+    if (productDetail?.images?.length > 0) {
+      setUploadedImages(productDetail?.images);
+      setUploadedImagesFiles(productDetail?.images);
+    }
+  }, [productDetail]);
 
   const {
     register,
@@ -93,13 +96,13 @@ const FormPage = () => {
   } = useForm({
     resolver: zodResolver(ProductSchema),
     defaultValues: {
-      name: state?.data?.name || "",
-      brand: state?.data?.brand || "",
-      greenPointsPerUnit: String(state?.data?.greenPointsPerUnit) || "",
-      category: state?.data?.category?._id || "Select Category",
-      description: state?.data?.description || "",
-      featured: state?.data?.featured || false,
-      variants: state?.data?.variants?.map((item) => ({
+      name: productDetail?.name || "",
+      brand: productDetail?.brand || "",
+      greenPointsPerUnit: String(productDetail?.greenPointsPerUnit) || "",
+      category: productDetail?.category?._id || "Select Category",
+      description: productDetail?.description || "",
+      featured: productDetail?.featured || false,
+      variants: productDetail?.variants?.map((item) => ({
         name: item?.name || "",
         price: String(item?.price),
         sizes: item?.sizes?.map((val) => ({
@@ -316,7 +319,7 @@ const FormPage = () => {
                           </button>
                           <img
                             className="w-100 h-100 object-fit-cover"
-                            src={image?.src}
+                            src={image?.src || image}
                             alt="Uploaded Preview"
                           />
                         </div>

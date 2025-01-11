@@ -69,12 +69,12 @@ const TableDataLayer = ({
             </div>
           )}
           <div className="d-flex  align-items-center gap-2 mt-1 mt-sm-0">
-            <div className="icon-field mb-4">
-              <span className="icon top-50 translate-middle-y">
-                <Icon icon="mage:search" />
-              </span>
+            {searchFunction && (
+              <div className="icon-field mb-4">
+                <span className="icon top-50 translate-middle-y">
+                  <Icon icon="mage:search" />
+                </span>
 
-              {searchFunction ? (
                 <input
                   style={{ minWidth: "200px" }}
                   type="text"
@@ -82,15 +82,8 @@ const TableDataLayer = ({
                   placeholder="Search..."
                   onChange={(e) => debouncedSearch(e.target.value)}
                 />
-              ) : (
-                <input
-                  style={{ minWidth: "200px" }}
-                  type="text"
-                  className="form-control  bg-neutral-50 radius-12"
-                  placeholder="Search..."
-                />
-              )}
-            </div>
+              </div>
+            )}
             {isCustomHeaderButton &&
               (modalId ? (
                 <Modal

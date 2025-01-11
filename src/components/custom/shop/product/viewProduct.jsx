@@ -1,31 +1,38 @@
 import React, { useEffect, useState } from "react";
 import { CarouselWithArrowsOnlyImage } from "../../../child/CarouselWithArrows";
+import { useGetProductById } from "../../../../hook/apis/shop/product/useGetproductById";
 
 const ViewProduct = ({ data }) => {
   const [selectedTab, setSelectedTab] = useState("requested");
+  const { productDetail } = useGetProductById(data?._id);
 
   useEffect(() => {
-    if (data?.variants?.length > 0) {
-      setSelectedTab(data?.variants[0]?._id);
+    if (productDetail?.variants?.length > 0) {
+      setSelectedTab(productDetail?.variants[0]?._id);
     }
-  }, [data]);
+  }, [productDetail]);
+
   return (
     <div className="row gy-3">
       <div className="col-lg-6">
-        {data?.images?.length > 1 ? (
+        {productDetail?.images?.length > 1 ? (
           <CarouselWithArrowsOnlyImage images={data?.images} />
         ) : (
-          <img src={data?.images[0]} alt="" className="product-detail-image" />
+          <img
+            src={productDetail?.images[0]}
+            alt=""
+            className="product-detail-image"
+          />
         )}
 
         <div className="d-flex gap-2 my-3">
           <span className="badge text-sm fw-semibold text-success-600 bg-success-100 px-20 py-9 radius-4 text-white">
-            {data?.stock ? "In Stock" : "Out of Stock"}
+            {productDetail?.stock ? "In Stock" : "Out of Stock"}
           </span>
           <span className="badge text-sm fw-semibold text-success-600 bg-success-100 px-20 py-9 radius-4 text-white">
             Clothing
           </span>
-          {data?.featured && (
+          {productDetail?.featured && (
             <span className="badge text-sm fw-semibold text-warning-600 bg-warning-100 px-20 py-9 radius-4 text-white">
               Featured
             </span>
@@ -35,8 +42,8 @@ const ViewProduct = ({ data }) => {
       <div className="col-lg-6 ">
         <div className="d-flex flex-column justify-content-between h-100">
           <div>
-            <p className="text-xxl fw-bold mb-0 ">{data?.name}</p>
-            <p className="mb-0">{data?.brand}</p>
+            <p className="text-xxl fw-bold mb-0 ">{productDetail?.name}</p>
+            <p className="mb-0">{productDetail?.brand}</p>
             <div className="d-flex gap-2">
               <p className="mb-0 text-sm text-warning-500">
                 {data?.rating?.stars} ratings
@@ -50,7 +57,7 @@ const ViewProduct = ({ data }) => {
                 id="pills-tab"
                 role="tablist"
               >
-                {data?.variants?.map((item, i) => (
+                {productDetail?.variants?.map((item, i) => (
                   <li key={i} className="nav-item" role="presentation">
                     <button
                       onClick={() => {
@@ -75,7 +82,7 @@ const ViewProduct = ({ data }) => {
               </ul>
 
               <div className="tab-content" id="pills-tabContent">
-                {data?.variants?.map((item, i) => {
+                {productDetail?.variants?.map((item, i) => {
                   return (
                     <div
                       key={i}
@@ -129,13 +136,15 @@ const ViewProduct = ({ data }) => {
               </div>
             </div>
 
-            <p className="text-sm">{data?.description}</p>
+            <p className="text-sm">{productDetail?.description}</p>
           </div>
 
           <div className="">
             <div className="border-top my-8"></div>
             <p className="mb-0 text-sm">Green Points</p>
-            <p className="text-xl fw-bold">{data?.greenPointsPerUnit} pts</p>
+            <p className="text-xl fw-bold">
+              {productDetail?.greenPointsPerUnit} pts
+            </p>
           </div>
         </div>
       </div>
