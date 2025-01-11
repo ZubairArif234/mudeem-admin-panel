@@ -31,7 +31,7 @@ const ProductSchema = z.object({
   brand: z.string().min(3, "Product brand must be at least 3 characters"),
   category: z.string().min(3, "Product category is invalid"),
   greenPointsPerUnit: z.string().min(1, "Product green point is invalid"),
-  featured: z.boolean().optional(),
+  featured: z.boolean(),
   description: z
     .string()
     .min(10, "Product description must be at least 10 characters"),
@@ -78,12 +78,12 @@ const FormPage = () => {
   const { createProduct, isPending } = useCreateProduct();
   console.log(typeof state?.data?.featured);
 
-  useEffect(() => {
-    if (state?.data?.images?.length > 0) {
-      setUploadedImages(state?.data?.images);
-      setUploadedImagesFiles(state?.data?.images);
-    }
-  }, [state]);
+  // useEffect(() => {
+  //   if (state?.data?.images?.length > 0) {
+  //     setUploadedImages(state?.data?.images);
+  //     setUploadedImagesFiles(state?.data?.images);
+  //   }
+  // }, [state]);
 
   const {
     register,
@@ -98,7 +98,7 @@ const FormPage = () => {
       greenPointsPerUnit: String(state?.data?.greenPointsPerUnit) || "",
       category: state?.data?.category?._id || "Select Category",
       description: state?.data?.description || "",
-      featured: state?.data?.featured ? true : false || "",
+      featured: state?.data?.featured || false,
       variants: state?.data?.variants?.map((item) => ({
         name: item?.name || "",
         price: String(item?.price),
@@ -125,13 +125,14 @@ const FormPage = () => {
 
       files.forEach((file) => {
         if (imageValidation(file)) {
-          newFiles.push(file);
-          newImages.push(URL.createObjectURL(file));
-        }
-      });
+          console.log(file);
 
-      setUploadedImages((prev) => [...prev, ...newImages]);
-      setUploadedImagesFiles((prev) => [...prev, ...newFiles]);
+          newFiles.push(file);
+          newImages.push({ src: URL.createObjectURL(file), file: file });
+        }
+        setUploadedImages((prev) => [...prev, ...newImages]);
+        setUploadedImagesFiles((prev) => [...prev, ...newFiles]);
+      });
     } catch (err) {
       console.log(err);
     }
@@ -241,6 +242,7 @@ const FormPage = () => {
     if (uploadedImages?.length < 1) {
       setUploadedImagesFiles([]); // Clear image files in the state
     }
+    console.log(uploadedImages, uploadedImagesFiles);
 
     try {
       // Send the data to createProduct API
@@ -314,7 +316,7 @@ const FormPage = () => {
                           </button>
                           <img
                             className="w-100 h-100 object-fit-cover"
-                            src={image}
+                            src={image?.src}
                             alt="Uploaded Preview"
                           />
                         </div>
