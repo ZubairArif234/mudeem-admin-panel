@@ -95,6 +95,7 @@ import Academy from "../adminPages/academy";
 import Products from "../adminPages/shop/products";
 import Order from "../adminPages/shop/orders";
 import Banner from "../adminPages/shop/banner";
+import FarmBanner from "../adminPages/farm/banner/index";
 import Category from "../adminPages/shop/category";
 import Farm from "../adminPages/farm";
 import Careers from "../adminPages/careers";
@@ -303,6 +304,7 @@ const Router = () => {
           <Route exact path="/shop-banner" element={<Banner />} />
           <Route exact path="/shop-category" element={<Category />} />
           <Route exact path="/sustainabilty-farm" element={<Farm />} />
+          <Route exact path="/farm-banner" element={<FarmBanner />} />
           <Route exact path="/careers" element={<Careers />} />
           <Route exact path="/user" element={<Users />} />
           <Route exact path="/setting" element={<Settings />} />

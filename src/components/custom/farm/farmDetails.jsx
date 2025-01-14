@@ -1,52 +1,53 @@
 import React from "react";
 import { CarouselWithArrowsOnlyImage } from "../../child/CarouselWithArrows";
 
-const FarmDetail = () => {
+const FarmDetail = ({ data }) => {
   return (
     <div className="">
       <div className="row gy-3 align-items-center ">
         <div className="col-lg-6 bg-neutral-300">
           <div className="">
-            <CarouselWithArrowsOnlyImage
-              images={[
-                "https://media.istockphoto.com/id/1394781347/photo/hand-holdig-plant-growing-on-green-background-with-sunshine.jpg?s=612x612&w=0&k=20&c=COX7-_QX8cLlL-oFKQYJgG5CEItpIN4JBbtcjPap1cA=",
-                "https://media.istockphoto.com/id/1394781347/photo/hand-holdig-plant-growing-on-green-background-with-sunshine.jpg?s=612x612&w=0&k=20&c=COX7-_QX8cLlL-oFKQYJgG5CEItpIN4JBbtcjPap1cA=",
-              ]}
-            />
-            {/* <img src="/assets/images/product.png" width={"100%"} /> */}
+            {data?.images?.length > 1 ? (
+              <CarouselWithArrowsOnlyImage
+                images={data?.images}
+                imageClass="klkl"
+              />
+            ) : (
+              <img src={data?.images[0]} className="post-detail-image" />
+            )}
           </div>
         </div>
 
         <div className="col-lg-6">
-          <p className="text-xxl fw-bold ">Molty Farm</p>
+          <p className="text-xxl fw-bold ">Farm Details</p>
 
           <p className="mb-0">
-            <span className="fw-bold me-2">Location : </span> S.A town near city
-            airport
+            <span className="fw-bold me-2">Location : </span> {data?.location}
           </p>
 
           <p className="mb-0">
-            <span className="fw-bold me-2">Renewable Energy :</span> Biomass
-            Energy
+            <span className="fw-bold me-2">Renewable Energy :</span>{" "}
+            {data?.renewableEnergy}
           </p>
 
           <p className="mb-0">
-            <span className="fw-bold me-2">Fertilizer Type :</span> Synthetic
-            Fertilizer
+            <span className="fw-bold me-2">Fertilizer Type :</span>{" "}
+            {data?.fertilizer}
           </p>
 
           <p className="mb-0">
-            <span className="fw-bold me-2">Desalination Method :</span> Solar
-            Desalination
+            <span className="fw-bold me-2">Desalination Method :</span>{" "}
+            {data?.desalinationMethod}
           </p>
 
           <p className="mb-0">
-            <span className="fw-bold me-2">Electric Generator :</span> DC
-            Generator
+            <span className="fw-bold me-2">Electric Generator :</span>{" "}
+            {data?.electricGeneration}
           </p>
 
           <p className="mb-0">
-            <span className="fw-bold me-2">Budget :</span> $ 14000
+            <span className="fw-bold me-2">Budget :</span> ${" "}
+            {data?.budgetDetails}
           </p>
         </div>
 
@@ -54,25 +55,12 @@ const FarmDetail = () => {
           <div className="border-top my-8"></div>
 
           <p>Design and Specification</p>
-          <p className="text-sm">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book. It has survived not
-            only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged.
-          </p>
+          <p className="text-sm">{data?.farmDesignSpecs}</p>
 
           <p>Desired Equipment</p>
           <div className="d-flex gap-2 my-3">
             <span className="badge text-sm fw-semibold text-success-600 bg-success-100 px-20 py-9 radius-4 text-white">
-              Grass
-            </span>
-            <span className="badge text-sm fw-semibold text-success-600 bg-success-100 px-20 py-9 radius-4 text-white">
-              Tube well
-            </span>
-            <span className="badge text-sm fw-semibold text-success-600 bg-success-100 px-20 py-9 radius-4 text-white">
-              Soil fertilizer
+              {data?.desiredEquipment}
             </span>
           </div>
         </div>

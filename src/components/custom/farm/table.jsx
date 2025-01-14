@@ -1,10 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 import Modal from "../extra/modal";
 import DeleteModalContent from "../extra/deleteModalContent";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import FarmDetail from "./farmDetails";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { useChangeStatus } from "../../../hook/apis/sustainableFarm/useChangeStatus";
 
+const RewardSchema = z.object({
+  points: z.coerce.number().min(1, "Points should be greater then 0"),
+});
 const FarmTable = ({ isSelectable, rows }) => {
+  const [farmDetail, setFarmDetail] = useState();
+  const { changeStatus } = useChangeStatus();
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(RewardSchema),
+  });
+
+  const handleRewardPost = async (data) => {
+    try {
+      const payload = {
+        status: "accepted",
+        points: data?.points,
+      };
+      const res = await changeStatus({ payload: payload, id: farmDetail?._id });
+      reset();
+      toast.success("Points rewarded succssfully");
+    } catch (err) {
+      toast.success(err || "Points rewarded failed");
+    }
+  };
   return (
     <table
       className="table bordered-table mb-0"
@@ -32,7 +65,7 @@ const FarmTable = ({ isSelectable, rows }) => {
         </tr>
       </thead>
       <tbody>
-        {rows.map((item, i) => (
+        {rows?.map((item, i) => (
           <tr>
             {isSelectable && (
               <td>
@@ -42,35 +75,106 @@ const FarmTable = ({ isSelectable, rows }) => {
                 </div>
               </td>
             )}
-            <td>#{item?.id + 1 * 2087}</td>
+            <td>#{item?._id.slice(0, 6) + i}</td>
             <td>{item?.location}</td>
-            <td>{item?.renewable}</td>
+            <td>{item?.renewableEnergy}</td>
             <td>{item?.fertilizer}</td>
-            <td>{item?.desalination}</td>
+            <td>{item?.desalinationMethod}</td>
 
-            <td> {item?.budget}</td>
+            <td> {item?.budgetDetails}</td>
             <td>
               <div className="d-flex justify-content-center gap-2 align-items-start">
-                <Modal
-                  id="farm-detail"
-                  button={
-                    <Icon
-                      icon="uil:eye"
-                      className="text-primary-500 cursor-pointer"
-                      type="button"
-                      data-bs-toggle="modal"
-                      data-bs-target="#farm-detail"
-                    />
-                  }
-                  body={<FarmDetail />}
-                  title="Farm Detail"
-                  size="modal-lg"
+                <Icon
+                  onClick={() => setFarmDetail(item)}
+                  icon="uil:eye"
+                  className="text-primary-500 cursor-pointer"
+                  type="button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#farm-detail"
                 />
               </div>
             </td>
           </tr>
         ))}
       </tbody>
+
+      <div
+        className="modal fade "
+        id={"farm-detail"}
+        tabIndex="-1"
+        aria-labelledby={"farm-detail" + "-label"}
+        aria-hidden="true"
+      >
+        <div className={`modal-dialog modal-dialog-centered modal-lg`}>
+          <div className="modal-content">
+            <div className="modal-header">
+              <h6 className="modal-title" id={"farm-detail" + "-label"}>
+                Farm Details
+              </h6>
+            </div>
+            <div className="modal-body">
+              <FarmDetail data={farmDetail} />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal fade "
+        id={"reward-points"}
+        tabIndex="-1"
+        aria-labelledby={"reward-points-label"}
+        aria-hidden="true"
+      >
+        <div className={`modal-dialog modal-dialog-centered `}>
+          <div className="modal-content">
+            <div className="modal-header">
+              <h6 className="modal-title" id={"reward-points-label"}>
+                Reward Points
+              </h6>
+              <button
+                onClick={() => reset()}
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+
+                  handleSubmit(handleRewardPost)(e);
+                }}
+              >
+                <div>
+                  <label>Enter Green Points</label>
+                  <input
+                    type="number"
+                    name="points"
+                    className="form-control form-control-sm"
+                    placeholder="Enter Green Points.."
+                    data-error={errors?.points ? "true" : "false"}
+                    {...register("points")}
+                  />
+                  {errors?.points && (
+                    <p className="text-danger-500">{errors?.points?.message}</p>
+                  )}
+                </div>
+                <div className="mt-3 d-flex justify-content-end align-items-center gap-3">
+                  <button
+                    type="submit"
+                    data-bs-dismiss="modal"
+                    className="btn btn-success-600 "
+                  >
+                    Reward & Approve
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     </table>
   );
 };

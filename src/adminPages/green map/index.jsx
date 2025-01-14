@@ -4,8 +4,12 @@ import Breadcrumb from "../../components/Breadcrumb";
 import TableDataLayer from "../../components/TableDataLayer";
 import GreenCampusTable from "../../components/custom/greenCampus/table";
 import Form from "../../components/custom/greenCampus/form";
+import { useGetLocation } from "../../hook/apis/greencampusMap/useGetLocations";
 
 const GreenCampus = () => {
+  const { locations, isPending } = useGetLocation({ search: "" });
+  console.log(locations);
+
   const tableHeadings = [
     "ID",
     "Driver",
@@ -82,7 +86,7 @@ const GreenCampus = () => {
 
       <TableDataLayer
         title={"Location"}
-        body={<GreenCampusTable heading={tableHeadings} rows={tableRows} />}
+        body={<GreenCampusTable rows={locations} />}
         modalTitle="Add Location"
         modalId="add-campus-location"
         modalForm={<Form />}

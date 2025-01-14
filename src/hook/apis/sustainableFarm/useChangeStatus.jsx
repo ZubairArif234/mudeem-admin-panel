@@ -6,13 +6,11 @@ export const useChangeStatus = () => {
   const { mutateAsync, isLoading, isPending, isError, error } = useMutation({
     mutationFn: async ({ payload, id }) => {
       try {
-        const response = await custAxios.patch(`/farm/${id}`, payload);
+        const response = await custAxios.put(`/farm/reward${id}`, payload);
         queryClient.invalidateQueries("sustainableFarm");
         return response?.data?.data;
       } catch (err) {
         console.log(err);
-
-        // throw err; // Rethrow to let the caller handle it
       }
     },
   });

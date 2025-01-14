@@ -1,54 +1,75 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateLocation } from "../../../hook/apis/greencampusMap/useCreateLocation";
 import { useUpdateLocation } from "../../../hook/apis/greencampusMap/useUpdateLocation";
+import Loader from "../extra/loader";
+
 const GreenMapPointSchema = z.object({
   description: z.string().min(3, "Enter Description"),
   location: z.string().min(3, "Enter Location"),
   coordinates: z
     .object({
-      lat: z.string().min(3, "Latitude must be a number"),
-      lng: z.string().min(3, "Longitude must be a number"),
+      lat: z.number().refine((val) => val >= -90 && val <= 90, {
+        message: "Latitude must be between -90 and 90",
+      }),
+      lng: z.number().refine((val) => val >= -180 && val <= 180, {
+        message: "Longitude must be between -180 and 180",
+      }),
     })
     .refine(
       (coords) => coords.lat !== undefined && coords.lng !== undefined,
       "Coordinates are required"
     ),
-  category: z.string("Enter Category"),
+  category: z
+    .string("Enter Category")
+    .refine((item) => item !== "Select Category", "Select Category"),
   greenPointsPerTime: z
-    .string()
+    .number()
     .min(1, "Green Points Per Time must be a number"),
 });
-const Form = () => {
+const Form = ({ data }) => {
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(GreenMapPointSchema),
     defaultValues: {
-      // name: data?.name || "",
+      description: data?.description || "",
+      location: data?.location || "",
+      coordinates: data?.coordinates || {},
+      category: data?.category || "Select Category",
+      greenPointsPerTime: data?.greenPointsPerTime || 0,
     },
   });
+
+  useEffect(() => {
+    if (data?.description) {
+      setValue("description", data?.description);
+      setValue("location", data?.location);
+      setValue("coordinates", data?.coordinates);
+      setValue("greenPointsPerTime", data?.greenPointsPerTime);
+      setValue("category", data?.category);
+    }
+  }, [data]);
 
   const { createLocation, isPending } = useCreateLocation();
   const { updateLocation, updatePending } = useUpdateLocation();
 
   const handleFormSubmit = async (values) => {
-    console.log(values);
-
     try {
-      // if (data?._id) {
-      //   await useUpdateLocation({ payload: values });
-      // } else {
-      await createLocation(values);
-      // }
+      if (data?._id) {
+        await updateLocation({ payload: values, id: data?._id });
+      } else {
+        await createLocation(values);
+      }
       reset();
     } catch (err) {
-      console.error("Login failed:", err);
+      console.error("Location failed:", err);
     }
   };
   return (
@@ -77,12 +98,24 @@ const Form = () => {
         <div className="col-6">
           <label className="form-label">Latitude</label>
           <input
-            type="text"
+            type="number"
             name="latitude"
+            step="any"
             className="form-control"
             placeholder="Enter Latitude"
             data-error={errors?.coordinates?.lat ? "true" : "false"}
-            {...register("coordinates.lat")}
+            {...register("coordinates.lat", {
+              required: "Latitude is required", // Custom error message for required field
+              valueAsNumber: true, // Automatically convert value to number
+              min: {
+                value: -90,
+                message: "Latitude must be between -90 and 90",
+              }, // Validation for min value
+              max: {
+                value: 90,
+                message: "Latitude must be between -90 and 90",
+              }, // Validation for max value
+            })}
           />
           {errors?.coordinates?.lat && (
             <p className="text-danger-500">
@@ -93,12 +126,24 @@ const Form = () => {
         <div className="col-6">
           <label className="form-label">Longitude</label>
           <input
-            type="text"
+            type="number"
             name="longitude"
             className="form-control form-control-sm"
             placeholder="Enter Longitude"
+            step="any"
             data-error={errors?.coordinates?.lng ? "true" : "false"}
-            {...register("coordinates.lng")}
+            {...register("coordinates.lng", {
+              required: "Longitude is required", // Custom error message for required field
+              valueAsNumber: true, // Automatically convert value to number
+              min: {
+                value: -180,
+                message: "Longitude must be between -90 and 90",
+              }, // Validation for min value
+              max: {
+                value: 180,
+                message: "Longitude must be between -90 and 90",
+              }, // Validation for max value
+            })}
           />
           {errors?.coordinates?.lng && (
             <p className="text-danger-500">
@@ -141,7 +186,9 @@ const Form = () => {
             className="form-control form-control-sm"
             placeholder="Enter Green Points"
             data-error={errors?.greenPointsPerTime ? "true" : "false"}
-            {...register("greenPointsPerTime")}
+            {...register("greenPointsPerTime", {
+              valueAsNumber: true,
+            })}
           />
           {errors?.greenPointsPerTime && (
             <p className="text-danger-500">
@@ -172,8 +219,16 @@ const Form = () => {
         >
           Close
         </button>
-        <button type="submit" className="btn btn-success-600">
-          Save changes
+        <button
+          type="submit"
+          className="btn btn-success-600"
+          data-bs-dismiss={data?._id && "modal"}
+        >
+          {isPending || updatePending ? (
+            <Loader loading={isPending || updatePending} />
+          ) : (
+            "Save Category"
+          )}
         </button>
       </div>
     </form>

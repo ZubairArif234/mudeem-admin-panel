@@ -14,5 +14,5 @@ export const useGetLocation = (filters) => {
     staleTime: Infinity,
     retry: 3,
   });
-  return { categories: data, ...rest };
+  return { locations: data, ...rest };
 };

@@ -1,25 +1,25 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import custAxios from "../../../config/axios.config";
+import { formAxios } from "../../../../config/axios.config";
 import { toast } from "sonner";
 
-export const useUpdateLocation = () => {
+export const useUpdateBanner = () => {
   const queryClient = useQueryClient();
   const { mutateAsync, isLoading, isPending, isError, error } = useMutation({
     mutationFn: async ({ payload, id }) => {
       try {
-        const response = await custAxios.put(`/green-map/${id}`, payload);
-        toast.success("Location updated successful");
-        queryClient.invalidateQueries("location");
+        const response = await formAxios.put(`/farm/banner/${id}`, payload);
+        toast.success("Banner updated successful");
+        queryClient.invalidateQueries("farm-banner");
         return response?.data?.data;
       } catch (err) {
-        toast.error(err.response?.data?.message || "Location updated failed");
+        toast.error(err.response?.data?.message || "Banner updated failed");
         throw err; // Rethrow to let the caller handle it
       }
     },
   });
 
   return {
-    updateLocation: mutateAsync,
+    updateBanner: mutateAsync,
     isLoading,
     updatePending: isPending,
     isError,

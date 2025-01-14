@@ -1237,20 +1237,46 @@ const MasterLayout = ({ children }) => {
               </NavLink>
             </li>
             {/* farm */}
-            <li>
-              <NavLink
-                to="/sustainabilty-farm"
-                className={(navData) =>
-                  navData.isActive ? "active-page mb-1" : ""
-                }
-              >
+            <li className="dropdown">
+              <Link to="#">
                 <Icon
                   icon="material-symbols:grass-rounded"
                   className="menu-icon"
                 />
                 <span>Sustainable Farm</span>
-              </NavLink>
+              </Link>
+              <ul className="sidebar-submenu">
+                <li>
+                  <NavLink
+                    to="/farm-banner"
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <Icon
+                      icon="material-symbols:planner-banner-ad-pt"
+                      className="menu-icon"
+                    />
+                    Banner
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/sustainabilty-farm"
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <Icon
+                      icon="material-symbols:category-rounded"
+                      className="menu-icon"
+                    />
+                    Farm
+                  </NavLink>
+                </li>
+              </ul>
             </li>
+
             {/* sustainability  */}
             <li className="dropdown">
               <Link to="#">
