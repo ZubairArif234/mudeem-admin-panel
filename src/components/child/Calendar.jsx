@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { INITIAL_EVENTS, createEventId } from "../../hook/event-utils.js";
+import { createEventId, INITIAL_EVENTS } from "../../hook/event-utils.js";
 
-export default function Calendar() {
+export default function Calendar({ data }) {
+  const [events, setEvents] = useState([]);
   function handleDateSelect(selectInfo) {
     let title = prompt("Please enter a new title for your event");
     let calendarApi = selectInfo.view.calendar;
@@ -35,28 +36,42 @@ export default function Calendar() {
     console.log("are you sure");
   }
 
+  useEffect(() => {
+    let array =
+      data?.map((element, i) => {
+        return {
+          id: createEventId(),
+          title: element?.name,
+          start: new Date(element?.dateTime).toISOString().replace(/T.*$/, ""),
+        };
+      }) || [];
+    setEvents((prevEvents) => [...prevEvents, ...array, {}]); // Using the functional update form to prevent potential stale state
+  }, [data]);
+
   return (
     <div className="demo-app">
-      <div className="demo-app-main">
-        <FullCalendar
-          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-          headerToolbar={{
-            left: "title",
-            center: "timeGridDay,timeGridWeek,dayGridMonth",
-            right: "prev,next today",
-          }}
-          initialView="dayGridMonth"
-          editable={true}
-          // selectable={true}
-          selectMirror={true}
-          dayMaxEvents={true}
-          weekends={true}
-          initialEvents={INITIAL_EVENTS}
-          select={handleDateSelect}
-          eventContent={renderEventContent}
-          eventClick={handleEventClick}
-        />
-      </div>
+      {events?.length > 0 && (
+        <div className="demo-app-main">
+          <FullCalendar
+            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+            headerToolbar={{
+              left: "title",
+              center: "timeGridDay,timeGridWeek,dayGridMonth",
+              right: "prev,next today",
+            }}
+            initialView="dayGridMonth"
+            editable={true}
+            // selectable={true}
+            selectMirror={true}
+            dayMaxEvents={true}
+            weekends={true}
+            initialEvents={[...events]}
+            select={handleDateSelect}
+            eventContent={renderEventContent}
+            eventClick={handleEventClick}
+          />
+        </div>
+      )}
     </div>
   );
 }

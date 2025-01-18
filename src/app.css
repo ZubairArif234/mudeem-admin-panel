@@ -46,7 +46,10 @@
   background-color: #dbdbdb;
   border-radius: 10px;
 }
-
+.flatpickr-day.selected {
+  background-color: #00b56f !important;
+  background: #00b56f !important;
+}
 @media (max-width: 768px) {
   .fc .fc-toolbar {
     display: block !important;

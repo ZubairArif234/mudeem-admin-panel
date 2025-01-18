@@ -5,6 +5,12 @@ import { useGetProductById } from "../../../../hook/apis/shop/product/useGetprod
 const ViewProduct = ({ data }) => {
   const [selectedTab, setSelectedTab] = useState("requested");
   const { productDetail } = useGetProductById(data?._id);
+  // const [productDetail, setProductDetail] = useState([]);
+  // useEffect(() => {
+  //   if (data?._id) {
+  // setProductDetail(productDetail);
+  //   }
+  // }, [data?._id]);
 
   useEffect(() => {
     if (productDetail?.variants?.length > 0) {

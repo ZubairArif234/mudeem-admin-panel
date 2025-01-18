@@ -15,8 +15,7 @@ export const useChangeStatus = () => {
       } catch (err) {
         console.log(err);
 
-        // throw err; // Rethrow to let the caller handle it
-      }
+         }
     },
   });
 
