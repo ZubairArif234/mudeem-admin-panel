@@ -4,8 +4,12 @@ import Breadcrumb from "../../../components/Breadcrumb";
 import TableDataLayer from "../../../components/TableDataLayer";
 import SustainibiltyCompanyTable from "../../../components/custom/sustainibilty/companyTable";
 import Form from "../../../components/custom/sustainibilty/form";
+import { useGetCompany } from "../../../hook/apis/waste/useGetCompany";
+import DataNotFound from "../../../components/custom/extra/dataNotFound";
+import Loader from "../../../components/custom/extra/loader";
 
 const SustainibiltyCompany = () => {
+  const { companies, isPending } = useGetCompany();
   const tableHeadings = [
     "ID",
     "Company Name",
@@ -110,10 +114,24 @@ const SustainibiltyCompany = () => {
         <TableDataLayer
           title={"Companies"}
           body={
-            <SustainibiltyCompanyTable
-              heading={tableHeadings}
-              rows={tableRows}
-            />
+            isPending ? (
+              <div
+                style={{ minHeight: "59vh" }}
+                className="d-flex justify-content-center align-items-center"
+              >
+                <Loader loading={isPending} size={150} color="#15803d" />
+              </div>
+            ) : companies?.length > 0 ? (
+              <SustainibiltyCompanyTable
+                heading={tableHeadings}
+                rows={companies}
+              />
+            ) : (
+              <DataNotFound
+                heading={"Company Not Found"}
+                text={"There is no Company found, based on your search!"}
+              />
+            )
           }
           isCustomHeaderButton
           modalTitle="Add Company"

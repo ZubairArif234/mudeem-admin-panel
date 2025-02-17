@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import $ from "jquery";
 import "datatables.net-dt/js/dataTables.dataTables.js";
 import { Icon } from "@iconify/react/dist/iconify.js";
@@ -8,8 +8,12 @@ import { SquarePagination } from "../../PaginationLayer";
 import Modal from "../extra/modal";
 import Form from "./form";
 import DeleteModalContent from "../extra/deleteModalContent";
+import moment from "moment";
+import { useDeletedCompany } from "../../../hook/apis/waste/useDeleteWasteCompany";
 
 const SustainibiltyCompanyTable = ({ isSelectable, rows }) => {
+  const [selectedCompany, setSelectedCompany] = useState();
+  const { deleteCompany } = useDeletedCompany();
   //   useEffect(() => {
   //     const table = $("#dataTable").DataTable({
   //       pageLength: 10,
@@ -18,6 +22,15 @@ const SustainibiltyCompanyTable = ({ isSelectable, rows }) => {
   //       table.destroy(true);
   //     };
   //   }, []);
+  const handleDelete = async (id) => {
+    try {
+      await deleteCompany(id);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  console.log(rows);
+
   return (
     <table
       className="table bordered-table mb-0"
@@ -37,15 +50,16 @@ const SustainibiltyCompanyTable = ({ isSelectable, rows }) => {
 
           <th scope="col">ID</th>
           <th scope="col">Company Name</th>
-          <th scope="col">Owner Name</th>
+          <th scope="col">Email</th>
+
           <th scope="col">Location</th>
           <th scope="col">Created At</th>
           <th scope="col">Actions</th>
         </tr>
       </thead>
       <tbody>
-        {rows.map((item, i) => (
-          <tr>
+        {rows?.map((item, i) => (
+          <tr key={i}>
             {isSelectable && (
               <td>
                 <div className="form-check style-check d-flex align-items-center">
@@ -54,47 +68,42 @@ const SustainibiltyCompanyTable = ({ isSelectable, rows }) => {
                 </div>
               </td>
             )}
-            <td>#{item?.id + 1 * 2087}</td>
-            <td>{item?.company}</td>
-            <td> {item?.owner}</td>
+            <td>#{item?._id.slice(0, 6) + i}</td>
+            <td>{item?.name}</td>
+            <td>{item?.email}</td>
+
             <td>{item?.location}</td>
 
-            <td> {item?.createdAt}</td>
+            <td> {moment(item?.createdAt).format("DD/MMM/YYYY")}</td>
             <td>
               <div className="d-flex gap-2 align-items-center">
-                <Modal
-                  id="edit-campus-location"
-                  button={
-                    <Icon
-                      icon="mage:edit"
-                      className="text-success-500 cursor-pointer"
-                      type="button"
-                      // class="btn btn-success-600 d-flex gap-2 align-items-center"
-                      data-bs-toggle="modal"
-                      data-bs-target="#edit-campus-location"
-                    />
-                  }
-                  body={<Form />}
-                  title="Edit Company"
+                <Icon
+                  onClick={() => setSelectedCompany(item)}
+                  icon="mage:edit"
+                  className="text-success-500 cursor-pointer "
+                  type="button"
+                  // class="btn btn-success-600 d-flex gap-2 align-items-center"
+                  data-bs-toggle="modal"
+                  data-bs-target="#edit-waste-company"
                 />
 
-                {/* <Icon
-                icon="mage:trash"
-                className="text-danger-500 cursor-pointer"
-              /> */}
                 <Modal
                   id="delete-sustainibility-company"
                   button={
                     <Icon
                       icon="mage:trash"
-                      className="text-danger-500 cursor-pointer"
+                      className="text-danger-500 cursor-pointer mb-4"
                       type="button"
                       // class="btn btn-success-600 d-flex gap-2 align-items-center"
                       data-bs-toggle="modal"
                       data-bs-target="#delete-sustainibility-company"
                     />
                   }
-                  body={<DeleteModalContent />}
+                  body={
+                    <DeleteModalContent
+                      deleteFunction={() => handleDelete(selectedCompany._id)}
+                    />
+                  }
                   title="Are you sure!"
                 />
               </div>
@@ -102,6 +111,32 @@ const SustainibiltyCompanyTable = ({ isSelectable, rows }) => {
           </tr>
         ))}
       </tbody>
+      <div
+        className="modal fade "
+        id={"edit-waste-company"}
+        tabIndex="-1"
+        aria-labelledby={`edit-waste-company-label`}
+        aria-hidden="true"
+      >
+        <div className={`modal-dialog modal-dialog-centered`}>
+          <div className="modal-content">
+            <div className="modal-header">
+              <h6 className="modal-title" id={`edit-waste-company-label`}>
+                Edit Company
+              </h6>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <Form data={selectedCompany} />
+            </div>
+          </div>
+        </div>
+      </div>
     </table>
   );
 };

@@ -1,29 +1,27 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import custAxios, { formAxios } from "../../../../config/axios.config";
+import custAxios from "../../../config/axios.config";
 import { toast } from "sonner";
 
-export const useUpdateOrderStatus = () => {
+export const useCreateCompany = () => {
   const queryClient = useQueryClient();
   const { mutateAsync, isLoading, isPending, isError, error } = useMutation({
     mutationFn: async (payload) => {
-      console.log(payload);
-
       try {
-        const response = await custAxios.patch(`/shop/order/`, payload);
-        toast.success("Order updated successful");
-        queryClient.invalidateQueries("order");
+        const response = await custAxios.post("/waste/company", payload);
+        toast.success("Company created successful");
+        queryClient.invalidateQueries("company");
         return response?.data?.data;
       } catch (err) {
-        toast.error(err.response?.data?.message || "Order updated failed");
+        toast.error(err.response?.data?.message || "Copmpany created failed");
         throw err; // Rethrow to let the caller handle it
       }
     },
   });
 
   return {
-    updateOrderStatus: mutateAsync,
+    createWasteCompany: mutateAsync,
     isLoading,
-    updatePending: isPending,
+    isPending,
     isError,
     error,
   };

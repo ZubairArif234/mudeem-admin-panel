@@ -1,4 +1,5 @@
 import React from "react";
+import { SingleDefaultTooltipThree } from "../../../child/DefaultTooltipThree";
 
 const OrderDetailTable = ({ isSelectable, rows }) => {
   return (
@@ -25,8 +26,8 @@ const OrderDetailTable = ({ isSelectable, rows }) => {
         </tr>
       </thead>
       <tbody>
-        {rows.map((item, i) => (
-          <tr>
+        {rows?.items?.map((item, i) => (
+          <tr key={i}>
             {isSelectable && (
               <td>
                 <div className="form-check style-check d-flex align-items-center">
@@ -35,16 +36,25 @@ const OrderDetailTable = ({ isSelectable, rows }) => {
                 </div>
               </td>
             )}
-            <td>#{item?.id + 1 * 2087}</td>
+            <td>#{item?._id.slice(0, 6) + i}</td>
             <td>
-              <div className="d-flex gap-1 align-items-center">
-                <img src="/assets/images/product.png" width={40} />
-
-                {item?.userName}
+              <div className="d-flex gap-1 align-items-center ">
+                <img
+                  src={item?.product?.images[0] || "/assets/images/product.png"}
+                  width={40}
+                />
+                {item?.product?.name?.length > 15 ? (
+                  <SingleDefaultTooltipThree
+                    title={item?.product?.name}
+                    child={item?.product?.name?.slice(0, 15) + "..."}
+                  />
+                ) : (
+                  item?.product?.name
+                )}
               </div>
             </td>
-            <td> {item?.items}</td>
-            <td>{item?.total} pts</td>
+            <td> {item?.quantity}</td>
+            <td>{item?.product?.greenPointsPerUnit * item?.quantity} pts</td>
           </tr>
         ))}
       </tbody>

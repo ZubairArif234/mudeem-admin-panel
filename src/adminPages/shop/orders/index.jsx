@@ -80,6 +80,7 @@ const Order = () => {
   const handleSearch = (value) => {
     setFilters((prev) => ({ ...prev, search: value }));
   };
+  console.log(orders, orders?.length > 0);
 
   return (
     <MasterLayout>
@@ -96,8 +97,8 @@ const Order = () => {
             >
               <Loader loading={isPending} size={150} color="#15803d" />
             </div>
-          ) : tableRows?.length > 0 ? (
-            <OrdersTable rows={tableRows} />
+          ) : orders?.length > 0 ? (
+            <OrdersTable rows={[...orders]} />
           ) : (
             <DataNotFound
               heading={"Orders Not Found"}

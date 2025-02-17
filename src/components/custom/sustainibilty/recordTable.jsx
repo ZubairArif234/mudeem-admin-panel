@@ -1,14 +1,7 @@
 import React, { useEffect } from "react";
-import $ from "jquery";
 import "datatables.net-dt/js/dataTables.dataTables.js";
-import { Icon } from "@iconify/react/dist/iconify.js";
-
-import { SingleAvatarGroup } from "../../child/AvatarGroup";
-import { SquarePagination } from "../../PaginationLayer";
-import Modal from "../extra/modal";
-import Form from "./form";
-import DeleteModalContent from "../extra/deleteModalContent";
 import { SingleDefaultTooltipThree } from "../../child/DefaultTooltipThree";
+import moment from "moment";
 
 const SustainibiltyRecordTable = ({ isSelectable, rows }) => {
   //   useEffect(() => {
@@ -46,8 +39,8 @@ const SustainibiltyRecordTable = ({ isSelectable, rows }) => {
         </tr>
       </thead>
       <tbody>
-        {rows.map((item, i) => (
-          <tr>
+        {rows?.map((item, i) => (
+          <tr key={i}>
             {isSelectable && (
               <td>
                 <div className="form-check style-check d-flex align-items-center">
@@ -56,21 +49,25 @@ const SustainibiltyRecordTable = ({ isSelectable, rows }) => {
                 </div>
               </td>
             )}
-            <td>#{item?.id + 1 * 2087}</td>
-            <td className="fw-bold">{item?.userName}</td>
+            <td>#{item?._id.slice(0, 6) + i}</td>
+            <td className="fw-bold">{item?.user?.name}</td>
             <td> {item?.wasteType}</td>
             <td>
-              <SingleDefaultTooltipThree
-                title={item?.description}
-                child={item?.description?.slice(0, 25)}
-              />
+              {item?.description?.length > 15 ? (
+                <SingleDefaultTooltipThree
+                  title={item?.description}
+                  child={item?.description?.slice(0, 25)}
+                />
+              ) : (
+                item?.description
+              )}
             </td>
 
-            <td> {item?.company}</td>
-            <td> {item?.pickup}</td>
+            <td> {item?.company?.name}</td>
+            <td> {moment(item?.pickupDateTime).format("DD/MMM/YYYY")}</td>
             <td>
-              {item?.points ? (
-                <p className="text-success-500 mb-0">{`${item.points} points`}</p>
+              {false ? (
+                <p className="text-success-500 mb-0">{`12 points`}</p>
               ) : (
                 <div className="">
                   <button

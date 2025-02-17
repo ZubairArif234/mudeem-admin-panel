@@ -4,8 +4,10 @@ import Breadcrumb from "../../../components/Breadcrumb";
 import TableDataLayer from "../../../components/TableDataLayer";
 import SustainibiltyRecordTable from "../../../components/custom/sustainibilty/recordTable";
 import RewardPointsModalContent from "../../../components/custom/extra/rewardPointsModalContent";
+import { useGetRecords } from "../../../hook/apis/waste/useGetRecords";
 
 const SustainibiltyRecord = () => {
+  const { records } = useGetRecords();
   const tableRows = [
     {
       id: "453",
@@ -149,7 +151,7 @@ const SustainibiltyRecord = () => {
 
         <TableDataLayer
           title={"Records"}
-          body={<SustainibiltyRecordTable rows={tableRows} />}
+          body={<SustainibiltyRecordTable rows={records} />}
         />
 
         <div
