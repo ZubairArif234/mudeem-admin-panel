@@ -4,14 +4,15 @@ import Breadcrumb from "../../components/Breadcrumb";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import TableDataLayer from "../../components/TableDataLayer";
 import ContentTable from "../../components/custom/contentCreator/table";
-export const VideoCard = () => {
+import { useGetAllReels } from "../../hook/apis/contentCreator/useGetAllReels";
+export const VideoCard = ({ data }) => {
   const [hide, setHide] = useState(false);
 
   return (
     <div className="card bg-success-500 h-100 radius-12 p-0 overflow-hidden position-relative">
       <div className="card-body p-0 gradient-overlay bottom-0 start-0">
         <video
-          src="assets/images/card/contentVideo.mp4"
+          src={data?.url || "assets/images/card/contentVideo.mp4"}
           alt=""
           width={"100%"}
           height={550}
@@ -21,26 +22,22 @@ export const VideoCard = () => {
         />
 
         <div
-          style={{ top: hide ? 0 : "-300px" }}
-          className="position-absolute bg-success-100   z-1 d-flex align-items-end"
+          style={{ top: hide ? 0 : "-300px", width: "100%" }}
+          className="position-absolute bg-success-100   z-1"
         >
           <div className="  p-24">
             <div className="d-flex gap-2 align-items-center">
               <span className="w-44-px h-44-px bg-success-subtle text-success-main rounded-circle d-flex justify-content-center align-items-center flex-shrink-0">
                 <img src="assets/images/user.png" alt="" />
               </span>
-              <h5
+              <p
                 className="card-title  
             text-lg mb-6"
               >
-                Kathryn Murphy
-              </h5>
+                {data?.user?.name}
+              </p>
             </div>
-            <p className="card-text  ">
-              We quickly learn to fear and thus automatically avo id potentially
-              stressful situations of all kinds, including the most common of
-              all
-            </p>
+            <p className="card-text   ">{data?.description}</p>
             <button
               data-bs-toggle="modal"
               data-bs-target="#content-reward-points"
@@ -78,6 +75,8 @@ export const VideoCard = () => {
 };
 
 const ContentCreator = () => {
+  const { reels } = useGetAllReels();
+  console.log(reels);
   const tableHeadings = [
     "ID",
     "Driver",
@@ -170,7 +169,7 @@ const ContentCreator = () => {
       </div> */}
       <TableDataLayer
         title={"Videos"}
-        body={<ContentTable heading={tableHeadings} rows={tableRows} />}
+        body={<ContentTable heading={tableHeadings} rows={reels?.reel} />}
       />
 
       <div

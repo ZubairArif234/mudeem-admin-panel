@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import $ from "jquery";
 import "datatables.net-dt/js/dataTables.dataTables.js";
 import { Icon } from "@iconify/react/dist/iconify.js";
@@ -10,6 +10,7 @@ const ContentTable = ({
 
   rows,
 }) => {
+  const [selectedReel, setSelectedReel] = useState();
   //   useEffect(() => {
   //     const table = $("#dataTable").DataTable({
   //       pageLength: 10,
@@ -54,7 +55,7 @@ const ContentTable = ({
                 </div>
               </td>
             )}
-            <td>#{item?.id + 1 * 2087}</td>
+            <td>#{item?._id.slice(0, 6) + i}</td>
             <td>
               <div className="d-flex align-items-center">
                 <img
@@ -62,70 +63,62 @@ const ContentTable = ({
                   alt=""
                   className="flex-shrink-0 me-12 radius-8"
                 />
-                {item?.name}
+                {item?.user?.name}
               </div>
             </td>
             <td>
               {" "}
-              <SingleDefaultTooltipThree
-                title={item?.description}
-                child={item?.description?.slice(0, 70) + "..."}
-              />
+              {item?.description?.length > 20 ? (
+                <SingleDefaultTooltipThree
+                  title={item?.description}
+                  child={item?.description?.slice(0, 25)}
+                />
+              ) : (
+                item?.description
+              )}
             </td>
 
             <td>
               <div className="d-flex gap-2 align-items-start">
-                <Modal
-                  id="view-book"
-                  button={
-                    <Icon
-                      icon="uil:eye"
-                      className="text-primary-500 cursor-pointer"
-                      type="button"
-                      data-bs-toggle="modal"
-                      data-bs-target="#view-book"
-                    />
-                  }
-                  body={<VideoCard />}
-                  title="Video"
-                  // size="modal-lg"
+                <Icon
+                  onClick={() => setSelectedReel(item)}
+                  icon="uil:eye"
+                  className="text-primary-500 cursor-pointer"
+                  type="button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#view-reel"
                 />
-
-                {/* <Modal
-                  id="edit-book"
-                  button={
-                    <Icon
-                      icon="mage:edit"
-                      className="text-success-500 cursor-pointer"
-                      type="button"
-                      data-bs-toggle="modal"
-                      data-bs-target="#edit-book"
-                    />
-                  }
-                  title="Edit Book"
-                  body={<Form />}
-                  size={"modal-lg"}
-                /> */}
-
-                {/* <Modal
-                  id="delete-book"
-                  button={
-                    <Icon
-                      icon="mage:trash"
-                      className="text-danger-500 cursor-pointer"
-                      type="button"
-                      data-bs-toggle="modal"
-                      data-bs-target="#delete-book"
-                    />
-                  }
-                  body={<DeleteModalContent />}
-                  title="Are you sure!"
-                /> */}
               </div>
             </td>
           </tr>
         ))}
       </tbody>
+      <div
+        className="modal fade "
+        id={"view-reel"}
+        tabIndex="-1"
+        aria-labelledby={`view-reel-label`}
+        aria-hidden="true"
+      >
+        <div className={`modal-dialog modal-dialog-centered`}>
+          <div className="modal-content">
+            <div className="modal-header">
+              <h6 className="modal-title" id={`view-reel-label`}>
+                Video
+              </h6>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <VideoCard data={selectedReel} />
+            </div>
+          </div>
+        </div>
+      </div>
     </table>
   );
 };

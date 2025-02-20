@@ -3,7 +3,11 @@ import "datatables.net-dt/js/dataTables.dataTables.js";
 import { SingleDefaultTooltipThree } from "../../child/DefaultTooltipThree";
 import moment from "moment";
 
-const SustainibiltyRecordTable = ({ isSelectable, rows }) => {
+const SustainibiltyRecordTable = ({
+  isSelectable,
+  rows,
+  handleRewardModal,
+}) => {
   //   useEffect(() => {
   //     const table = $("#dataTable").DataTable({
   //       pageLength: 10,
@@ -39,50 +43,53 @@ const SustainibiltyRecordTable = ({ isSelectable, rows }) => {
         </tr>
       </thead>
       <tbody>
-        {rows?.map((item, i) => (
-          <tr key={i}>
-            {isSelectable && (
+        {rows
+          ?.filter((val) => val?.status !== "accepted")
+          ?.map((item, i) => (
+            <tr key={i}>
+              {isSelectable && (
+                <td>
+                  <div className="form-check style-check d-flex align-items-center">
+                    <input className="form-check-input" type="checkbox" />
+                    <label className="form-check-label">01</label>
+                  </div>
+                </td>
+              )}
+              <td>#{item?._id.slice(0, 6) + i}</td>
+              <td className="fw-bold">{item?.user?.name}</td>
+              <td> {item?.wasteType}</td>
               <td>
-                <div className="form-check style-check d-flex align-items-center">
-                  <input className="form-check-input" type="checkbox" />
-                  <label className="form-check-label">01</label>
-                </div>
+                {item?.description?.length > 15 ? (
+                  <SingleDefaultTooltipThree
+                    title={item?.description}
+                    child={item?.description?.slice(0, 25)}
+                  />
+                ) : (
+                  item?.description
+                )}
               </td>
-            )}
-            <td>#{item?._id.slice(0, 6) + i}</td>
-            <td className="fw-bold">{item?.user?.name}</td>
-            <td> {item?.wasteType}</td>
-            <td>
-              {item?.description?.length > 15 ? (
-                <SingleDefaultTooltipThree
-                  title={item?.description}
-                  child={item?.description?.slice(0, 25)}
-                />
-              ) : (
-                item?.description
-              )}
-            </td>
 
-            <td> {item?.company?.name}</td>
-            <td> {moment(item?.pickupDateTime).format("DD/MMM/YYYY")}</td>
-            <td>
-              {false ? (
-                <p className="text-success-500 mb-0">{`12 points`}</p>
-              ) : (
-                <div className="">
-                  <button
-                    className=" btn text-white bg-success-500 cursor-pointer"
-                    type="button"
-                    data-bs-toggle="modal"
-                    data-bs-target="#sustainibility-points"
-                  >
-                    Reward Points
-                  </button>
-                </div>
-              )}
-            </td>
-          </tr>
-        ))}
+              <td> {item?.company?.name}</td>
+              <td> {moment(item?.pickupDateTime).format("DD/MMM/YYYY")}</td>
+              <td>
+                {false ? (
+                  <p className="text-success-500 mb-0">{`12 points`}</p>
+                ) : (
+                  <div className="">
+                    <button
+                      onClick={() => handleRewardModal(item?._id)}
+                      className=" btn text-white bg-success-500 cursor-pointer"
+                      type="button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#sustainibility-points"
+                    >
+                      Reward Points
+                    </button>
+                  </div>
+                )}
+              </td>
+            </tr>
+          ))}
       </tbody>
     </table>
   );
