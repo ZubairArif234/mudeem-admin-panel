@@ -7,8 +7,11 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import SustainibiltyCompanyTable from "../../components/custom/sustainibilty/companyTable";
 import AcademyTable from "../../components/custom/academy/table";
 import Form from "../../components/custom/academy/form";
+import { useGetBooks } from "../../hook/apis/academy/useAllBooks";
 
 const Academy = () => {
+  const { books, isPending } = useGetBooks();
+
   const tableRows = [
     {
       id: "453",
@@ -116,7 +119,7 @@ const Academy = () => {
       <Breadcrumb heading="Academy" title="Academy" />
       <TableDataLayer
         title={"Books"}
-        body={<AcademyTable rows={tableRows} />}
+        body={<AcademyTable rows={books} />}
         isCustomHeaderButton
         modalTitle="Add Book"
         modalId="add-sustainibility-company"

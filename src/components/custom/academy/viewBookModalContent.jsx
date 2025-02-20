@@ -1,6 +1,8 @@
 import React from "react";
 
-const ViewBookModalContent = () => {
+const ViewBookModalContent = ({ data }) => {
+  console.log(data, "data hai andar");
+
   return (
     <div>
       <div className="d-flex justify-content-center">

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import custAxios from "../../../../config/axios.config";
+import custAxios from "../../../config/axios.config";
 
 export const useGetBooks = () => {
   const { data, ...rest } = useQuery({
@@ -12,5 +12,5 @@ export const useGetBooks = () => {
     staleTime: "infinity",
     retry: 3,
   });
-  return { products: data, ...rest };
+  return { books: data, ...rest };
 };

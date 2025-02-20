@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import React from "react";
+import React, { useState } from "react";
 import DeleteModalContent from "../extra/deleteModalContent";
 import Modal from "../extra/modal";
 import { SingleDefaultTooltipThree } from "../../child/DefaultTooltipThree";
@@ -7,6 +7,7 @@ import ViewBookModalContent from "./viewBookModalContent";
 import Form from "./form";
 
 const AcademyTable = ({ isSelectable, rows }) => {
+  const [selectedBook, setSelectedBook] = useState();
   return (
     <table
       className="table bordered-table mb-0"
@@ -45,20 +46,27 @@ const AcademyTable = ({ isSelectable, rows }) => {
                 </div>
               </td>
             )}
-            <td>#{item?.id + 1 * 2087}</td>
+            <td>#{item?._id.slice(0, 6) + i}</td>
             <td>
               <div className="d-flex gap-1 align-items-center">
-                <img src="/assets/images/book.png" width={50} />
+                <img
+                  src={item?.thumbnail || "/assets/images/book.png"}
+                  width={50}
+                />
                 <Icon
                   className="text-warning-500"
                   icon="material-symbols:crown-rounded"
                   width="24"
                   height="24"
                 />
-                <SingleDefaultTooltipThree
-                  title={item?.bookName}
-                  child={item?.bookName?.slice(0, 25) + "..."}
-                />
+                {item?.title?.length > 15 ? (
+                  <SingleDefaultTooltipThree
+                    title={item?.title}
+                    child={item?.title?.slice(0, 15) + "..."}
+                  />
+                ) : (
+                  item?.title
+                )}
               </div>
             </td>
             <td> {item?.author}</td>
@@ -69,20 +77,13 @@ const AcademyTable = ({ isSelectable, rows }) => {
 
             <td>
               <div className="d-flex gap-2 align-items-start">
-                <Modal
-                  id="view-book"
-                  button={
-                    <Icon
-                      icon="uil:eye"
-                      className="text-primary-500 cursor-pointer"
-                      type="button"
-                      data-bs-toggle="modal"
-                      data-bs-target="#view-book"
-                    />
-                  }
-                  body={<ViewBookModalContent />}
-                  title="View book"
-                  size="modal-lg"
+                <Icon
+                  onClick={() => setSelectedBook(item)}
+                  icon="uil:eye"
+                  className="text-primary-500 cursor-pointer"
+                  type="button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#view-book"
                 />
 
                 <Modal
@@ -120,6 +121,32 @@ const AcademyTable = ({ isSelectable, rows }) => {
           </tr>
         ))}
       </tbody>
+      <div
+        className="modal fade "
+        id={"view-book"}
+        tabIndex="-1"
+        aria-labelledby={`view-book-label`}
+        aria-hidden="true"
+      >
+        <div className={`modal-dialog modal-dialog-centered modal-lg`}>
+          <div className="modal-content">
+            <div className="modal-header">
+              <h6 className="modal-title" id={`view-book-label`}>
+                View book
+              </h6>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <ViewBookModalContent data={selectedBook} />
+            </div>
+          </div>
+        </div>
+      </div>
     </table>
   );
 };
