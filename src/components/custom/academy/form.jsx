@@ -3,7 +3,6 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useCreateBook } from "../../../hook/apis/academy/useCreateBook";
 
 const BookSchema = z.object({
   name: z.string().min(3, "Books name must be at least 3 characters"),
@@ -24,13 +23,13 @@ const fileValidation = (file) => {
   if (!file) {
     return false;
   }
-  const maxSize = 2 * 1024 * 1024; // 5MB limit
+  const maxSize = 2 * 1024 * 1024; // 2MB limit
   const isValidSize = file.size <= maxSize;
 
   return isValidSize ? file : null;
 };
-const Form = () => {
-  const { createBook, isPending } = useCreateBook();
+
+const Form = ({ data: selectedBook }) => {
   const [imagePreview, setImagePreview] = useState({
     file: null,
     src: "",
@@ -86,83 +85,48 @@ const Form = () => {
   };
 
   useEffect(() => {
-    return () => {
-      if (imagePreview) {
-        URL.revokeObjectURL(imagePreview);
-      }
-    };
-  }, [imagePreview]);
+    if (selectedBook) {
+      setImagePreview({
+        file: selectedBook?.cover,
+        src: selectedBook?.cover,
+        error: "",
+      });
+      setPdfPreview({
+        file: selectedBook?.pdf,
+        src: selectedBook?.pdf,
+        error: "",
+      });
+    }
+  }, [selectedBook]);
 
   const {
     register,
     handleSubmit,
     reset,
+    setValue, // For setting form values
     formState: { errors },
   } = useForm({
     resolver: zodResolver(BookSchema),
   });
 
-  const onSubmit = async (data) => {
-    console.log(data);
-    if (!imagePreview?.file) {
-      setImagePreview({ ...imagePreview, error: "Upload image" });
+  useEffect(() => {
+    if (selectedBook) {
+      setValue("name", selectedBook.title);
+      setValue("author", selectedBook.author);
+      setValue("pages", selectedBook.pages);
+      setValue("language", selectedBook.language);
+      setValue("year", selectedBook.releaseYear);
+      setValue("type", selectedBook.type);
+      setValue("greenPoints", selectedBook.greenPoints);
+      setValue("price", selectedBook.price);
+      setValue("isPremium", selectedBook.isPremium ? "premium" : "free");
+      setValue("description", selectedBook.description);
     }
-    if (!pdfPreview?.file) {
-      setPdfPreview({ ...pdfPreview, error: "Upload PDF" });
-    }
+  }, [selectedBook, setValue]);
 
-    // Prepare FormData
-    const formData = new FormData();
-    formData.append("title", data.name);
-    formData.append("year", new Date(data.year).getFullYear());
-    formData.append("author", data.author);
-    formData.append("pages", data.pages);
-    formData.append("language", data.language);
-    formData.append("isPremium", data.category === "free" ? false : true);
-    formData.append("description", data.description);
-    formData.append("price", data?.price); // static price or use dynamic from data
-    formData.append("greenPoints", data.greenPoints);
-    formData.append("type", data.type);
-    formData.append("cover", imagePreview?.file);
-    formData.append("book", pdfPreview?.file);
-
-    // Append images to FormData
-
-    try {
-      let res;
-      // Send the data to createProduct API
-      if (false) {
-        console.log("jkjkj");
-
-        // await updateProduct({ payload: formData, id: id });
-      } else {
-        res = await createBook(formData);
-      }
-
-      if (res) {
-        setImagePreview({
-          file: "",
-          src: "",
-          error: "",
-        });
-        setPdfPreview({
-          file: "",
-          src: "",
-          error: "",
-        });
-
-        reset(); // Reset form fields
-      }
-
-      // Reset the form and clear states after successful submission
-      // Navigate to the product page after successful submission
-      // navigate("/shop-products");
-    } catch (err) {
-      // Handle errors
-      console.error("Book creation failed:", err);
-    }
+  const onSubmit = (data) => {
+    console.log(data); // Just logging for now
   };
-  console.log(pdfPreview, imagePreview);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -170,7 +134,6 @@ const Form = () => {
         <div className="col-lg-6">
           <label>Upload Book Cover</label>
           <div className="upload-image-wrapper d-flex align-items-center gap-3">
-            {/* Image preview section */}
             {imagePreview?.file ? (
               <div className="uploaded-img position-relative h-120-px w-120-px border input-form-light radius-8 overflow-hidden border-dashed bg-neutral-50">
                 <button
@@ -204,14 +167,13 @@ const Form = () => {
               </label>
             )}
 
-            {/* Always render the input, but hide it */}
             <input
               id="upload-file"
               type="file"
               onChange={(e) => handleFileChange(e, "image")}
               hidden
               ref={fileInputRef}
-              accept="image/*" // Optional: restrict to image files
+              accept="image/*"
             />
           </div>
           {imagePreview?.error && (
@@ -221,7 +183,6 @@ const Form = () => {
         <div className="col-lg-6">
           <label>Upload Book PDF</label>
           <div className="upload-image-wrapper  d-flex align-items-center gap-3">
-            {/* Image preview section */}
             {pdfPreview?.file ? (
               <div className=" position-relative   w-auto ps-6 pe-6 pt-2 pb-2 d-flex  overflow-hidden border-dashed bg-neutral-50">
                 {pdfPreview?.src && (
@@ -231,7 +192,7 @@ const Form = () => {
                   type="button"
                   onClick={() => removeImage("pdf")}
                   className="uploaded-img__remove top-0 end-0 z-1 text-2xxl line-height-1 ms-20 mt-4 d-flex"
-                  aria-label="Remove uploaded image"
+                  aria-label="Remove uploaded file"
                 >
                   <Icon
                     icon="radix-icons:cross-2"
@@ -252,10 +213,9 @@ const Form = () => {
               </label>
             )}
 
-            {/* Always render the input, but hide it */}
             <input
               id="upload-pdf"
-              accept="doc/*" // Optional: restrict to image files
+              accept="application/pdf"
               type="file"
               onChange={(e) => handleFileChange(e, "file")}
               hidden
@@ -298,56 +258,12 @@ const Form = () => {
         </div>
 
         <div className="col-lg-4">
-          <label className="form-label d-block">Type</label>
-
-          <div
-            className="btn-group"
-            role="group"
-            aria-label="Basic radio toggle button group"
-          >
-            <input
-              type="radio"
-              className="btn-check"
-              name="btnradio"
-              id="btnradio1"
-              defaultChecked=""
-              value={"new"}
-              {...register(`type`)}
-            />
-            <label
-              className="btn btn-outline-success-600 px-20 py-11 radius-8"
-              htmlFor="btnradio1"
-            >
-              New
-            </label>
-
-            <input
-              type="radio"
-              className="btn-check"
-              name="btnradio"
-              id="btnradio3"
-              value={"popular"}
-              {...register(`type`)}
-            />
-            <label
-              className="btn btn-outline-success-600 px-20 py-11 radius-8"
-              htmlFor="btnradio3"
-            >
-              Popular
-            </label>
-          </div>
-          {errors?.type && (
-            <p className="text-danger-500">{errors?.type?.message}</p>
-          )}
-        </div>
-
-        <div className="col-lg-4">
-          <label className="form-label">No of pages</label>
+          <label className="form-label">No of Pages</label>
           <input
             type="number"
             name="#0"
             className="form-control form-control-sm"
-            placeholder="Enter No of pages"
+            placeholder="Enter No of Pages"
             data-error={errors?.pages ? "true" : "false"}
             {...register("pages", { valueAsNumber: true })}
           />
@@ -377,7 +293,7 @@ const Form = () => {
             type="date"
             name="#0"
             className="form-control form-control-sm"
-            placeholder="Enter Relase date"
+            placeholder="Enter Release Date"
             data-error={errors?.year ? "true" : "false"}
             {...register("year")}
           />
@@ -461,11 +377,9 @@ const Form = () => {
         </div>
 
         <div className="col-12">
-          <label className="form-label">Decsription</label>
-          {/* <textarea> */}
+          <label className="form-label">Description</label>
           <textarea
             name="#0"
-            // rows={10}
             style={{ height: "100px" }}
             className="form-control form-control-sm"
             placeholder="Enter Description"
@@ -476,19 +390,20 @@ const Form = () => {
             <p className="text-danger-500">{errors?.description?.message}</p>
           )}
         </div>
-      </div>
 
-      <div className="mt-10 d-flex gap-2 justify-content-end">
-        <button
-          type="button"
-          className="btn btn-danger-600"
-          data-bs-dismiss="modal"
-        >
-          Close
-        </button>
-        <button type="submit" className="btn btn-success-600">
-          Save changes
-        </button>
+
+        <div className="mt-10 d-flex gap-2 justify-content-end">
+          <button
+            type="button"
+            className="btn btn-danger-600"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button type="submit" className="btn btn-success-600">
+            Save changes
+          </button>
+        </div>
       </div>
     </form>
   );

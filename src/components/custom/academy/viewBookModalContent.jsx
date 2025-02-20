@@ -3,58 +3,45 @@ import React from "react";
 const ViewBookModalContent = ({ data }) => {
   console.log(data, "data hai andar");
 
+  if (!data) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div>
       <div className="d-flex justify-content-center">
-        <img src="/assets/images/book.png" width={200} />
+        <img src={data?.thumbnail || "/assets/images/book.png"} width={200} alt="Book Thumbnail" />
       </div>
-      <p className="text-xxl fw-bold mb-0 text-center">Title of book</p>
-      <p className="text-center">Author of book</p>
+
+      <p className="text-xxl fw-bold mb-0 text-center">{data?.title}</p>
+      <p className="text-center">{data?.author}</p>
 
       <div className="row gy-3">
         <div className="col-4">
-          <p className="text-center mb-0 text-xl">130</p>
-          <p className="text-center text-sm">Page</p>
+          <p className="text-center mb-0 text-xl">{data?.pages}</p>
+          <p className="text-center text-sm">Pages</p>
         </div>
         <div className="col-4">
-          <p className="text-center mb-0 text-xl">English</p>
+          <p className="text-center mb-0 text-xl">{data?.language}</p>
           <p className="text-center text-sm">Language</p>
         </div>
         <div className="col-4">
-          <p className="text-center mb-0 text-xl">2018</p>
+          <p className="text-center mb-0 text-xl">{data?.year}</p>
           <p className="text-center text-sm">Release</p>
         </div>
       </div>
 
-      <p>
-        Lorem Ipsum is simply dummy text of the printing and typesetting
-        industry. Lorem Ipsum has been the industry's standard dummy text ever
-        since the 1500s, when an unknown printer took a galley of type and
-        scrambled it to make a type specimen book. It has survived not only five
-        centuries, but also the leap into electronic typesetting, remaining
-        essentially unchanged. It was popularised in the 1960s with the release
-        of Letraset sheets containing Lorem Ipsum passages, and more recently
-        with desktop publishing software like Aldus PageMaker including versions
-        of Lorem Ipsum.
-      </p>
-      <p>
-        Lorem Ipsum is simply dummy text of the printing and typesetting
-        industry. Lorem Ipsum has been the industry's standard dummy text ever
-        since the 1500s, when an unknown printer took a galley of type and
-        scrambled it to make a type specimen book. It has survived not only five
-        centuries, but also the leap into electronic typesetting, remaining
-        essentially unchanged.
-      </p>
+      <p>{data?.description}</p>
 
       <div className="border-top my-8"></div>
       <div className="d-flex justify-content-between">
-        <div className="">
-          <p className=" mb-0 text-sm">Reward Green points</p>
-          <p className=" text-xl text-success-500 fw-bold">120 pts</p>
+        <div>
+          <p className="mb-0 text-sm">Reward Green points</p>
+          <p className="text-xl text-success-500 fw-bold">{data?.greenPoints} pts</p>
         </div>
-        <div className="">
+        <div>
           <p className="mb-0 text-sm">Pay Green Points</p>
-          <p className="text-xl fw-bold"> 400.00 pts</p>
+          <p className="text-xl fw-bold">{data?.price} pts</p>
         </div>
       </div>
     </div>
@@ -62,3 +49,4 @@ const ViewBookModalContent = ({ data }) => {
 };
 
 export default ViewBookModalContent;
+

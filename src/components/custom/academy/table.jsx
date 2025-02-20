@@ -1,13 +1,16 @@
-import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useState } from "react";
+import { Icon } from "@iconify/react/dist/iconify.js";
 import DeleteModalContent from "../extra/deleteModalContent";
 import Modal from "../extra/modal";
 import { SingleDefaultTooltipThree } from "../../child/DefaultTooltipThree";
 import ViewBookModalContent from "./viewBookModalContent";
 import Form from "./form";
+import { useDeleteBook } from "../../../hook/apis/academy/useDeletedBook"; // Import your custom hook
 
 const AcademyTable = ({ isSelectable, rows }) => {
   const [selectedBook, setSelectedBook] = useState();
+  const { deleteBook, isLoading } = useDeleteBook(); // Get delete function from the hook
+
   return (
     <table
       className="table bordered-table mb-0"
@@ -31,13 +34,12 @@ const AcademyTable = ({ isSelectable, rows }) => {
           <th scope="col">Descripton</th>
           <th scope="col">Language</th>
           <th scope="col">Green Points</th>
-          {/* <th scope="col">Points</th> */}
           <th scope="col">Action</th>
         </tr>
       </thead>
       <tbody>
-        {rows.map((item, i) => (
-          <tr>
+        {rows?.map((item, i) => (
+          <tr key={item?._id}>
             {isSelectable && (
               <td>
                 <div className="form-check style-check d-flex align-items-center">
@@ -71,7 +73,6 @@ const AcademyTable = ({ isSelectable, rows }) => {
             </td>
             <td> {item?.author}</td>
             <td>{item?.description?.slice(0, 25) + "..."}</td>
-
             <td> {item?.language}</td>
             <td>{item?.price} pts</td>
 
@@ -98,7 +99,7 @@ const AcademyTable = ({ isSelectable, rows }) => {
                     />
                   }
                   title="Edit Book"
-                  body={<Form />}
+                  body={<Form data={selectedBook} />}
                   size={"modal-lg"}
                 />
 
@@ -113,16 +114,22 @@ const AcademyTable = ({ isSelectable, rows }) => {
                       data-bs-target="#delete-book"
                     />
                   }
-                  body={<DeleteModalContent />}
+                  body={
+                    <DeleteModalContent
+                      deleteFunction={() => deleteBook(item._id)} // Ensure deleteBook is a function here
+                      isLoading={isLoading} // Pass the loading state to disable the button during deletion
+                    />
+                  }
                   title="Are you sure!"
                 />
+
               </div>
             </td>
           </tr>
         ))}
       </tbody>
       <div
-        className="modal fade "
+        className="modal fade"
         id={"view-book"}
         tabIndex="-1"
         aria-labelledby={`view-book-label`}
