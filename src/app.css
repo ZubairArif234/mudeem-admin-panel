@@ -50,6 +50,12 @@
   background-color: #00b56f !important;
   background: #00b56f !important;
 }
+.book-img{
+  aspect-ratio: 1/1;
+  object-fit: contain;
+  background-color: #f2f2f2;
+}
+
 @media (max-width: 768px) {
   .fc .fc-toolbar {
     display: block !important;

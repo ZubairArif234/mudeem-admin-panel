@@ -1,8 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { z } from "zod";
+import { useCreateBook } from "../../../hook/apis/academy/useCreateBook";
+import { useUpdateBook } from "../../../hook/apis/academy/useUpdatedBook";
 
 const BookSchema = z.object({
   name: z.string().min(3, "Books name must be at least 3 characters"),
@@ -23,13 +25,16 @@ const fileValidation = (file) => {
   if (!file) {
     return false;
   }
-  const maxSize = 2 * 1024 * 1024; // 2MB limit
+  const maxSize = 2 * 1024 * 1024; // 5MB limit
   const isValidSize = file.size <= maxSize;
 
   return isValidSize ? file : null;
 };
+const Form = ({ data }) => {
+  console.log("print data", data);
 
-const Form = ({ data: selectedBook }) => {
+  const { createBook, isPending } = useCreateBook();
+  const { updateBook, isLoading, isError, error } = useUpdateBook();
   const [imagePreview, setImagePreview] = useState({
     file: null,
     src: "",
@@ -53,7 +58,7 @@ const Form = ({ data: selectedBook }) => {
             src: src,
             error: "",
           });
-        } else {
+        } else if (type === "file") {
           setPdfPreview({
             ...pdfPreview,
             file: e.target.files[0],
@@ -85,48 +90,91 @@ const Form = ({ data: selectedBook }) => {
   };
 
   useEffect(() => {
-    if (selectedBook) {
-      setImagePreview({
-        file: selectedBook?.cover,
-        src: selectedBook?.cover,
-        error: "",
-      });
-      setPdfPreview({
-        file: selectedBook?.pdf,
-        src: selectedBook?.pdf,
-        error: "",
-      });
-    }
-  }, [selectedBook]);
+    return () => {
+      if (imagePreview) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+  }, [imagePreview]);
 
   const {
     register,
     handleSubmit,
     reset,
-    setValue, // For setting form values
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(BookSchema),
   });
 
-  useEffect(() => {
-    if (selectedBook) {
-      setValue("name", selectedBook.title);
-      setValue("author", selectedBook.author);
-      setValue("pages", selectedBook.pages);
-      setValue("language", selectedBook.language);
-      setValue("year", selectedBook.releaseYear);
-      setValue("type", selectedBook.type);
-      setValue("greenPoints", selectedBook.greenPoints);
-      setValue("price", selectedBook.price);
-      setValue("isPremium", selectedBook.isPremium ? "premium" : "free");
-      setValue("description", selectedBook.description);
-    }
-  }, [selectedBook, setValue]);
+  const onSubmit = async (formData) => {
+    console.log(formData);
 
-  const onSubmit = (data) => {
-    console.log(data); // Just logging for now
+    if (!imagePreview?.file) {
+      setImagePreview({ ...imagePreview, error: "Upload image" });
+    }
+    if (!pdfPreview?.file) {
+      setPdfPreview({ ...pdfPreview, error: "Upload PDF" });
+    }
+
+    const bookData = new FormData();
+    bookData.append("title", formData.name);
+    bookData.append("year", new Date(formData.year).getFullYear());
+    bookData.append("author", formData.author);
+    bookData.append("pages", formData.pages);
+    bookData.append("language", formData.language);
+    bookData.append("isPremium", formData.category === "free" ? false : true);
+    bookData.append("description", formData.description);
+    bookData.append("price", formData?.price);
+    bookData.append("greenPoints", formData.greenPoints);
+    bookData.append("type", formData.type);
+    bookData.append("cover", imagePreview?.file);
+    bookData.append("book", pdfPreview?.file);
+
+    try {
+      let res;
+      if (data?._id) {
+        res = await updateBook({ id: data._id, payload: bookData });
+      } else {
+        res = await createBook(bookData);
+      }
+
+      if (res) {
+        setImagePreview({ file: "", src: "", error: "" });
+        setPdfPreview({ file: "", src: "", error: "" });
+        reset();
+      }
+
+    } catch (err) {
+      console.error("Book update failed:", err);
+    }
   };
+
+  console.log(pdfPreview, imagePreview);
+
+  useEffect(() => {
+    if (data?._id) {
+      setValue("name", data?.title);
+      setValue("author", data?.author);
+      setValue("pages", data?.pages);
+      setValue("language", data?.language);
+      setValue("year", new Date(data?.year, 0, 1).toISOString().split('T')[0]);
+      setValue("greenPoints", data?.greenPoints);
+      setValue("price", data?.price);
+      setValue("isPremium", data?.isPremium ? "premium" : "free");
+      setValue("description", data?.description);
+      setValue("type", data?.type);
+
+      if (data?.content) {
+        setPdfPreview({ ...pdfPreview, src: data?.content });
+      }
+
+      if (data?.thumbnail) {
+        setImagePreview({ ...imagePreview, src: data?.thumbnail });
+      }
+    }
+  }, [data, setValue]);
+
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -134,7 +182,7 @@ const Form = ({ data: selectedBook }) => {
         <div className="col-lg-6">
           <label>Upload Book Cover</label>
           <div className="upload-image-wrapper d-flex align-items-center gap-3">
-            {imagePreview?.file ? (
+            {imagePreview?.src ? (
               <div className="uploaded-img position-relative h-120-px w-120-px border input-form-light radius-8 overflow-hidden border-dashed bg-neutral-50">
                 <button
                   type="button"
@@ -142,15 +190,12 @@ const Form = ({ data: selectedBook }) => {
                   className="uploaded-img__remove position-absolute top-0 end-0 z-1 text-2xxl line-height-1 me-8 mt-8 d-flex"
                   aria-label="Remove uploaded image"
                 >
-                  <Icon
-                    icon="radix-icons:cross-2"
-                    className="text-xl text-danger-600"
-                  ></Icon>
+                  <Icon icon="radix-icons:cross-2" className="text-xl text-danger-600"></Icon>
                 </button>
                 <img
                   id="uploaded-img__preview"
                   className="w-100 h-100 object-fit-cover"
-                  src={imagePreview?.src}
+                  src={imagePreview?.src} 
                   alt="Preview"
                 />
               </div>
@@ -182,17 +227,58 @@ const Form = ({ data: selectedBook }) => {
         </div>
         <div className="col-lg-6">
           <label>Upload Book PDF</label>
-          <div className="upload-image-wrapper  d-flex align-items-center gap-3">
-            {pdfPreview?.file ? (
-              <div className=" position-relative   w-auto ps-6 pe-6 pt-2 pb-2 d-flex  overflow-hidden border-dashed bg-neutral-50">
-                {pdfPreview?.src && (
+          <div className="upload-image-wrapper d-flex align-items-center gap-3">
+            {/* PDF preview section */}
+            {/* {pdfPreview?.file ? (
+              <div className="position-relative w-auto ps-6 pe-6 pt-2 pb-2 d-flex overflow-hidden border-dashed bg-neutral-50">
+                <p className="mb-0">{pdfPreview?.file?.name}</p>
+                <button
+                  type="button"
+                  onClick={() => removeImage("pdf")}
+                  className="uploaded-img__remove top-0 end-0 z-1 text-2xxl line-height-1 ms-20 mt-4 d-flex"
+                  aria-label="Remove uploaded image"
+                >
+                  <Icon
+                    icon="radix-icons:cross-2"
+                    className="text-xl text-danger-600"
+                  ></Icon>
+                </button>
+              </div>
+            ) : (
+              data?.content && (
+                <div className="position-relative w-auto ps-6 pe-6 pt-2 pb-2 d-flex overflow-hidden border-dashed bg-neutral-50">
+                  <p className="mb-0"><a href={data.content} target="_blank" rel="noopener noreferrer">View PDF</a></p>
+                  <button
+                    type="button"
+                    onClick={() => removeImage("pdf")}
+                    className="uploaded-img__remove top-0 end-0 z-1 text-2xxl line-height-1 ms-20 mt-4 d-flex"
+                    aria-label="Remove uploaded image"
+                  >
+                    <Icon
+                      icon="radix-icons:cross-2"
+                      className="text-xl text-danger-600"
+                    ></Icon>
+                  </button>
+                </div>
+              )
+            )} */}
+            {/* PDF preview section */}
+            {pdfPreview?.file || data?.content ? (
+              <div className="position-relative w-auto ps-6 pe-6 pt-2 pb-2 d-flex overflow-hidden border-dashed bg-neutral-50">
+                {pdfPreview?.file ? (
                   <p className="mb-0">{pdfPreview?.file?.name}</p>
+                ) : (
+                  <p className="mb-0">
+                    <a href={data?.content} target="_blank" rel="noopener noreferrer">
+                      View PDF
+                    </a>
+                  </p>
                 )}
                 <button
                   type="button"
                   onClick={() => removeImage("pdf")}
                   className="uploaded-img__remove top-0 end-0 z-1 text-2xxl line-height-1 ms-20 mt-4 d-flex"
-                  aria-label="Remove uploaded file"
+                  aria-label="Remove uploaded PDF"
                 >
                   <Icon
                     icon="radix-icons:cross-2"
@@ -206,10 +292,10 @@ const Form = ({ data: selectedBook }) => {
                 htmlFor="upload-pdf"
               >
                 <Icon
-                  icon="solar:camera-outline"
+                  icon="solar:document-outline"
                   className="text-xl text-secondary-light"
                 ></Icon>
-                <span className="fw-semibold text-secondary-light">Upload</span>
+                <span className="fw-semibold text-secondary-light">Upload PDF</span>
               </label>
             )}
 
@@ -221,11 +307,13 @@ const Form = ({ data: selectedBook }) => {
               hidden
               ref={fileInputRef}
             />
+
           </div>
           {pdfPreview?.error && (
             <p className="text-danger-500">{pdfPreview?.error}</p>
           )}
         </div>
+
 
         <div className="col-lg-4">
           <label className="form-label">Book Name</label>
@@ -258,12 +346,56 @@ const Form = ({ data: selectedBook }) => {
         </div>
 
         <div className="col-lg-4">
-          <label className="form-label">No of Pages</label>
+          <label className="form-label d-block">Type</label>
+
+          <div
+            className="btn-group"
+            role="group"
+            aria-label="Basic radio toggle button group"
+          >
+            <input
+              type="radio"
+              className="btn-check"
+              name="btnradio"
+              id="btnradio1"
+              defaultChecked=""
+              value={"new"}
+              {...register(`type`)}
+            />
+            <label
+              className="btn btn-outline-success-600 px-20 py-11 radius-8"
+              htmlFor="btnradio1"
+            >
+              New
+            </label>
+
+            <input
+              type="radio"
+              className="btn-check"
+              name="btnradio"
+              id="btnradio3"
+              value={"popular"}
+              {...register(`type`)}
+            />
+            <label
+              className="btn btn-outline-success-600 px-20 py-11 radius-8"
+              htmlFor="btnradio3"
+            >
+              Popular
+            </label>
+          </div>
+          {errors?.type && (
+            <p className="text-danger-500">{errors?.type?.message}</p>
+          )}
+        </div>
+
+        <div className="col-lg-4">
+          <label className="form-label">No of pages</label>
           <input
             type="number"
             name="#0"
             className="form-control form-control-sm"
-            placeholder="Enter No of Pages"
+            placeholder="Enter No of pages"
             data-error={errors?.pages ? "true" : "false"}
             {...register("pages", { valueAsNumber: true })}
           />
@@ -293,7 +425,7 @@ const Form = ({ data: selectedBook }) => {
             type="date"
             name="#0"
             className="form-control form-control-sm"
-            placeholder="Enter Release Date"
+            placeholder="Enter Relase date"
             data-error={errors?.year ? "true" : "false"}
             {...register("year")}
           />
@@ -377,9 +509,11 @@ const Form = ({ data: selectedBook }) => {
         </div>
 
         <div className="col-12">
-          <label className="form-label">Description</label>
+          <label className="form-label">Decsription</label>
+          {/* <textarea> */}
           <textarea
             name="#0"
+            // rows={10}
             style={{ height: "100px" }}
             className="form-control form-control-sm"
             placeholder="Enter Description"
@@ -390,20 +524,19 @@ const Form = ({ data: selectedBook }) => {
             <p className="text-danger-500">{errors?.description?.message}</p>
           )}
         </div>
+      </div>
 
-
-        <div className="mt-10 d-flex gap-2 justify-content-end">
-          <button
-            type="button"
-            className="btn btn-danger-600"
-            data-bs-dismiss="modal"
-          >
-            Close
-          </button>
-          <button type="submit" className="btn btn-success-600">
-            Save changes
-          </button>
-        </div>
+      <div className="mt-10 d-flex gap-2 justify-content-end">
+        <button
+          type="button"
+          className="btn btn-danger-600"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+        <button type="submit" className="btn btn-success-600">
+          Save changes
+        </button>
       </div>
     </form>
   );

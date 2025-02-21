@@ -10,7 +10,7 @@ const ViewBookModalContent = ({ data }) => {
   return (
     <div>
       <div className="d-flex justify-content-center">
-        <img src={data?.thumbnail || "/assets/images/book.png"} width={200} alt="Book Thumbnail" />
+        <img src={data?.thumbnail || "/assets/images/book.png"} width={200} height={200} alt="Book Thumbnail" />
       </div>
 
       <p className="text-xxl fw-bold mb-0 text-center">{data?.title}</p>

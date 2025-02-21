@@ -5,11 +5,11 @@ import Modal from "../extra/modal";
 import { SingleDefaultTooltipThree } from "../../child/DefaultTooltipThree";
 import ViewBookModalContent from "./viewBookModalContent";
 import Form from "./form";
-import { useDeleteBook } from "../../../hook/apis/academy/useDeletedBook"; // Import your custom hook
+import { useDeleteBook } from "../../../hook/apis/academy/useDeletedBook";
 
 const AcademyTable = ({ isSelectable, rows }) => {
   const [selectedBook, setSelectedBook] = useState();
-  const { deleteBook, isLoading } = useDeleteBook(); // Get delete function from the hook
+  const { deleteBook, isLoading } = useDeleteBook();
 
   return (
     <table
@@ -52,6 +52,7 @@ const AcademyTable = ({ isSelectable, rows }) => {
             <td>
               <div className="d-flex gap-1 align-items-center">
                 <img
+                  className="book-img"
                   src={item?.thumbnail || "/assets/images/book.png"}
                   width={50}
                 />
@@ -87,40 +88,22 @@ const AcademyTable = ({ isSelectable, rows }) => {
                   data-bs-target="#view-book"
                 />
 
-                <Modal
-                  id="edit-book"
-                  button={
-                    <Icon
-                      icon="mage:edit"
-                      className="text-success-500 cursor-pointer"
-                      type="button"
-                      data-bs-toggle="modal"
-                      data-bs-target="#edit-book"
-                    />
-                  }
-                  title="Edit Book"
-                  body={<Form data={selectedBook} />}
-                  size={"modal-lg"}
+
+                <Icon
+                  onClick={() => setSelectedBook(item)}
+                  icon="mage:edit"
+                  className="text-success-500 cursor-pointer"
+                  type="button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#edit-book"
                 />
 
-                <Modal
-                  id="delete-book"
-                  button={
-                    <Icon
-                      icon="mage:trash"
-                      className="text-danger-500 cursor-pointer"
-                      type="button"
-                      data-bs-toggle="modal"
-                      data-bs-target="#delete-book"
-                    />
-                  }
-                  body={
-                    <DeleteModalContent
-                      deleteFunction={() => deleteBook(item._id)} // Ensure deleteBook is a function here
-                      isLoading={isLoading} // Pass the loading state to disable the button during deletion
-                    />
-                  }
-                  title="Are you sure!"
+                <Icon
+                  icon="mage:trash"
+                  className="text-danger-500 cursor-pointer"
+                  type="button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#delete-book"
                 />
 
               </div>
@@ -128,6 +111,35 @@ const AcademyTable = ({ isSelectable, rows }) => {
           </tr>
         ))}
       </tbody>
+      {/* edit */}
+      <div
+        className="modal fade"
+        id={"edit-book"}
+        tabIndex="-1"
+        aria-labelledby={`edit-book-label`}
+        aria-hidden="true"
+      >
+        <div className={`modal-dialog modal-dialog-centered modal-lg`}>
+          <div className="modal-content">
+            <div className="modal-header">
+              <h6 className="modal-title" id={`edit-book-label`}>
+                Edit book
+              </h6>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <Form data={selectedBook} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* view */}
       <div
         className="modal fade"
         id={"view-book"}
@@ -154,6 +166,38 @@ const AcademyTable = ({ isSelectable, rows }) => {
           </div>
         </div>
       </div>
+
+      {/* delete */}
+      <div
+        className="modal fade"
+        id={"delete-book"}
+        tabIndex="-1"
+        aria-labelledby={`delete-book-label`}
+        aria-hidden="true"
+      >
+        <div className={`modal-dialog modal-dialog-centered modal-lg`}>
+          <div className="modal-content">
+            <div className="modal-header">
+              <h6 className="modal-title" id={`delete-book-label`}>
+                Are you sure you want to delete this book?
+              </h6>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <DeleteModalContent
+                deleteFunction={() => deleteBook(selectedBook?._id)}
+                isLoading={isLoading}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      
     </table>
   );
 };
