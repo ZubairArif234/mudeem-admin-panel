@@ -8,20 +8,37 @@ import SustainibiltyCompanyTable from "../../components/custom/sustainibilty/com
 import AcademyTable from "../../components/custom/academy/table";
 import Form from "../../components/custom/academy/form";
 import { useGetBooks } from "../../hook/apis/academy/useAllBooks";
+import DataNotFound from "../../components/custom/extra/dataNotFound";
+import Loader from "../../components/custom/extra/loader";
 
 const Academy = () => {
   const { books, isPending } = useGetBooks();
 
- 
   return (
     <MasterLayout>
       <Breadcrumb heading="Academy" title="Academy" />
       <TableDataLayer
         title={"Books"}
-        body={<AcademyTable rows={books} />}
+        body={
+          isPending ? (
+            <div
+              style={{ minHeight: "59vh" }}
+              className="d-flex justify-content-center align-items-center"
+            >
+              <Loader loading={isPending} size={150} color="#15803d" />
+            </div>
+          ) : books?.length > 0 ? (
+            <AcademyTable rows={books} />
+          ) : (
+            <DataNotFound
+              heading={"Books Not Found"}
+              text={"There is no books found , based on your search!"}
+            />
+          )
+        }
         isCustomHeaderButton
         modalTitle="Add Book"
-        modalId="add-sustainibility-company"
+        modalId="add-book-form"
         modalForm={<Form />}
         modalSize="modal-lg"
       />
