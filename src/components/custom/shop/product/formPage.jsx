@@ -77,7 +77,6 @@ const FormPage = () => {
   const { updateProduct, updatePending } = useUpdateProduct();
 
   const { createProduct, isPending } = useCreateProduct();
-  console.log(typeof state?.data?.featured);
 
   const { productDetail } = useGetProductById(state?.data?._id);
 

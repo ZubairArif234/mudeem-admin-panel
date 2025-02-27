@@ -5,6 +5,8 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import TableDataLayer from "../../components/TableDataLayer";
 import ContentTable from "../../components/custom/contentCreator/table";
 import { useGetAllReels } from "../../hook/apis/contentCreator/useGetAllReels";
+import DataNotFound from "../../components/custom/extra/dataNotFound";
+import Loader from "../../components/custom/extra/loader";
 export const VideoCard = ({ data }) => {
   const [hide, setHide] = useState(false);
 
@@ -75,7 +77,7 @@ export const VideoCard = ({ data }) => {
 };
 
 const ContentCreator = () => {
-  const { reels } = useGetAllReels();
+  const { reels, isPending } = useGetAllReels();
   console.log(reels);
   const tableHeadings = [
     "ID",
@@ -169,7 +171,23 @@ const ContentCreator = () => {
       </div> */}
       <TableDataLayer
         title={"Videos"}
-        body={<ContentTable heading={tableHeadings} rows={reels?.reel} />}
+        body={
+          isPending ? (
+            <div
+              style={{ minHeight: "59vh" }}
+              className="d-flex justify-content-center align-items-center"
+            >
+              <Loader loading={isPending} size={150} color="#15803d" />
+            </div>
+          ) : reels?.reel?.length > 0 ? (
+            <ContentTable heading={tableHeadings} rows={reels?.reel} />
+          ) : (
+            <DataNotFound
+              heading={"Reels Not Found"}
+              text={"There is no reels found , based on your search!"}
+            />
+          )
+        }
       />
 
       <div
