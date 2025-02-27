@@ -1,32 +1,19 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useEffect, useRef, useState } from "react";
 import { useCreateSetting } from "../hook/apis/setting/createSetting";
+import { useUpdateSetting } from "../hook/apis/setting/updateSetting";
+import { useGetSettings } from "../hook/apis/setting/getSettings";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-const imageValidation = (file) => {
-  const allowedTypes = ["image/png"];
-  if (!file) {
-    return false;
-  }
-  const isValidType = allowedTypes.includes(file.type);
-  const maxSize = 2 * 1024 * 1024; // 5MB limit
-  const isValidSize = file.size <= maxSize;
-
-  return isValidType && isValidSize ? file : null;
-};
-
+// Define the validation schema using Zod
 const SettingSchema = z.object({
-  websiteName: z
-    .string()
-    .min(3, "Website name must be at least 3 characters long"),
-  websiteDescription: z
-    .string()
-    .min(3, "Website description must be at least 3 characters long"),
-  carPoolingGreenPoints: z.number().min(1, "Enter car pooling green points"),
-  greenMapGreenPoints: z.number().min(1, "Enter green map green points "),
-  gptMessageGreenPoints: z.number().min(1, "Enter GPT message green points "),
+  websiteName: z.string().min(1, "Website name is required"),
+  websiteDescription: z.string().min(1, "Website description is required"),
+  carPoolingGreenPoints: z.number().min(0, "Green points must be a positive number"),
+  greenMapGreenPoints: z.number().min(0, "Green points must be a positive number"),
+  gptMessageGreenPoints: z.number().min(0, "Green points must be a positive number"),
 });
 
 const CompanyLayer = () => {
@@ -43,30 +30,9 @@ const CompanyLayer = () => {
 
   const logoInputRef = useRef(null);
   const faviconInputRef = useRef(null);
-  const { createSetting, isPending } = useCreateSetting();
-
-  const handleFileChange = (e, type) => {
-    if (e.target.files.length > 0) {
-      if (imageValidation(e.target?.files[0])) {
-        const src = URL.createObjectURL(e.target.files[0]);
-        if (type === "logo") {
-          setLogoPreview({
-            ...logoPreview,
-            file: e.target.files[0],
-            src: src,
-            error: "",
-          });
-        } else if (type === "favicon") {
-          setFaviconPreview({
-            ...faviconPreview,
-            file: e.target.files[0],
-            src: src,
-            error: "",
-          });
-        }
-      }
-    }
-  };
+  const { createSetting } = useCreateSetting();
+  const { updateSetting } = useUpdateSetting();
+  const { settings, isLoading, isError, error } = useGetSettings();
 
   const {
     register,
@@ -78,41 +44,62 @@ const CompanyLayer = () => {
     resolver: zodResolver(SettingSchema),
   });
 
-  const onSubmit = async (formData) => {
-    console.log(formData);
+  // Set form values with fetched data on initial load
+  useEffect(() => {
+    if (settings) {
+      setValue("websiteName", settings.websiteName);
+      setValue("websiteDescription", settings.websiteDescription);
+      setValue("carPoolingGreenPoints", settings.carPoolingGreenPoints);
+      setValue("greenMapGreenPoints", settings.greenMapGreenPoints);
+      setValue("gptMessageGreenPoints", settings.gptMessageGreenPoints);
 
-    if (!logoPreview?.file) {
-      setLogoPreview({ ...logoPreview, error: "Upload logo" });
-    }
-
-    if (!faviconPreview?.file) {
-      setFaviconPreview({ ...faviconPreview, error: "Upload favicon" });
-    }
-
-    const settingData = new FormData();
-    settingData.append("websiteName", formData.websiteName);
-    settingData.append("websiteDescription", formData.websiteDescription);
-    settingData.append("gptMessageGreenPoints", formData.gptMessageGreenPoints);
-    settingData.append("greenMapGreenPoints", formData.greenMapGreenPoints);
-    settingData.append("carPoolingGreenPoints", formData.carPoolingGreenPoints);
-    settingData.append("logo", logoPreview?.file);
-    settingData.append("favicon", faviconPreview?.file);
-
-    try {
-      let res;
-      if (false) {
-        // res = await updateBook({ id: data._id, payload: settingData });
-      } else {
-        res = await createSetting(settingData);
+      if (settings.logo) {
+        setLogoPreview({
+          ...logoPreview,
+          src: settings.logo,
+          file: settings.logo,
+        });
       }
 
-      if (res) {
-        setLogoPreview({ file: "", src: "", error: "" });
-        setFaviconPreview({ file: "", src: "", error: "" });
-        reset();
+      if (settings.favIcon) {
+        setFaviconPreview({
+          ...faviconPreview,
+          src: settings.favIcon,
+          file: settings.favIcon,
+        });
       }
-    } catch (err) {
-      console.error("Setting update failed:", err);
+    }
+  }, [settings, setValue]);
+
+  const handleFileChange = (e, type) => {
+    if (e.target.files.length > 0) {
+      const file = e.target.files[0];
+      if (file.size > 2 * 1024 * 1024) {
+        // 2MB limit
+        if (type === "logo") {
+          setLogoPreview({ ...logoPreview, error: "File size must be less than 2MB" });
+        } else if (type === "favicon") {
+          setFaviconPreview({ ...faviconPreview, error: "File size must be less than 2MB" });
+        }
+        return;
+      }
+
+      const src = URL.createObjectURL(file);
+      if (type === "logo") {
+        setLogoPreview({
+          ...logoPreview,
+          file: file,
+          src: src,
+          error: "",
+        });
+      } else if (type === "favicon") {
+        setFaviconPreview({
+          ...faviconPreview,
+          file: file,
+          src: src,
+          error: "",
+        });
+      }
     }
   };
 
@@ -138,15 +125,59 @@ const CompanyLayer = () => {
     }
   };
 
+  const onSubmit = async (formData) => {
+    if (!logoPreview?.file) {
+      setLogoPreview({ ...logoPreview, error: "Upload logo" });
+      return;
+    }
+
+    if (!faviconPreview?.file) {
+      setFaviconPreview({ ...faviconPreview, error: "Upload favicon" });
+      return;
+    }
+
+    const settingData = new FormData();
+    settingData.append("websiteName", formData.websiteName);
+    settingData.append("websiteDescription", formData.websiteDescription);
+    settingData.append("carPoolingGreenPoints", formData.carPoolingGreenPoints);
+    settingData.append("greenMapGreenPoints", formData.greenMapGreenPoints);
+    settingData.append("gptMessageGreenPoints", formData.gptMessageGreenPoints);
+    settingData.append("logo", logoPreview.file);
+    settingData.append("favicon", faviconPreview.file);
+
+    try {
+      let res;
+      if (settings?._id) {
+        // Update existing setting
+        res = await updateSetting(settingData, "form");
+      } else {
+        // Create new setting
+        res = await createSetting(settingData);
+      }
+
+      if (res) {
+        setLogoPreview({ file: null, src: "", error: "" });
+        setFaviconPreview({ file: null, src: "", error: "" });
+        reset();
+      }
+    } catch (err) {
+      console.error("Setting update failed:", err);
+    }
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="card h-100 p-0 radius-12 overflow-hidden">
       <div className="card-body p-20 p-lg-40">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="row">
+            {/* Logo Upload Section */}
             <div className="col-6">
               <label>Upload Logo</label>
               <div className="upload-image-wrapper d-flex align-items-center gap-3">
-                {/* Image preview section */}
                 {logoPreview?.src ? (
                   <div className="uploaded-img position-relative h-120-px w-120-px border input-form-light radius-8 overflow-hidden border-dashed bg-neutral-50">
                     <button
@@ -181,25 +212,24 @@ const CompanyLayer = () => {
                     </span>
                   </label>
                 )}
-
-                {/* Always render the input, but hide it */}
                 <input
                   id="logo-file"
                   type="file"
                   onChange={(e) => handleFileChange(e, "logo")}
                   hidden
                   ref={logoInputRef}
-                  accept="image/*" // Optional: restrict to image files
+                  accept="image/*"
                 />
               </div>
               {logoPreview?.error && (
                 <p className="text-danger-500">{logoPreview?.error}</p>
               )}
             </div>
+
+            {/* Favicon Upload Section */}
             <div className="col-6">
               <label>Upload Favicon</label>
               <div className="upload-image-wrapper d-flex align-items-center gap-3">
-                {/* Image preview section */}
                 {faviconPreview?.src ? (
                   <div className="uploaded-img position-relative h-120-px w-120-px border input-form-light radius-8 overflow-hidden border-dashed bg-neutral-50">
                     <button
@@ -234,15 +264,13 @@ const CompanyLayer = () => {
                     </span>
                   </label>
                 )}
-
-                {/* Always render the input, but hide it */}
                 <input
                   id="favicon-file"
                   type="file"
                   onChange={(e) => handleFileChange(e, "favicon")}
                   hidden
                   ref={faviconInputRef}
-                  accept="image/*" // Optional: restrict to image files
+                  accept="image/*"
                 />
               </div>
               {faviconPreview?.error && (
@@ -250,134 +278,69 @@ const CompanyLayer = () => {
               )}
             </div>
 
-            <div className="col-sm-6">
-              <div className="mb-20">
-                <label
-                  htmlFor="name"
-                  className="form-label fw-semibold text-primary-light text-sm mb-8"
-                >
-                  Website Name <span className="text-danger-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="form-control radius-8"
-                  id="name"
-                  placeholder="Enter Website Name"
-                  data-error={errors?.websiteName ? "true" : "false"}
-                  {...register("websiteName")}
-                />
-                {errors?.websiteName && (
-                  <p className="text-danger-500">
-                    {errors?.websiteName?.message}
-                  </p>
-                )}
-              </div>
+            {/* Website Name Field */}
+            <div className="col-12 mt-24">
+              <label>Website Name</label>
+              <input
+                type="text"
+                className="form-control"
+                {...register("websiteName")}
+              />
+              {errors.websiteName && (
+                <p className="text-danger-500">{errors.websiteName.message}</p>
+              )}
             </div>
 
-            <div className="col-sm-12">
-              <div className="mb-20">
-                <label
-                  htmlFor="address"
-                  className="form-label fw-semibold text-primary-light text-sm mb-8"
-                >
-                  {" "}
-                  Wesbite Description <span className="text-danger-600">*</span>
-                </label>
-
-                <textarea
-                  className="form-control radius-8"
-                  id="address"
-                  placeholder="Enter Website Description"
-                  style={{ height: "100px" }}
-                  data-error={errors?.websiteDescription ? "true" : "false"}
-                  {...register("websiteDescription")}
-                ></textarea>
-                {errors?.websiteDescription && (
-                  <p className="text-danger-500">
-                    {errors?.websiteDescription?.message}
-                  </p>
-                )}
-              </div>
+            {/* Website Description Field */}
+            <div className="col-12 mt-24">
+              <label>Website Description</label>
+              <textarea
+                className="form-control"
+                {...register("websiteDescription")}
+              />
+              {errors.websiteDescription && (
+                <p className="text-danger-500">{errors.websiteDescription.message}</p>
+              )}
             </div>
 
-            <div className="col-sm-6">
-              <div className="mb-20">
-                <label
-                  htmlFor="name"
-                  className="form-label fw-semibold text-primary-light text-sm mb-8"
-                >
-                  Carpooling Green Points{" "}
-                  <span className="text-danger-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="form-control radius-8"
-                  id="name"
-                  placeholder="Enter Carpooling Green Points"
-                  data-error={errors?.carPoolingGreenPoints ? "true" : "false"}
-                  {...register("carPoolingGreenPoints", {
-                    valueAsNumber: true,
-                  })}
-                />
-                {errors?.carPoolingGreenPoints && (
-                  <p className="text-danger-500">
-                    {errors?.carPoolingGreenPoints?.message}
-                  </p>
-                )}
-              </div>
+            {/* Green Points Fields */}
+            <div className="col-6 mt-24">
+              <label>Car Pooling Green Points</label>
+              <input
+                type="number"
+                className="form-control"
+                {...register("carPoolingGreenPoints", { valueAsNumber: true })}
+              />
+              {errors.carPoolingGreenPoints && (
+                <p className="text-danger-500">{errors.carPoolingGreenPoints.message}</p>
+              )}
             </div>
 
-            <div className="col-sm-6">
-              <div className="mb-20">
-                <label
-                  htmlFor="name"
-                  className="form-label fw-semibold text-primary-light text-sm mb-8"
-                >
-                  Campus Green Points <span className="text-danger-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="form-control radius-8"
-                  id="name"
-                  placeholder="Enter Campus Green Points"
-                  data-error={errors?.greenMapGreenPoints ? "true" : "false"}
-                  {...register("greenMapGreenPoints", { valueAsNumber: true })}
-                />
-                {errors?.greenMapGreenPoints && (
-                  <p className="text-danger-500">
-                    {errors?.greenMapGreenPoints?.message}
-                  </p>
-                )}
-              </div>
+            <div className="col-6 mt-24">
+              <label>Green Map Green Points</label>
+              <input
+                type="number"
+                className="form-control"
+                {...register("greenMapGreenPoints", { valueAsNumber: true })}
+              />
+              {errors.greenMapGreenPoints && (
+                <p className="text-danger-500">{errors.greenMapGreenPoints.message}</p>
+              )}
             </div>
 
-            <div className="col-sm-6">
-              <div className="mb-20">
-                <label
-                  htmlFor="name"
-                  className="form-label fw-semibold text-primary-light text-sm mb-8"
-                >
-                  GPT Green Points per message
-                  <span className="text-danger-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="form-control radius-8"
-                  id="name"
-                  placeholder="Enter GPT Green Points"
-                  data-error={errors?.gptMessageGreenPoints ? "true" : "false"}
-                  {...register("gptMessageGreenPoints", {
-                    valueAsNumber: true,
-                  })}
-                />
-                {errors?.gptMessageGreenPoints && (
-                  <p className="text-danger-500">
-                    {errors?.gptMessageGreenPoints?.message}
-                  </p>
-                )}
-              </div>
+            <div className="col-6 mt-24">
+              <label>GPT Message Green Points</label>
+              <input
+                type="number"
+                className="form-control"
+                {...register("gptMessageGreenPoints", { valueAsNumber: true })}
+              />
+              {errors.gptMessageGreenPoints && (
+                <p className="text-danger-500">{errors.gptMessageGreenPoints.message}</p>
+              )}
             </div>
 
+            {/* Submit Button */}
             <div className="d-flex align-items-center justify-content-end gap-3 mt-24">
               <button
                 type="submit"
