@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLogin } from "../hook/apis/auth/useLogin";
 import Loader from "./custom/extra/loader";
+import { useGetSettings } from "../hook/apis/setting/getSettings";
 
 const LoginSchema = z.object({
   email: z
@@ -18,14 +19,12 @@ const SignInLayer = () => {
   const navigate = useNavigate();
   const [hidePassword, setHidePassword] = useState(true);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
+  const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(LoginSchema),
   });
+
   const { login, isPending } = useLogin();
+  const { settings } = useGetSettings();
 
   const handleFormSubmit = async (data) => {
     try {
@@ -35,6 +34,9 @@ const SignInLayer = () => {
       console.error("Login failed:", err);
     }
   };
+
+  const logoUrl = settings?.logo || "assets/images/logo.png";
+
   return (
     <section className="auth bg-base d-flex flex-wrap">
       <div className="auth-left d-lg-block d-none">
@@ -49,11 +51,11 @@ const SignInLayer = () => {
               to="/"
               className="mb-40 max-w-200-px d-flex justify-content-center"
             >
-              <img src="assets/images/logo.png" alt="" width={150} />
+              <img src={logoUrl} alt="Logo" width={150} />
             </Link>
             <h4 className="mb-12 text-center">Sign In to your Account</h4>
             <p className="mb-32 text-secondary-light text-lg text-center">
-              Welcome back! please enter your detail
+              Welcome back! please enter your details
             </p>
           </div>
           <form action="#" onSubmit={handleSubmit(handleFormSubmit)}>

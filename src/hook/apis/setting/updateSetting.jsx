@@ -5,9 +5,11 @@ import { toast } from "sonner";
 export const useUpdateSetting = () => {
   const queryClient = useQueryClient();
   const { mutateAsync, isLoading, isPending, isError, error } = useMutation({
-    mutationFn: async (payload,type) => {
+    mutationFn: async (payload, type) => {
       try {
-        const response = await custAxios.put(`/setting`, payload);
+        const axiosInstance = type === "form" ? formAxios : custAxios;
+        const response = await axiosInstance.put(`/setting`, payload);
+
         toast.success("Setting updated successfully");
         queryClient.invalidateQueries("setting");
         return response?.data?.data;

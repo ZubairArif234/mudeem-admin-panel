@@ -4,6 +4,7 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import ThemeToggleButton from "../helper/ThemeToggleButton";
 import { useGetMe } from "../hook/apis/auth/useMe";
 import { useLogout } from "../hook/apis/auth/useLogout";
+import { useGetSettings } from "../hook/apis/setting/getSettings";
 
 const MasterLayout = ({ children }) => {
   let [sidebarActive, seSidebarActive] = useState(false);
@@ -11,15 +12,9 @@ const MasterLayout = ({ children }) => {
   const location = useLocation(); // Hook to get the current route
   const { logout } = useLogout();
   const { me } = useGetMe();
+  const { settings, isLoading, isError } = useGetSettings();
 
-  const handleLogut = async () => {
-    try {
-      await logout();
-    } catch (err) {
-      console.error("Logout failed:", err);
-    }
-  };
-
+  
   useEffect(() => {
     // Function to handle dropdown clicks
     const handleDropdownClick = (event) => {
@@ -68,16 +63,29 @@ const MasterLayout = ({ children }) => {
       });
     };
 
-    // Open the submenu that contains the open route
     openActiveDropdown();
 
-    // Cleanup event listeners on unmount
     return () => {
       dropdownTriggers.forEach((trigger) => {
         trigger.removeEventListener("click", handleDropdownClick);
       });
     };
   }, [location.pathname]);
+
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+
+  const handleLogut = async () => {
+    try {
+      await logout();
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+  };
+  
 
   let sidebarControl = () => {
     seSidebarActive(!sidebarActive);
@@ -95,8 +103,8 @@ const MasterLayout = ({ children }) => {
           sidebarActive
             ? "sidebar active "
             : mobileMenu
-            ? "sidebar sidebar-open"
-            : "sidebar"
+              ? "sidebar sidebar-open"
+              : "sidebar"
         }
       >
         <button
@@ -108,18 +116,19 @@ const MasterLayout = ({ children }) => {
         </button>
         <div className="d-flex justify-content-center">
           <Link to="/dashboard" className="sidebar-logo">
+            {/* Use the logo URL from the settings */}
             <img
-              src="assets/images/logo.png"
+              src={settings?.logo || "assets/images/logo.png"} 
               alt="site logo"
               className="light-logo"
             />
             <img
-              src="assets/images/logo-light.png"
+              src={settings?.logo || "assets/images/logo-light.png"} 
               alt="site logo"
               className="dark-logo"
             />
             <img
-              src="assets/images/logo-icon.png"
+              src={settings?.logo || "assets/images/logo-icon.png"} 
               alt="site logo"
               className="logo-icon"
             />

@@ -44,7 +44,7 @@ const CompanyLayer = () => {
     resolver: zodResolver(SettingSchema),
   });
 
-  // Set form values with fetched data on initial load
+
   useEffect(() => {
     if (settings) {
       setValue("websiteName", settings.websiteName);
@@ -130,31 +130,45 @@ const CompanyLayer = () => {
       setLogoPreview({ ...logoPreview, error: "Upload logo" });
       return;
     }
-
+  
     if (!faviconPreview?.file) {
       setFaviconPreview({ ...faviconPreview, error: "Upload favicon" });
       return;
     }
-
+  
     const settingData = new FormData();
     settingData.append("websiteName", formData.websiteName);
     settingData.append("websiteDescription", formData.websiteDescription);
     settingData.append("carPoolingGreenPoints", formData.carPoolingGreenPoints);
     settingData.append("greenMapGreenPoints", formData.greenMapGreenPoints);
     settingData.append("gptMessageGreenPoints", formData.gptMessageGreenPoints);
-    settingData.append("logo", logoPreview.file);
-    settingData.append("favicon", faviconPreview.file);
-
+  
+    if (logoPreview.file) {
+      settingData.append("logo", logoPreview.file);
+    }
+  
+    // Append favicon file
+    // if (faviconPreview.file) {
+    //   settingData.append("favicon", faviconPreview.file);
+    // }
+    if (faviconPreview.file) {
+      settingData.append("favicon", faviconPreview.src);
+    }
+    
+  
+    // Debug: Log FormData content
+    for (let [key, value] of settingData.entries()) {
+      console.log(key, value);
+    }
+  
     try {
       let res;
       if (settings?._id) {
-        // Update existing setting
         res = await updateSetting(settingData, "form");
       } else {
-        // Create new setting
         res = await createSetting(settingData);
       }
-
+  
       if (res) {
         setLogoPreview({ file: null, src: "", error: "" });
         setFaviconPreview({ file: null, src: "", error: "" });
