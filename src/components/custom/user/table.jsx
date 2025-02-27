@@ -1,6 +1,16 @@
+import moment from "moment";
 import React from "react";
+import { useUserStatus } from "../../../hook/apis/user/useChangeStatus";
 
 const UserTable = ({ isSelectable, rows }) => {
+  const { updateUser } = useUserStatus();
+  const handleChangeStatus = async (id) => {
+    try {
+      await updateUser(id);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <table
       className="table bordered-table mb-0"
@@ -27,7 +37,7 @@ const UserTable = ({ isSelectable, rows }) => {
         </tr>
       </thead>
       <tbody>
-        {rows.map((item, i) => (
+        {rows?.map((item, i) => (
           <tr>
             {isSelectable && (
               <td>
@@ -37,12 +47,12 @@ const UserTable = ({ isSelectable, rows }) => {
                 </div>
               </td>
             )}
-            <td>#{item?.id + 1 * 2087}</td>
+            <td>#{item?._id.slice(0, 6) + i}</td>
             <td>{item?.name}</td>
             <td>{item?.email}</td>
             <td>{item?.phone}</td>
 
-            <td> {item?.createdAt}</td>
+            <td> {moment(item?.pickupDateTime).format("DD/MMM/YYYY")}</td>
             <td>
               {" "}
               <div className="form-switch switch-success d-flex align-items-center gap-3">
@@ -51,7 +61,8 @@ const UserTable = ({ isSelectable, rows }) => {
                   type="checkbox"
                   role="switch"
                   id={"switch" + i}
-                  defaultChecked={true}
+                  defaultChecked={item?.isActive}
+                  onChange={() => handleChangeStatus(item?._id)}
                 />
                 <label
                   className="form-check-label line-height-1 fw-medium text-secondary-light"

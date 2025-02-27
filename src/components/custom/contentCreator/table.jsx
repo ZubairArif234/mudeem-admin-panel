@@ -45,7 +45,7 @@ const ContentTable = ({
         </tr>
       </thead>
       <tbody>
-        {rows.map((item, i) => (
+        {rows?.map((item, i) => (
           <tr>
             {isSelectable && (
               <td>

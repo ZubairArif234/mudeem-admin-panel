@@ -1,45 +1,157 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useEffect, useRef, useState } from "react";
+import { useCreateSetting } from "../hook/apis/setting/createSetting";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+const imageValidation = (file) => {
+  const allowedTypes = ["image/png"];
+  if (!file) {
+    return false;
+  }
+  const isValidType = allowedTypes.includes(file.type);
+  const maxSize = 2 * 1024 * 1024; // 5MB limit
+  const isValidSize = file.size <= maxSize;
+
+  return isValidType && isValidSize ? file : null;
+};
+
+const SettingSchema = z.object({
+  websiteName: z
+    .string()
+    .min(3, "Website name must be at least 3 characters long"),
+  websiteDescription: z
+    .string()
+    .min(3, "Website description must be at least 3 characters long"),
+  carPoolingGreenPoints: z.number().min(1, "Enter car pooling green points"),
+  greenMapGreenPoints: z.number().min(1, "Enter green map green points "),
+  gptMessageGreenPoints: z.number().min(1, "Enter GPT message green points "),
+});
 
 const CompanyLayer = () => {
-  const [imagePreview, setImagePreview] = useState(null);
-  const fileInputRef = useRef(null);
+  const [logoPreview, setLogoPreview] = useState({
+    file: null,
+    src: "",
+    error: "",
+  });
+  const [faviconPreview, setFaviconPreview] = useState({
+    file: null,
+    src: "",
+    error: "",
+  });
 
-  const handleFileChange = (e) => {
-    if (e.target.files.length) {
-      const src = URL.createObjectURL(e.target.files[0]);
-      setImagePreview(src);
-    }
-  };
+  const logoInputRef = useRef(null);
+  const faviconInputRef = useRef(null);
+  const { createSetting, isPending } = useCreateSetting();
 
-  const removeImage = () => {
-    setImagePreview(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      if (imagePreview) {
-        URL.revokeObjectURL(imagePreview);
+  const handleFileChange = (e, type) => {
+    if (e.target.files.length > 0) {
+      if (imageValidation(e.target?.files[0])) {
+        const src = URL.createObjectURL(e.target.files[0]);
+        if (type === "logo") {
+          setLogoPreview({
+            ...logoPreview,
+            file: e.target.files[0],
+            src: src,
+            error: "",
+          });
+        } else if (type === "favicon") {
+          setFaviconPreview({
+            ...faviconPreview,
+            file: e.target.files[0],
+            src: src,
+            error: "",
+          });
+        }
       }
-    };
-  }, [imagePreview]);
+    }
+  };
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(SettingSchema),
+  });
+
+  const onSubmit = async (formData) => {
+    console.log(formData);
+
+    if (!logoPreview?.file) {
+      setLogoPreview({ ...logoPreview, error: "Upload logo" });
+    }
+
+    if (!faviconPreview?.file) {
+      setFaviconPreview({ ...faviconPreview, error: "Upload favicon" });
+    }
+
+    const settingData = new FormData();
+    settingData.append("websiteName", formData.websiteName);
+    settingData.append("websiteDescription", formData.websiteDescription);
+    settingData.append("gptMessageGreenPoints", formData.gptMessageGreenPoints);
+    settingData.append("greenMapGreenPoints", formData.greenMapGreenPoints);
+    settingData.append("carPoolingGreenPoints", formData.carPoolingGreenPoints);
+    settingData.append("logo", logoPreview?.file);
+    settingData.append("favicon", faviconPreview?.file);
+
+    try {
+      let res;
+      if (false) {
+        // res = await updateBook({ id: data._id, payload: settingData });
+      } else {
+        res = await createSetting(settingData);
+      }
+
+      if (res) {
+        setLogoPreview({ file: "", src: "", error: "" });
+        setFaviconPreview({ file: "", src: "", error: "" });
+        reset();
+      }
+    } catch (err) {
+      console.error("Setting update failed:", err);
+    }
+  };
+
+  const removeImage = (type) => {
+    if (type === "logo") {
+      setLogoPreview({
+        file: null,
+        src: "",
+        error: "",
+      });
+      if (logoInputRef.current) {
+        logoInputRef.current.value = "";
+      }
+    } else {
+      setFaviconPreview({
+        file: null,
+        src: "",
+        error: "",
+      });
+      if (faviconInputRef.current) {
+        faviconInputRef.current.value = "";
+      }
+    }
+  };
+
   return (
     <div className="card h-100 p-0 radius-12 overflow-hidden">
       <div className="card-body p-20 p-lg-40">
-        <form action="#">
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="row">
             <div className="col-6">
               <label>Upload Logo</label>
               <div className="upload-image-wrapper d-flex align-items-center gap-3">
                 {/* Image preview section */}
-                {imagePreview ? (
+                {logoPreview?.src ? (
                   <div className="uploaded-img position-relative h-120-px w-120-px border input-form-light radius-8 overflow-hidden border-dashed bg-neutral-50">
                     <button
                       type="button"
-                      onClick={removeImage}
+                      onClick={() => removeImage("logo")}
                       className="uploaded-img__remove position-absolute top-0 end-0 z-1 text-2xxl line-height-1 me-8 mt-8 d-flex"
                       aria-label="Remove uploaded image"
                     >
@@ -51,14 +163,14 @@ const CompanyLayer = () => {
                     <img
                       id="uploaded-img__preview"
                       className="w-100 h-100 object-fit-cover"
-                      src={imagePreview}
+                      src={logoPreview?.src}
                       alt="Preview"
                     />
                   </div>
                 ) : (
                   <label
                     className="upload-file h-120-px w-120-px border input-form-light radius-8 overflow-hidden border-dashed bg-neutral-50 bg-hover-neutral-200 d-flex align-items-center flex-column justify-content-center gap-1"
-                    htmlFor="upload-file"
+                    htmlFor="logo-file"
                   >
                     <Icon
                       icon="solar:camera-outline"
@@ -72,24 +184,27 @@ const CompanyLayer = () => {
 
                 {/* Always render the input, but hide it */}
                 <input
-                  id="upload-file"
+                  id="logo-file"
                   type="file"
-                  onChange={handleFileChange}
+                  onChange={(e) => handleFileChange(e, "logo")}
                   hidden
-                  ref={fileInputRef}
+                  ref={logoInputRef}
                   accept="image/*" // Optional: restrict to image files
                 />
               </div>
+              {logoPreview?.error && (
+                <p className="text-danger-500">{logoPreview?.error}</p>
+              )}
             </div>
             <div className="col-6">
               <label>Upload Favicon</label>
               <div className="upload-image-wrapper d-flex align-items-center gap-3">
                 {/* Image preview section */}
-                {imagePreview ? (
+                {faviconPreview?.src ? (
                   <div className="uploaded-img position-relative h-120-px w-120-px border input-form-light radius-8 overflow-hidden border-dashed bg-neutral-50">
                     <button
                       type="button"
-                      onClick={removeImage}
+                      onClick={() => removeImage("favicon")}
                       className="uploaded-img__remove position-absolute top-0 end-0 z-1 text-2xxl line-height-1 me-8 mt-8 d-flex"
                       aria-label="Remove uploaded image"
                     >
@@ -101,14 +216,14 @@ const CompanyLayer = () => {
                     <img
                       id="uploaded-img__preview"
                       className="w-100 h-100 object-fit-cover"
-                      src={imagePreview}
+                      src={faviconPreview?.src}
                       alt="Preview"
                     />
                   </div>
                 ) : (
                   <label
                     className="upload-file h-120-px w-120-px border input-form-light radius-8 overflow-hidden border-dashed bg-neutral-50 bg-hover-neutral-200 d-flex align-items-center flex-column justify-content-center gap-1"
-                    htmlFor="upload-file"
+                    htmlFor="favicon-file"
                   >
                     <Icon
                       icon="solar:camera-outline"
@@ -122,14 +237,17 @@ const CompanyLayer = () => {
 
                 {/* Always render the input, but hide it */}
                 <input
-                  id="upload-file"
+                  id="favicon-file"
                   type="file"
-                  onChange={handleFileChange}
+                  onChange={(e) => handleFileChange(e, "favicon")}
                   hidden
-                  ref={fileInputRef}
+                  ref={faviconInputRef}
                   accept="image/*" // Optional: restrict to image files
                 />
               </div>
+              {faviconPreview?.error && (
+                <p className="text-danger-500">{faviconPreview?.error}</p>
+              )}
             </div>
 
             <div className="col-sm-6">
@@ -145,7 +263,14 @@ const CompanyLayer = () => {
                   className="form-control radius-8"
                   id="name"
                   placeholder="Enter Website Name"
+                  data-error={errors?.websiteName ? "true" : "false"}
+                  {...register("websiteName")}
                 />
+                {errors?.websiteName && (
+                  <p className="text-danger-500">
+                    {errors?.websiteName?.message}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -164,7 +289,14 @@ const CompanyLayer = () => {
                   id="address"
                   placeholder="Enter Website Description"
                   style={{ height: "100px" }}
+                  data-error={errors?.websiteDescription ? "true" : "false"}
+                  {...register("websiteDescription")}
                 ></textarea>
+                {errors?.websiteDescription && (
+                  <p className="text-danger-500">
+                    {errors?.websiteDescription?.message}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -182,7 +314,16 @@ const CompanyLayer = () => {
                   className="form-control radius-8"
                   id="name"
                   placeholder="Enter Carpooling Green Points"
+                  data-error={errors?.carPoolingGreenPoints ? "true" : "false"}
+                  {...register("carPoolingGreenPoints", {
+                    valueAsNumber: true,
+                  })}
                 />
+                {errors?.carPoolingGreenPoints && (
+                  <p className="text-danger-500">
+                    {errors?.carPoolingGreenPoints?.message}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -199,7 +340,14 @@ const CompanyLayer = () => {
                   className="form-control radius-8"
                   id="name"
                   placeholder="Enter Campus Green Points"
+                  data-error={errors?.greenMapGreenPoints ? "true" : "false"}
+                  {...register("greenMapGreenPoints", { valueAsNumber: true })}
                 />
+                {errors?.greenMapGreenPoints && (
+                  <p className="text-danger-500">
+                    {errors?.greenMapGreenPoints?.message}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -217,7 +365,16 @@ const CompanyLayer = () => {
                   className="form-control radius-8"
                   id="name"
                   placeholder="Enter GPT Green Points"
+                  data-error={errors?.gptMessageGreenPoints ? "true" : "false"}
+                  {...register("gptMessageGreenPoints", {
+                    valueAsNumber: true,
+                  })}
                 />
+                {errors?.gptMessageGreenPoints && (
+                  <p className="text-danger-500">
+                    {errors?.gptMessageGreenPoints?.message}
+                  </p>
+                )}
               </div>
             </div>
 

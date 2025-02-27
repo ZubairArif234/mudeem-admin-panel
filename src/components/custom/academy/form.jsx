@@ -46,9 +46,12 @@ const Form = ({ data }) => {
     error: "",
   });
   const fileInputRef = useRef(null);
+  console.log(imagePreview);
 
   const handleFileChange = (e, type) => {
-    if (e.target.files.length) {
+    console.log(e.target.files.length);
+
+    if (e.target.files.length > 0) {
       if (fileValidation(e.target?.files[0])) {
         const src = URL.createObjectURL(e.target.files[0]);
         if (type === "image") {
@@ -144,7 +147,6 @@ const Form = ({ data }) => {
         setPdfPreview({ file: "", src: "", error: "" });
         reset();
       }
-
     } catch (err) {
       console.error("Book update failed:", err);
     }
@@ -158,7 +160,7 @@ const Form = ({ data }) => {
       setValue("author", data?.author);
       setValue("pages", data?.pages);
       setValue("language", data?.language);
-      setValue("year", new Date(data?.year, 0, 1).toISOString().split('T')[0]);
+      setValue("year", new Date(data?.year, 0, 1).toISOString().split("T")[0]);
       setValue("greenPoints", data?.greenPoints);
       setValue("price", data?.price);
       setValue("isPremium", data?.isPremium ? "premium" : "free");
@@ -175,7 +177,6 @@ const Form = ({ data }) => {
     }
   }, [data, setValue]);
 
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="row gy-3">
@@ -190,12 +191,15 @@ const Form = ({ data }) => {
                   className="uploaded-img__remove position-absolute top-0 end-0 z-1 text-2xxl line-height-1 me-8 mt-8 d-flex"
                   aria-label="Remove uploaded image"
                 >
-                  <Icon icon="radix-icons:cross-2" className="text-xl text-danger-600"></Icon>
+                  <Icon
+                    icon="radix-icons:cross-2"
+                    className="text-xl text-danger-600"
+                  ></Icon>
                 </button>
                 <img
                   id="uploaded-img__preview"
                   className="w-100 h-100 object-fit-cover"
-                  src={imagePreview?.src} 
+                  src={imagePreview?.src}
                   alt="Preview"
                 />
               </div>
@@ -269,7 +273,11 @@ const Form = ({ data }) => {
                   <p className="mb-0">{pdfPreview?.file?.name}</p>
                 ) : (
                   <p className="mb-0">
-                    <a href={data?.content} target="_blank" rel="noopener noreferrer">
+                    <a
+                      href={data?.content}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       View PDF
                     </a>
                   </p>
@@ -295,7 +303,9 @@ const Form = ({ data }) => {
                   icon="solar:document-outline"
                   className="text-xl text-secondary-light"
                 ></Icon>
-                <span className="fw-semibold text-secondary-light">Upload PDF</span>
+                <span className="fw-semibold text-secondary-light">
+                  Upload PDF
+                </span>
               </label>
             )}
 
@@ -307,13 +317,11 @@ const Form = ({ data }) => {
               hidden
               ref={fileInputRef}
             />
-
           </div>
           {pdfPreview?.error && (
             <p className="text-danger-500">{pdfPreview?.error}</p>
           )}
         </div>
-
 
         <div className="col-lg-4">
           <label className="form-label">Book Name</label>

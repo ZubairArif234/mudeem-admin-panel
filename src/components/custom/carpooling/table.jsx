@@ -46,7 +46,7 @@ const CarpoolingTable = ({
         </tr>
       </thead>
       <tbody>
-        {rows.map((item, i) => (
+        {rows?.map((item, i) => (
           <tr>
             {isSelectable && (
               <td>
@@ -56,7 +56,7 @@ const CarpoolingTable = ({
                 </div>
               </td>
             )}
-            <td>#{item?.id + 1 * 2087}</td>
+            <td>#{item?._id.slice(0, 6) + i}</td>
             <td>
               <div className="d-flex align-items-center">
                 <img
@@ -65,14 +65,14 @@ const CarpoolingTable = ({
                   className="flex-shrink-0 me-12 radius-8"
                 />
                 <h6 className="text-md mb-0 fw-medium flex-grow-1">
-                  {item?.name}
+                  {item?.user?.name}
                 </h6>
               </div>
             </td>
-            <td>{item?.pickUp}</td>
-            <td>{item?.destination}</td>
+            <td>{item?.pickupLocation}</td>
+            <td>{item?.whereTo}</td>
 
-            <td> {item?.seat}</td>
+            <td> {item?.availableSeats}</td>
             <td>
               <SingleAvatarGroup users={[0, 1, 2, 3]} />
             </td>

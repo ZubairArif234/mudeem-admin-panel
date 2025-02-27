@@ -1,60 +1,75 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useCreateCareer } from "../../../hook/apis/career/useCreateCareer";
 import { toast } from "sonner";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useUpdateCareer } from "../../../hook/apis/career/useUpdateCareer";
 
-const CareerForm = () => {
-  const [formData, setFormData] = useState({
-    company: "",
-    title: "",
-    description: "",
-    location: "",
-    salary: "",
-    linkedInUrl: "",
-    jobType: "onsite",
+const CareerSchema = z.object({
+  title: z.string().min(3, { message: "Title must be at least 3 characters" }),
+  location: z
+    .string()
+    .min(3, { message: "Location must be at least 3 characters" }),
+  salary: z.number().min(1, { message: "Salary must be a valid number" }), // Fixed salary validation
+  company: z
+    .string()
+    .min(3, { message: "Company name must be at least 3 characters" }),
+  linkedInUrl: z.string().url({ message: "Enter a valid LinkedIn URL" }), // Ensures it's a valid URL
+  jobType: z
+    .string()
+    .min(3, { message: "Job type must be at least 3 characters" })
+    .default("Onsite"),
+  description: z
+    .string()
+    .min(10, { message: "Description must be at least 10 characters" }),
+});
+
+const CareerForm = ({ data }) => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(CareerSchema),
   });
 
-  const { createCareer, isLoading, isError, error } = useCreateCareer();
+  const { createCareer, isLoading } = useCreateCareer();
+  const { updateCareer, updateLoading } = useUpdateCareer();
 
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!formData.company || !formData.title || !formData.salary) {
-      toast.error("Please fill in all required fields.");
-      return;
-    }
+  const handleFormSubmit = async (formData) => {
+    console.log(formData);
 
     try {
-      await createCareer(formData);
+      let res;
+      if (data?._id) {
+        res = await updateCareer({ id: data._id, payload: formData });
+      } else {
+        res = await createCareer(formData);
+      }
 
-      const modal = new window.bootstrap.Modal(document.getElementById('add-job'));
-      modal.hide();
-
-      toast.success("Career created successfully!");
-
-      setFormData({
-        company: "",
-        title: "",
-        description: "",
-        location: "",
-        salary: "",
-        linkedInUrl: "",
-        jobType: "onsite",
-      });
+      if (res) {
+        reset();
+      }
     } catch (err) {
-      toast.error("Failed to create career. Please try again.");
+      console.error("Career update failed:", err);
     }
   };
 
+  useEffect(() => {
+    if (data?._id) {
+      setValue("title", data?.title);
+      setValue("company", data?.company);
+      setValue("salary", data?.salary);
+      setValue("location", data?.location);
+      setValue("linkedInUrl", data?.linkedInUrl);
+      setValue("description", data?.description);
+    }
+  }, [data]);
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(handleFormSubmit)}>
       <div className="row gy-3">
         <div className="col-12">
           <label className="form-label">Job Title</label>
@@ -63,10 +78,12 @@ const CareerForm = () => {
             name="title"
             className="form-control form-control-sm"
             placeholder="Enter Job Title"
-            value={formData.title}
-            onChange={handleChange}
-            required
+            data-error={errors?.title ? "true" : "false"}
+            {...register("title")}
           />
+          {errors?.title && (
+            <p className="text-danger-500">{errors?.title?.message}</p>
+          )}
         </div>
 
         <div className="col-12">
@@ -76,10 +93,12 @@ const CareerForm = () => {
             name="company"
             className="form-control form-control-sm"
             placeholder="Enter Company Name"
-            value={formData.company}
-            onChange={handleChange}
-            required
+            data-error={errors?.company ? "true" : "false"}
+            {...register("company")}
           />
+          {errors?.company && (
+            <p className="text-danger-500">{errors?.company?.message}</p>
+          )}
         </div>
 
         <div className="col-12">
@@ -89,9 +108,12 @@ const CareerForm = () => {
             name="location"
             className="form-control form-control-sm"
             placeholder="Enter Location"
-            value={formData.location}
-            onChange={handleChange}
+            data-error={errors?.location ? "true" : "false"}
+            {...register("location")}
           />
+          {errors?.location && (
+            <p className="text-danger-500">{errors?.location?.message}</p>
+          )}
         </div>
 
         <div className="col-12">
@@ -101,10 +123,14 @@ const CareerForm = () => {
             name="salary"
             className="form-control form-control-sm"
             placeholder="Enter Salary"
-            value={formData.salary}
-            onChange={handleChange}
-            required
+            data-error={errors?.salary ? "true" : "false"}
+            {...register("salary", {
+              valueAsNumber: true,
+            })}
           />
+          {errors?.salary && (
+            <p className="text-danger-500">{errors?.salary?.message}</p>
+          )}
         </div>
 
         <div className="col-12">
@@ -114,9 +140,12 @@ const CareerForm = () => {
             name="linkedInUrl"
             className="form-control form-control-sm"
             placeholder="Enter LinkedIn Link"
-            value={formData.linkedInUrl}
-            onChange={handleChange}
+            data-error={errors?.linkedInUrl ? "true" : "false"}
+            {...register("linkedInUrl")}
           />
+          {errors?.linkedInUrl && (
+            <p className="text-danger-500">{errors?.linkedInUrl?.message}</p>
+          )}
         </div>
 
         <div className="col-12">
@@ -126,9 +155,12 @@ const CareerForm = () => {
             className="form-control form-control-sm"
             placeholder="Enter Job Description"
             name="description"
-            value={formData.description}
-            onChange={handleChange}
+            data-error={errors?.description ? "true" : "false"}
+            {...register("description")}
           ></textarea>
+          {errors?.description && (
+            <p className="text-danger-500">{errors?.description?.message}</p>
+          )}
         </div>
 
         <div className="mt-10 d-flex gap-2 justify-content-end">
@@ -142,7 +174,7 @@ const CareerForm = () => {
           <button
             type="submit"
             className="btn btn-success-600"
-            disabled={isLoading}
+            disabled={isLoading || updateLoading}
           >
             {isLoading ? "Creating..." : "Save changes"}
           </button>

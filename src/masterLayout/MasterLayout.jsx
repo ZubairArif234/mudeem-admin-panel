@@ -2078,7 +2078,9 @@ const MasterLayout = ({ children }) => {
         <footer className="d-footer">
           <div className="row align-items-center justify-content-between">
             <div className="col-auto">
-              <p className="mb-0">© 2024 Dotclick. All Rights Reserved.</p>
+              <p className="mb-0">
+                © {new Date().getFullYear()} Dotclick. All Rights Reserved.
+              </p>
             </div>
           </div>
         </footer>

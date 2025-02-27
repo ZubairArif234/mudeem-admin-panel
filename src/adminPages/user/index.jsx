@@ -3,8 +3,12 @@ import MasterLayout from "../../masterLayout/MasterLayout";
 import Breadcrumb from "../../components/Breadcrumb";
 import TableDataLayer from "../../components/TableDataLayer";
 import UserTable from "../../components/custom/user/table";
+import { useGetUsers } from "../../hook/apis/user/useAllUser";
 
 const Users = () => {
+  const { user, isPending } = useGetUsers();
+  console.log(user);
+
   const tableRows = [
     {
       id: "453",
@@ -88,7 +92,7 @@ const Users = () => {
     <MasterLayout>
       <Breadcrumb heading="Users" title="Users" />
 
-      <TableDataLayer title={"Users"} body={<UserTable rows={tableRows} />} />
+      <TableDataLayer title={"Users"} body={<UserTable rows={user} />} />
     </MasterLayout>
   );
 };

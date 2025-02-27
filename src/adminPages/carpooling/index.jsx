@@ -3,16 +3,12 @@ import MasterLayout from "../../masterLayout/MasterLayout";
 import Breadcrumb from "../../components/Breadcrumb";
 import TableDataLayer from "../../components/TableDataLayer";
 import CarpoolingTable from "../../components/custom/carpooling/table";
+import { useGetCarpool } from "../../hook/apis/carpool/useGetAll";
 
 const Carpooling = () => {
-  const tableHeadings = [
-    "ID",
-    "Driver",
-    "Pick up",
-    "Destination",
-    "Seats",
-    "Passengers",
-  ];
+  const { carpool, isPending } = useGetCarpool();
+  console.log(carpool);
+
   const tableRows = [
     {
       id: "453",
@@ -261,7 +257,7 @@ const Carpooling = () => {
 
       <TableDataLayer
         title={"Ride History"}
-        body={<CarpoolingTable heading={tableHeadings} rows={tableRows} />}
+        body={<CarpoolingTable rows={carpool} />}
       />
     </MasterLayout>
   );
