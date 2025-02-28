@@ -147,12 +147,9 @@ const CompanyLayer = () => {
       settingData.append("logo", logoPreview.file);
     }
   
-    // Append favicon file
-    // if (faviconPreview.file) {
-    //   settingData.append("favicon", faviconPreview.file);
-    // }
+    
     if (faviconPreview.file) {
-      settingData.append("favicon", faviconPreview.src);
+      settingData.append("favIcon", faviconPreview.file);
     }
     
   

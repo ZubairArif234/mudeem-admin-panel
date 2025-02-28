@@ -236,14 +236,19 @@ const FormPage = () => {
     }
 
     // Append images to FormData
-    uploadedImages.forEach((file) => {
-      formData.append("images", file?.file);
-    });
+    if (uploadedImages.length > 0) {
+      uploadedImages.forEach((file) => {
+        if (file?.file) {
+          formData.append("images", file.file);
+        }
+      });
+    }
 
     // Clear the images array only if they are empty
-    if (uploadedImages?.length < 1) {
-      setUploadedImagesFiles([]); // Clear image files in the state
-    }
+    // if (uploadedImages?.length < 1) {
+    //   setUploadedImagesFiles([]); // Clear image files in the state
+    // }
+
     console.log(uploadedImages, uploadedImagesFiles);
 
     try {
@@ -328,17 +333,12 @@ const FormPage = () => {
                       <label
                         className="upload-file-multiple h-120-px w-120-px border input-form-light radius-8 overflow-hidden border-dashed bg-neutral-50 bg-hover-neutral-200 d-flex align-items-center flex-column justify-content-center gap-1"
                         htmlFor="upload-file-multiple"
-                        data-error={
-                          uploadedImagesFiles?.length < 1 ? "true" : "false"
-                        }
                       >
                         <Icon
                           icon="solar:camera-outline"
                           className="text-xl text-secondary-light"
                         ></Icon>
-                        <span className="fw-semibold text-secondary-light">
-                          Upload
-                        </span>
+                        <span className="fw-semibold text-secondary-light">Upload</span>
                         <input
                           id="upload-file-multiple"
                           type="file"
@@ -350,13 +350,7 @@ const FormPage = () => {
                       </label>
                     )}
                   </div>
-                  {uploadedImagesFiles?.length < 1 && (
-                    <p className="text-danger-500">
-                      Invalid image file ( max 5MB)
-                    </p>
-                  )}
                 </div>
-
                 <div className="col-12">
                   <label className="form-label">Product Name</label>
                   <input
@@ -528,10 +522,10 @@ const FormPage = () => {
                             : "false"
                         }
                         {...register(`variants[${i}].price`)}
-                        // value={elem?.price}
-                        // onChange={(e) =>
-                        //   handleVariantsFieldValues(e, "variant", i)
-                        // }
+                      // value={elem?.price}
+                      // onChange={(e) =>
+                      //   handleVariantsFieldValues(e, "variant", i)
+                      // }
                       />
                       {errors?.variants && (
                         <p className="text-danger-500">
@@ -548,7 +542,7 @@ const FormPage = () => {
                               Size {elem?.sizes?.length > 1 && j + 1}
                             </p>
                             {elem?.sizes?.length - 1 == j &&
-                            elem?.sizes?.length > 0 ? (
+                              elem?.sizes?.length > 0 ? (
                               <button
                                 onClick={() =>
                                   handleAddSizeAndColour("size", i)
@@ -659,23 +653,23 @@ const FormPage = () => {
                                 placeholder="Enter Stock "
                                 data-error={
                                   errors?.variants &&
-                                  errors?.variants[i] &&
-                                  Array.isArray(errors?.variants[i]?.sizes) &&
-                                  errors?.variants[i]?.sizes[j] &&
-                                  errors?.variants[i]?.sizes[j]?.stock
+                                    errors?.variants[i] &&
+                                    Array.isArray(errors?.variants[i]?.sizes) &&
+                                    errors?.variants[i]?.sizes[j] &&
+                                    errors?.variants[i]?.sizes[j]?.stock
                                     ? "true"
                                     : "false"
                                 }
                                 {...register(
                                   `variants[${i}].sizes[${j}].stock`
                                 )}
-                                // value={size?.stock}
-                                // {...register(
-                                //   `variants[${i}].sizes[${j}].stock`
-                                // )}
-                                // onChange={(e) =>
-                                //   handleVariantsFieldValues(e, "sizes", i, j)
-                                // }
+                              // value={size?.stock}
+                              // {...register(
+                              //   `variants[${i}].sizes[${j}].stock`
+                              // )}
+                              // onChange={(e) =>
+                              //   handleVariantsFieldValues(e, "sizes", i, j)
+                              // }
                               />
                               {errors?.variants &&
                                 errors?.variants[i] &&
@@ -702,7 +696,7 @@ const FormPage = () => {
                               Color {elem?.colors?.length > 1 && k + 1}
                             </p>
                             {elem?.colors?.length - 1 == k &&
-                            elem?.colors?.length > 0 ? (
+                              elem?.colors?.length > 0 ? (
                               <button
                                 onClick={() =>
                                   handleAddSizeAndColour("color", i)
@@ -738,20 +732,20 @@ const FormPage = () => {
                                 placeholder="Enter Shop Name"
                                 data-error={
                                   errors?.variants &&
-                                  errors?.variants[i] &&
-                                  Array.isArray(errors?.variants[i]?.colors) &&
-                                  errors?.variants[i]?.colors[k] &&
-                                  errors?.variants[i]?.colors[k]?.stock
+                                    errors?.variants[i] &&
+                                    Array.isArray(errors?.variants[i]?.colors) &&
+                                    errors?.variants[i]?.colors[k] &&
+                                    errors?.variants[i]?.colors[k]?.stock
                                     ? "true"
                                     : "false"
                                 }
                                 {...register(
                                   `variants[${i}].colors[${k}].color`
                                 )}
-                                // value={color?.color}
-                                // onChange={(e) =>
-                                //   handleVariantsFieldValues(e, "sizes", i, k)
-                                // }
+                              // value={color?.color}
+                              // onChange={(e) =>
+                              //   handleVariantsFieldValues(e, "sizes", i, k)
+                              // }
                               />
                               {errors?.variants &&
                                 errors?.variants[i] &&
@@ -777,20 +771,20 @@ const FormPage = () => {
                                 placeholder="Enter Stock "
                                 data-error={
                                   errors?.variants &&
-                                  errors?.variants[i] &&
-                                  Array.isArray(errors?.variants[i]?.colors) &&
-                                  errors?.variants[i]?.colors[k] &&
-                                  errors?.variants[i]?.colors[k]?.stock
+                                    errors?.variants[i] &&
+                                    Array.isArray(errors?.variants[i]?.colors) &&
+                                    errors?.variants[i]?.colors[k] &&
+                                    errors?.variants[i]?.colors[k]?.stock
                                     ? "true"
                                     : "false"
                                 }
                                 {...register(
                                   `variants[${i}].colors[${k}].stock`
                                 )}
-                                // value={color?.stock}
-                                // onChange={(e) =>
-                                //   handleVariantsFieldValues(e, "colors", i, k)
-                                // }
+                              // value={color?.stock}
+                              // onChange={(e) =>
+                              //   handleVariantsFieldValues(e, "colors", i, k)
+                              // }
                               />
                               {errors?.variants &&
                                 errors?.variants[i] &&

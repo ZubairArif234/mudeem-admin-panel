@@ -12,7 +12,7 @@ const MasterLayout = ({ children }) => {
   const location = useLocation(); // Hook to get the current route
   const { logout } = useLogout();
   const { me } = useGetMe();
-  const { settings, isLoading, isError } = useGetSettings();
+  const { settings, isLoading } = useGetSettings();
 
   
   useEffect(() => {
@@ -73,9 +73,9 @@ const MasterLayout = ({ children }) => {
   }, [location.pathname]);
 
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  // if (isLoading) {
+  //   return <div>Loading...</div>;
+  // }
 
 
   const handleLogut = async () => {
@@ -116,7 +116,6 @@ const MasterLayout = ({ children }) => {
         </button>
         <div className="d-flex justify-content-center">
           <Link to="/dashboard" className="sidebar-logo">
-            {/* Use the logo URL from the settings */}
             <img
               src={settings?.logo || "assets/images/logo.png"} 
               alt="site logo"
