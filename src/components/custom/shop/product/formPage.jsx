@@ -9,43 +9,45 @@ import Loader from "../../extra/loader";
 import { useGetCategory } from "../../../../hook/apis/shop/category/useGetCategory";
 import { useUpdateProduct } from "../../../../hook/apis/shop/product/useUpdateProduct";
 import { useGetProductById } from "../../../../hook/apis/shop/product/useGetproductById";
+
+// Zod schema for size
 const SizeSchema = z.object({
   size: z.string().min(1, "Size is required"),
   stock: z.string().min(1, "Stock is required"),
 });
 
+// Zod schema for color
 const ColorSchema = z.object({
   color: z.string().min(1, "Color is required"),
   stock: z.string().min(1, "Stock is required"),
 });
 
-// Zod schema for the variants
+// Zod schema for variants
 const VariantSchema = z.object({
   name: z.string().min(1, "Variant name is required"),
-  price: z.string().min(1, "Variant price is required"), // You can change this to number if price is numeric
+  price: z.string().min(1, "Variant price is required"),
   sizes: z.array(SizeSchema).min(1, "At least one size is required"),
   colors: z.array(ColorSchema).min(1, "At least one color is required"),
 });
 
+// Zod schema for product
 const ProductSchema = z.object({
   name: z.string().min(3, "Product name must be at least 3 characters"),
   brand: z.string().min(3, "Product brand must be at least 3 characters"),
   category: z.string().min(3, "Product category is invalid"),
   greenPointsPerUnit: z.string().min(1, "Product green point is invalid"),
   featured: z.boolean(),
-  description: z
-    .string()
-    .min(10, "Product description must be at least 10 characters"),
+  description: z.string().min(10, "Product description must be at least 10 characters"),
   variants: z.array(VariantSchema).min(1, "At least one variant is required"),
 });
 
+// Image validation function
 const imageValidation = (file) => {
   if (!file) {
     return false;
   }
   const maxSize = 5 * 1024 * 1024; // 5MB limit
   const isValidSize = file.size <= maxSize;
-
   return isValidSize ? file : null;
 };
 
@@ -54,7 +56,7 @@ const FormPage = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const [uploadedImages, setUploadedImages] = useState([]);
-  const [uploadedImagesFiles, setUploadedImagesFiles] = useState([""]);
+  const [uploadedImagesFiles, setUploadedImagesFiles] = useState([]);
   const [variants, setVariants] = useState([
     {
       name: "",
@@ -73,19 +75,11 @@ const FormPage = () => {
       ],
     },
   ]);
+
   const { categories } = useGetCategory();
   const { updateProduct, updatePending } = useUpdateProduct();
-
   const { createProduct, isPending } = useCreateProduct();
-
   const { productDetail } = useGetProductById(state?.data?._id);
-
-  useEffect(() => {
-    if (productDetail?.images?.length > 0) {
-      setUploadedImages(productDetail?.images);
-      setUploadedImagesFiles(productDetail?.images);
-    }
-  }, [productDetail]);
 
   const {
     register,
@@ -95,31 +89,110 @@ const FormPage = () => {
   } = useForm({
     resolver: zodResolver(ProductSchema),
     defaultValues: {
-      name: productDetail?.name || "",
-      brand: productDetail?.brand || "",
-      greenPointsPerUnit: String(productDetail?.greenPointsPerUnit) || "",
-      category: productDetail?.category?._id || "Select Category",
-      description: productDetail?.description || "",
-      featured: productDetail?.featured || false,
-      variants: productDetail?.variants?.map((item) => ({
-        name: item?.name || "",
-        price: String(item?.price),
-        sizes: item?.sizes?.map((val) => ({
-          size: val?.size,
-          stock: String(val?.stock),
-        })),
-        colors: item?.colors?.map((val) => ({
-          color: val?.color,
-          stock: String(val?.stock),
-        })),
-      })),
+      name: "",
+      brand: "",
+      greenPointsPerUnit: "",
+      category: "Select Category",
+      description: "",
+      featured: false,
+      variants: [
+        {
+          name: "",
+          price: "",
+          sizes: [
+            {
+              size: "",
+              stock: "",
+            },
+          ],
+          colors: [
+            {
+              color: "",
+              stock: "",
+            },
+          ],
+        },
+      ],
     },
   });
 
-  const handleFileChange = (e) => {
-    if (uploadedImagesFiles.length < 2) {
-      setUploadedImagesFiles([]);
+  // Reset form when productDetail changes
+  useEffect(() => {
+    if (productDetail) {
+      reset({
+        name: productDetail.name || "",
+        brand: productDetail.brand || "",
+        greenPointsPerUnit: String(productDetail.greenPointsPerUnit) || "",
+        category: productDetail.category?._id || "Select Category",
+        description: productDetail.description || "",
+        featured: productDetail.featured || false,
+        variants: productDetail.variants?.map((item) => ({
+          name: item.name || "",
+          price: String(item.price),
+          sizes: item.sizes?.map((val) => ({
+            size: val.size,
+            stock: String(val.stock),
+          })),
+          colors: item.colors?.map((val) => ({
+            color: val.color,
+            stock: String(val.stock),
+          })),
+        })) || [
+          {
+            name: "",
+            price: "",
+            sizes: [
+              {
+                size: "",
+                stock: "",
+              },
+            ],
+            colors: [
+              {
+                color: "",
+                stock: "",
+              },
+            ],
+          },
+        ],
+      });
+      setUploadedImages(productDetail.images || []);
+      setUploadedImagesFiles(productDetail.images || []);
+      setVariants(
+        productDetail.variants?.map((item) => ({
+          name: item.name || "",
+          price: String(item.price),
+          sizes: item.sizes?.map((val) => ({
+            size: val.size,
+            stock: String(val.stock),
+          })),
+          colors: item.colors?.map((val) => ({
+            color: val.color,
+            stock: String(val.stock),
+          })),
+        })) || [
+          {
+            name: "",
+            price: "",
+            sizes: [
+              {
+                size: "",
+                stock: "",
+              },
+            ],
+            colors: [
+              {
+                color: "",
+                stock: "",
+              },
+            ],
+          },
+        ]
+      );
     }
+  }, [productDetail, reset]);
+
+  const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
     try {
       const newImages = [];
@@ -127,14 +200,13 @@ const FormPage = () => {
 
       files.forEach((file) => {
         if (imageValidation(file)) {
-          console.log(file);
-
           newFiles.push(file);
           newImages.push({ src: URL.createObjectURL(file), file: file });
         }
-        setUploadedImages((prev) => [...prev, ...newImages]);
-        setUploadedImagesFiles((prev) => [...prev, ...newFiles]);
       });
+
+      setUploadedImages((prev) => [...prev, ...newImages]);
+      setUploadedImagesFiles((prev) => [...prev, ...newFiles]);
     } catch (err) {
       console.log(err);
     }
@@ -170,7 +242,6 @@ const FormPage = () => {
 
   const handleRemoveVariants = (i) => {
     const updatedVariants = variants.filter((_, index) => index !== i);
-
     setVariants(updatedVariants);
   };
 
@@ -181,60 +252,42 @@ const FormPage = () => {
         ...updatedVariants[i].sizes,
         { size: "", stock: "" },
       ];
-      setVariants(updatedVariants);
     } else if (type === "color") {
       updatedVariants[i].colors = [
         ...updatedVariants[i].colors,
         { color: "", stock: "" },
       ];
-      setVariants(updatedVariants);
     }
+    setVariants(updatedVariants);
   };
 
   const handleRemoveSizeAndColour = (type, i, indexToRemove) => {
     const updatedVariants = [...variants];
-
     if (type === "size") {
       updatedVariants[i].sizes = updatedVariants[i].sizes.filter(
         (_, index) => index !== indexToRemove
       );
-      setVariants(updatedVariants);
     } else if (type === "color") {
       updatedVariants[i].colors = updatedVariants[i].colors.filter(
         (_, index) => index !== indexToRemove
       );
-      setVariants(updatedVariants);
     }
+    setVariants(updatedVariants);
   };
 
-  //   const handleVariantsFieldValues = (e, type, variantsIndex, subTypeIndex) => {
-  //     const updatedVariants = [...variants];
-  //     if (type === "variant") {
-  //       updatedVariants[variantsIndex][e.target.name] = e.target.value;
-  //       setVariants(updatedVariants);
-  //     } else {
-  //       updatedVariants[variantsIndex][type][subTypeIndex][e.target.name] =
-  //         e.target.value;
-  //       console.log(updatedVariants);
-  //     }
-  //   };
-
   const onSubmit = async (data) => {
-    // Prepare FormData
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("brand", data.brand);
     formData.append("category", data.category);
     formData.append("description", data.description);
-    formData.append("price", 123); // static price or use dynamic from data
+    formData.append("price", 123); // Static price or use dynamic from data
     formData.append("greenPointsPerUnit", data.greenPointsPerUnit);
     formData.append("featured", data.featured);
-    if (state?.data?.variants) {
-      formData.append("newVariants", JSON.stringify(data.variants));
-    } else {
-      formData.append("variants", JSON.stringify(data.variants));
-    }
-
+  
+    // Append variants data
+    formData.append("variants", JSON.stringify(data.variants));
+  
     // Append images to FormData
     if (uploadedImages.length > 0) {
       uploadedImages.forEach((file) => {
@@ -243,28 +296,20 @@ const FormPage = () => {
         }
       });
     }
-
-    // Clear the images array only if they are empty
-    // if (uploadedImages?.length < 1) {
-    //   setUploadedImagesFiles([]); // Clear image files in the state
-    // }
-
-    console.log(uploadedImages, uploadedImagesFiles);
-
+  
     try {
-      // Send the data to createProduct API
       if (state?.data?.name) {
+        // Update product
         await updateProduct({ payload: formData, id: id });
       } else {
+        // Create product
         await createProduct(formData);
       }
-
+  
       // Reset the form and clear states after successful submission
-      setUploadedImages([]); // Clear uploaded images
-      setUploadedImagesFiles([]); // Clear image files state
-      reset(); // Reset form fields
-
-      // Reset the variants state to its default
+      setUploadedImages([]);
+      setUploadedImagesFiles([]);
+      reset();
       setVariants([
         {
           name: "",
@@ -283,12 +328,11 @@ const FormPage = () => {
           ],
         },
       ]);
-
+  
       // Navigate to the product page after successful submission
       navigate("/shop-products");
     } catch (err) {
-      // Handle errors
-      console.error("Product creation failed:", err);
+      console.error("Product creation/update failed:", err);
     }
   };
 
@@ -383,7 +427,6 @@ const FormPage = () => {
 
                 <div className="col-lg-6">
                   <label className="form-label">Green Points</label>
-                  {/* <textarea> */}
                   <input
                     type="number"
                     name="#0"
@@ -401,7 +444,6 @@ const FormPage = () => {
 
                 <div className="col-lg-6">
                   <label className="form-label">Category</label>
-
                   <select
                     className="form-control form-control-sm"
                     placeholder="Select Category"
@@ -430,11 +472,9 @@ const FormPage = () => {
                 </div>
 
                 <div className="col-12">
-                  <label className="form-label">Decsription</label>
-                  {/* <textarea> */}
+                  <label className="form-label">Description</label>
                   <textarea
                     name="#0"
-                    // rows={10}
                     style={{ height: "100px" }}
                     className="form-control form-control-sm"
                     placeholder="Enter Description"
@@ -469,7 +509,7 @@ const FormPage = () => {
               </div>
             </div>
             <div className="col-xl-6">
-              {/* variants */}
+              {/* Variants Section */}
               {variants?.map((elem, i) => (
                 <div key={i}>
                   <div className="d-flex justify-content-between align-items-center">
@@ -522,10 +562,6 @@ const FormPage = () => {
                             : "false"
                         }
                         {...register(`variants[${i}].price`)}
-                      // value={elem?.price}
-                      // onChange={(e) =>
-                      //   handleVariantsFieldValues(e, "variant", i)
-                      // }
                       />
                       {errors?.variants && (
                         <p className="text-danger-500">
@@ -533,7 +569,8 @@ const FormPage = () => {
                         </p>
                       )}
                     </div>
-                    {/* sizes */}
+
+                    {/* Sizes Section */}
                     <div className="col-xl-6 mt-8">
                       {elem?.sizes?.map((size, j) => (
                         <div key={j}>
@@ -541,7 +578,7 @@ const FormPage = () => {
                             <p className="text-md fw-bold mb-0">
                               Size {elem?.sizes?.length > 1 && j + 1}
                             </p>
-                            {elem?.sizes?.length - 1 == j &&
+                            {elem?.sizes?.length - 1 === j &&
                               elem?.sizes?.length > 0 ? (
                               <button
                                 onClick={() =>
@@ -571,7 +608,6 @@ const FormPage = () => {
                           <div className="row gy-8 mb-8">
                             <div className="col-lg-5">
                               <label className="form-label d-block">Size</label>
-                              {/* <textarea> */}
                               <div
                                 className="btn-group"
                                 role="group"
@@ -663,13 +699,6 @@ const FormPage = () => {
                                 {...register(
                                   `variants[${i}].sizes[${j}].stock`
                                 )}
-                              // value={size?.stock}
-                              // {...register(
-                              //   `variants[${i}].sizes[${j}].stock`
-                              // )}
-                              // onChange={(e) =>
-                              //   handleVariantsFieldValues(e, "sizes", i, j)
-                              // }
                               />
                               {errors?.variants &&
                                 errors?.variants[i] &&
@@ -687,7 +716,8 @@ const FormPage = () => {
                         </div>
                       ))}
                     </div>
-                    {/* colors */}
+
+                    {/* Colors Section */}
                     <div className="col-xl-6 mt-8">
                       {elem?.colors?.map((color, k) => (
                         <div key={k}>
@@ -695,7 +725,7 @@ const FormPage = () => {
                             <p className="text-md fw-bold mb-0">
                               Color {elem?.colors?.length > 1 && k + 1}
                             </p>
-                            {elem?.colors?.length - 1 == k &&
+                            {elem?.colors?.length - 1 === k &&
                               elem?.colors?.length > 0 ? (
                               <button
                                 onClick={() =>
@@ -729,23 +759,19 @@ const FormPage = () => {
                                 type="color"
                                 name="color"
                                 className="form-control form-control-sm w-10"
-                                placeholder="Enter Shop Name"
+                                placeholder="Enter Color"
                                 data-error={
                                   errors?.variants &&
                                     errors?.variants[i] &&
                                     Array.isArray(errors?.variants[i]?.colors) &&
                                     errors?.variants[i]?.colors[k] &&
-                                    errors?.variants[i]?.colors[k]?.stock
+                                    errors?.variants[i]?.colors[k]?.color
                                     ? "true"
                                     : "false"
                                 }
                                 {...register(
                                   `variants[${i}].colors[${k}].color`
                                 )}
-                              // value={color?.color}
-                              // onChange={(e) =>
-                              //   handleVariantsFieldValues(e, "sizes", i, k)
-                              // }
                               />
                               {errors?.variants &&
                                 errors?.variants[i] &&
@@ -781,10 +807,6 @@ const FormPage = () => {
                                 {...register(
                                   `variants[${i}].colors[${k}].stock`
                                 )}
-                              // value={color?.stock}
-                              // onChange={(e) =>
-                              //   handleVariantsFieldValues(e, "colors", i, k)
-                              // }
                               />
                               {errors?.variants &&
                                 errors?.variants[i] &&
@@ -805,9 +827,9 @@ const FormPage = () => {
                   </div>
                 </div>
               ))}
-              {/* add new variants */}
+
+              {/* Add New Variant Button */}
               <button
-                // disabled
                 onClick={handleAddVariants}
                 type="button"
                 className="btn w-100 btn-outline-success-600 radius-8 px-20 py-11"
@@ -817,7 +839,7 @@ const FormPage = () => {
             </div>
           </div>
 
-          {/* form button */}
+          {/* Form Submit Button */}
           <div className="d-flex justify-content-end my-8">
             <button type="submit" className="btn bg-success-600 text-white">
               {isPending || updatePending ? (
