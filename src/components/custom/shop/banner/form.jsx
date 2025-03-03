@@ -45,7 +45,7 @@ const BannerForm = ({ data }) => {
   });
 
   const handleFileChange = (e) => {
-    if (e.target.files.length) {
+    if (e.target.files.length > 0) {
       if (imageValidation(e.target.files[0])) {
         const src = URL.createObjectURL(e.target.files[0]);
         setImagePreview(src);
@@ -106,6 +106,8 @@ const BannerForm = ({ data }) => {
       setImageFile(data.image);
     }
   }, [data]);
+  console.log(imagePreview);
+
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)}>
       <div className="row gy-3">
