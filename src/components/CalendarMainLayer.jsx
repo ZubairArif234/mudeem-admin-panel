@@ -135,7 +135,7 @@ const CalendarMainLayer = (data) => {
                         <div className="d-flex align-items-center gap-10">
                           <span className="w-12-px h-12-px bg-success-600 rounded-circle fw-medium" />
                           <span className="text-secondary-light">
-                            {moment(item?.dateTime).format("LLL")}
+                            {moment(item?.dateTime).format("MMM DD,YYYY")}
                           </span>
                         </div>
                         <span className="text-capitalize text-primary-light fw-semibold text-md mt-4">
@@ -274,7 +274,7 @@ const CalendarMainLayer = (data) => {
                       <input
                         // ref={datePickerRef2}
                         id={"dateTime"}
-                        type="datetime-local"
+                        type="date"
                         className="form-control radius-8 bg-base"
                         placeholder={"enter date"}
                         data-error={errors?.dateTime ? "true" : "false"}

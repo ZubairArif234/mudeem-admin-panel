@@ -103,7 +103,7 @@ const Innovation = () => {
               text={"There are no projects found, based on your search!"}
             />
           )}
-          {projects?.length > 0 && projects[0]?.totalDocs[0]?.count > 9 && (
+          {/* {projects?.length > 0 && projects[0]?.totalDocs[0]?.count > 9 && (
             <div className="d-flex justify-content-end">
               <SquarePagination
                 totalPages={
@@ -114,7 +114,7 @@ const Innovation = () => {
                 handlePagination={handlePagination}
               />
             </div>
-          )}
+          )} */}
         </div>
         <div
           className="modal fade "
