@@ -74,8 +74,19 @@ const CompanyLayer = () => {
   const handleFileChange = (e, type) => {
     if (e.target.files.length > 0) {
       const file = e.target.files[0];
-      if (file.size > 2 * 1024 * 1024) {
-        // 2MB limit
+  
+      // Check if file is an image
+      if (!file.type.startsWith("image/")) {
+        if (type === "logo") {
+          setLogoPreview({ ...logoPreview, error: "Please upload a valid image file." });
+        } else if (type === "favicon") {
+          setFaviconPreview({ ...faviconPreview, error: "Please upload a valid image file." });
+        }
+        return;
+      }
+  
+      // Check if file size exceeds limit
+      if (file.size > 2 * 1024 * 1024) { // 2MB limit
         if (type === "logo") {
           setLogoPreview({ ...logoPreview, error: "File size must be less than 2MB" });
         } else if (type === "favicon") {
@@ -83,8 +94,9 @@ const CompanyLayer = () => {
         }
         return;
       }
-
+  
       const src = URL.createObjectURL(file);
+  
       if (type === "logo") {
         setLogoPreview({
           ...logoPreview,
@@ -102,7 +114,7 @@ const CompanyLayer = () => {
       }
     }
   };
-
+  
   const removeImage = (type) => {
     if (type === "logo") {
       setLogoPreview({
@@ -124,14 +136,16 @@ const CompanyLayer = () => {
       }
     }
   };
+  
 
   const onSubmit = async (formData) => {
-    if (!logoPreview?.file) {
+    // Validate logo and favicon
+    if (!logoPreview?.file && !logoPreview?.src) {
       setLogoPreview({ ...logoPreview, error: "Upload logo" });
       return;
     }
   
-    if (!faviconPreview?.file) {
+    if (!faviconPreview?.file && !faviconPreview?.src) {
       setFaviconPreview({ ...faviconPreview, error: "Upload favicon" });
       return;
     }
@@ -143,19 +157,29 @@ const CompanyLayer = () => {
     settingData.append("greenMapGreenPoints", formData.greenMapGreenPoints);
     settingData.append("gptMessageGreenPoints", formData.gptMessageGreenPoints);
   
-    if (logoPreview.file) {
-      settingData.append("logo", logoPreview.file);
+    // Handle logo (file or Cloudinary URL)
+    if (logoPreview?.file) {
+      settingData.append("logo", logoPreview.file); // File (binary)
+    } else if (logoPreview?.src) {
+      settingData.append("logo", logoPreview.src); // Cloudinary URL
+    } else {
+      // If logo is not changed, append the current logo URL (existing value)
+      settingData.append("logo", settings?.logo || ''); // Current logo from settings or empty string if not set
     }
   
-    
-    if (faviconPreview.file) {
-      settingData.append("favIcon", faviconPreview.file);
+    // Handle favicon (file or Cloudinary URL)
+    if (faviconPreview?.file) {
+      settingData.append("favIcon", faviconPreview.file); // File (binary)
+    } else if (faviconPreview?.src) {
+      settingData.append("favIcon", faviconPreview.src); // Cloudinary URL
+    } else {
+      // If favicon is not changed, append the current favicon URL (existing value)
+      settingData.append("favIcon", settings?.favIcon || ''); // Current favicon from settings or empty string if not set
     }
-    
   
     // Debug: Log FormData content
     for (let [key, value] of settingData.entries()) {
-      console.log(key, value);
+      console.log(key, value); // Log each entry to ensure correct values
     }
   
     try {
