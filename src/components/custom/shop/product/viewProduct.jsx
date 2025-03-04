@@ -4,7 +4,11 @@ import { useGetProductById } from "../../../../hook/apis/shop/product/useGetprod
 
 const ViewProduct = ({ data }) => {
   const [selectedTab, setSelectedTab] = useState("requested");
-  const { productDetail } = useGetProductById(data?._id);
+  // const { productDetail } = useGetProductById(data?._id);
+  const productId = data?._id || null;
+  const { productDetail } = useGetProductById(productId);
+  console.log("Product ID passed:", data?._id);
+
   // const [productDetail, setProductDetail] = useState([]);
   // useEffect(() => {
   //   if (data?._id) {
@@ -14,9 +18,10 @@ const ViewProduct = ({ data }) => {
 
   useEffect(() => {
     if (productDetail?.variants?.length > 0) {
-      setSelectedTab(productDetail?.variants[0]?._id);
+      setSelectedTab(productDetail.variants[0]?._id);
     }
   }, [productDetail]);
+  
 
   return (
     <div className="row gy-3">

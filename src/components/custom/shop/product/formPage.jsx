@@ -22,13 +22,15 @@ const ColorSchema = z.object({
   stock: z.string().min(1, "Stock is required"),
 });
 
-// Zod schema for variants
 const VariantSchema = z.object({
   name: z.string().min(1, "Variant name is required"),
-  price: z.string().min(1, "Variant price is required"),
+  price: z.union([z.string(), z.number()]).refine((val) => !isNaN(Number(val)), {
+    message: "Price must be a valid number",
+  }), // ✅ Allow both string and number
   sizes: z.array(SizeSchema).min(1, "At least one size is required"),
   colors: z.array(ColorSchema).min(1, "At least one color is required"),
 });
+
 
 // Zod schema for product
 const ProductSchema = z.object({
@@ -59,6 +61,7 @@ const FormPage = () => {
   const [uploadedImagesFiles, setUploadedImagesFiles] = useState([]);
   const [variants, setVariants] = useState([
     {
+      _id:"",
       name: "",
       price: "",
       sizes: [
@@ -92,29 +95,21 @@ const FormPage = () => {
       name: "",
       brand: "",
       greenPointsPerUnit: "",
+      price: "", // ✅ Ensure price has a default value
       category: "Select Category",
       description: "",
       featured: false,
       variants: [
         {
           name: "",
-          price: "",
-          sizes: [
-            {
-              size: "",
-              stock: "",
-            },
-          ],
-          colors: [
-            {
-              color: "",
-              stock: "",
-            },
-          ],
+          price: "", // ✅ Ensure price is in defaultValues
+          sizes: [{ size: "", stock: "" }],
+          colors: [{ color: "", stock: "" }],
         },
       ],
     },
   });
+
 
   // Reset form when productDetail changes
   useEffect(() => {
@@ -127,6 +122,7 @@ const FormPage = () => {
         description: productDetail.description || "",
         featured: productDetail.featured || false,
         variants: productDetail.variants?.map((item) => ({
+          _id:item._id,
           name: item.name || "",
           price: String(item.price),
           sizes: item.sizes?.map((val) => ({
@@ -139,6 +135,7 @@ const FormPage = () => {
           })),
         })) || [
             {
+              _id:"",
               name: "",
               price: "",
               sizes: [
@@ -160,6 +157,7 @@ const FormPage = () => {
       setUploadedImagesFiles(productDetail.images || []);
       setVariants(
         productDetail.variants?.map((item) => ({
+          _id:item._id,
           name: item.name || "",
           price: String(item.price),
           sizes: item.sizes?.map((val) => ({
@@ -172,6 +170,7 @@ const FormPage = () => {
           })),
         })) || [
           {
+            _id:"",
             name: "",
             price: "",
             sizes: [
@@ -222,6 +221,7 @@ const FormPage = () => {
     setVariants((prev) => [
       ...prev,
       {
+        _id:"",
         name: "",
         price: "",
         sizes: [
@@ -240,10 +240,29 @@ const FormPage = () => {
     ]);
   };
 
-  const handleRemoveVariants = (i) => {
-    const updatedVariants = variants.filter((_, index) => index !== i);
-    setVariants(updatedVariants);
+  // const handleRemoveVariants = (i) => {
+  //   const updatedVariants = variants.filter((_, index) => index !== i);
+  //   setVariants(updatedVariants);
+  // };
+
+  const [deletedVariants, setDeletedVariants] = useState([]);
+
+  const handleRemoveVariants = (i, variantId) => {
+    if (variantId !== ""){
+
+      setDeletedVariants([...deletedVariants,variantId]);
+    }
+    setVariants((prevVariants) => {
+     
+      const updatedVariants = prevVariants.filter((_, index) => index !== i);
+      return updatedVariants;
+    });
   };
+  
+  console.log(deletedVariants);
+  
+  
+
 
   const handleAddSizeAndColour = (type, i) => {
     const updatedVariants = [...variants];
@@ -275,59 +294,64 @@ const FormPage = () => {
     setVariants(updatedVariants);
   };
 
-  const onSubmit = async (data) => {
 
+  const onSubmit = async (data) => {
+    console.log("Deleted Variants Before Submission:", deletedVariants); // Debugging
+  
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("brand", data.brand);
     formData.append("category", data.category);
     formData.append("description", data.description);
-    formData.append("price", 123); // Static price or use dynamic from data
+    formData.append("price", Number(data.price) || 0);
     formData.append("greenPointsPerUnit", data.greenPointsPerUnit);
     formData.append("featured", data.featured);
-
-    const updatedVariants = data.variants.map((variant) => ({
-      variantId: variant._id,  // Include the 'variantId' or '_id' from existing variant data
-      name: variant.name,
-      price: variant.price,
-      sizes: variant.sizes,
-      colors: variant.colors,
-    }));
-    
+  
+    // Prepare updated variants
+    const updatedVariants = data.variants.map((variant, index) => {
+      const existingVariantId = productDetail?.variants[index]?._id;
+      return {
+        _id: existingVariantId || "",  // Use "" for new variants
+        name: variant.name,
+        price: Number(variant.price) || 0,
+        sizes: variant.sizes,
+        colors: variant.colors,
+      };
+    });
+  
     formData.append("updatedVariants", JSON.stringify(updatedVariants));
-    
-    console.log("Final Payload: ", updatedVariants);
-
-
-    if (uploadedImages.length > 0) {
-      uploadedImages.forEach((file) => {
-        if (file?.file) {
-          formData.append("images", file.file);
-        }
-      });
+  
+    // Only include deletedVariants if it has values
+    if (deletedVariants.length > 0) {
+      formData.append("deletedVariants", JSON.stringify(deletedVariants));
     }
-
+  
+    console.log("Final Payload:", {
+      updatedVariants,
+      deletedVariants,
+    });
+  
     try {
       if (state?.data?.name) {
-        // Update product
+        // Updating existing product
         await updateProduct({ payload: formData, id: id });
       } else {
-        // Create product
+        // Creating new product
         await createProduct(formData);
       }
-
-      // Reset form and navigate
-      setUploadedImages([]);
-      setUploadedImagesFiles([]);
+  
       reset();
-      setVariants([{ name: "", price: "", sizes: [{ size: "", stock: "" }], colors: [{ color: "", stock: "" }] }]);
       navigate("/shop-products");
-
     } catch (err) {
       console.error("Error updating product:", err);
     }
-
   };
+  
+  
+
+  console.log("Deleted Variants:", deletedVariants);
+  
+  
 
   return (
     <div className="card basic-data-table ">
@@ -510,7 +534,7 @@ const FormPage = () => {
                       Variant {variants?.length > 1 && i + 1}
                     </h6>
                     {variants?.length > 1 && (
-                      <button onClick={() => handleRemoveVariants(i)}>
+                      <button type="button" onClick={() => handleRemoveVariants(i ,elem?._id)}>
                         <Icon
                           icon="radix-icons:minus"
                           className="text-xl text-danger-600"
@@ -546,15 +570,12 @@ const FormPage = () => {
                       <label className="form-label">Variant Price</label>
                       <input
                         type="number"
-                        name="price"
                         className="form-control form-control-sm"
                         placeholder="Enter Variant Price"
                         data-error={
-                          errors?.variants && errors?.variants[i]?.price
-                            ? "true"
-                            : "false"
+                          errors?.variants && errors?.variants[i]?.price ? "true" : "false"
                         }
-                        {...register(`variants[${i}].price`)}
+                        {...register(`variants[${i}].price`, { valueAsNumber: true })} // ✅ Ensure it stores a number
                       />
                       {errors?.variants && (
                         <p className="text-danger-500">
@@ -562,6 +583,7 @@ const FormPage = () => {
                         </p>
                       )}
                     </div>
+
 
                     {/* Sizes Section */}
                     <div className="col-xl-6 mt-8">
@@ -574,6 +596,7 @@ const FormPage = () => {
                             {elem?.sizes?.length - 1 === j &&
                               elem?.sizes?.length > 0 ? (
                               <button
+                              type="button"
                                 onClick={() =>
                                   handleAddSizeAndColour("size", i)
                                 }
@@ -585,6 +608,7 @@ const FormPage = () => {
                               </button>
                             ) : (
                               <button
+                              type="button"
                                 onClick={() =>
                                   handleRemoveSizeAndColour("size", i, j)
                                 }
@@ -721,6 +745,7 @@ const FormPage = () => {
                             {elem?.colors?.length - 1 === k &&
                               elem?.colors?.length > 0 ? (
                               <button
+                              type="button"
                                 onClick={() =>
                                   handleAddSizeAndColour("color", i)
                                 }
@@ -732,6 +757,7 @@ const FormPage = () => {
                               </button>
                             ) : (
                               <button
+                              type="button"
                                 onClick={() =>
                                   handleRemoveSizeAndColour("color", i, k)
                                 }
