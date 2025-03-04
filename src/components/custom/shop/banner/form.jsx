@@ -109,7 +109,16 @@ const BannerForm = ({ data }) => {
   console.log(imagePreview);
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)}>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (imagePreview === null) {
+          setImageFile(null);
+        } else {
+          handleSubmit(handleFormSubmit)(e);
+        }
+      }}
+    >
       <div className="row gy-3">
         <div className="col-12">
           <label>Upload Banner Image</label>

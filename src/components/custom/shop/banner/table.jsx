@@ -40,7 +40,7 @@ const BannerTable = ({ isSelectable, rows }) => {
         </tr>
       </thead>
       <tbody>
-        {rows.map((item, i) => (
+        {rows?.map((item, i) => (
           <tr key={i}>
             {isSelectable && (
               <td>
@@ -51,24 +51,28 @@ const BannerTable = ({ isSelectable, rows }) => {
               </td>
             )}
             <td>#{item?._id.slice(0, 6) + i}</td>
-            <td>{item?.name}</td>
+            <td className="text-capitalize">{item?.name}</td>
             <td>
               {" "}
-              <img src={item?.image} width={100} />
+              <img
+                alt={item?.name}
+                src={item?.image}
+                className="table-row-image"
+              />
             </td>
 
             <td> {moment(item?.createdAt).format("DD/MMM/YYYY")}</td>
-            <td>
+            <td key={i + 1}>
               <div className="d-flex gap-2 align-items-start">
                 <Modal
-                  id={`edit-bannner-${item._id}`}
+                  id={`edit-banner-${item._id}`}
                   button={
                     <Icon
                       icon="mage:edit"
                       className="text-success-500 cursor-pointer"
                       type="button"
                       data-bs-toggle="modal"
-                      data-bs-target={`#edit-bannner-${item._id}`}
+                      data-bs-target={`#edit-banner-${item._id}`}
                     />
                   }
                   title="Edit Banner"

@@ -19,7 +19,7 @@ const RewardSchema = z.object({
 const Innovation = () => {
   const [filter, setFilter] = useState({
     page: 0,
-    limit: 9,
+    limit: 100,
   });
   const { projects, isPending } = useGetProjects(filter);
 

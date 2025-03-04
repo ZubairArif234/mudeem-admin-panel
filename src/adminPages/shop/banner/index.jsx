@@ -54,7 +54,7 @@ const Banner = () => {
         }
         isCustomHeaderButton
         modalTitle="Add Banner"
-        modalId="add-sustainibility-company"
+        modalId="add-banner"
         modalForm={<BannerForm />}
       />
     </MasterLayout>
