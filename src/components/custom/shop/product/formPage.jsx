@@ -138,23 +138,23 @@ const FormPage = () => {
             stock: String(val.stock),
           })),
         })) || [
-          {
-            name: "",
-            price: "",
-            sizes: [
-              {
-                size: "",
-                stock: "",
-              },
-            ],
-            colors: [
-              {
-                color: "",
-                stock: "",
-              },
-            ],
-          },
-        ],
+            {
+              name: "",
+              price: "",
+              sizes: [
+                {
+                  size: "",
+                  stock: "",
+                },
+              ],
+              colors: [
+                {
+                  color: "",
+                  stock: "",
+                },
+              ],
+            },
+          ],
       });
       setUploadedImages(productDetail.images || []);
       setUploadedImagesFiles(productDetail.images || []);
@@ -276,6 +276,7 @@ const FormPage = () => {
   };
 
   const onSubmit = async (data) => {
+
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("brand", data.brand);
@@ -284,11 +285,20 @@ const FormPage = () => {
     formData.append("price", 123); // Static price or use dynamic from data
     formData.append("greenPointsPerUnit", data.greenPointsPerUnit);
     formData.append("featured", data.featured);
-  
-    // Append variants data
-    formData.append("variants", JSON.stringify(data.variants));
-  
-    // Append images to FormData
+
+    const updatedVariants = data.variants.map((variant) => ({
+      variantId: variant._id,  // Include the 'variantId' or '_id' from existing variant data
+      name: variant.name,
+      price: variant.price,
+      sizes: variant.sizes,
+      colors: variant.colors,
+    }));
+    
+    formData.append("updatedVariants", JSON.stringify(updatedVariants));
+    
+    console.log("Final Payload: ", updatedVariants);
+
+
     if (uploadedImages.length > 0) {
       uploadedImages.forEach((file) => {
         if (file?.file) {
@@ -296,7 +306,7 @@ const FormPage = () => {
         }
       });
     }
-  
+
     try {
       if (state?.data?.name) {
         // Update product
@@ -305,35 +315,18 @@ const FormPage = () => {
         // Create product
         await createProduct(formData);
       }
-  
-      // Reset the form and clear states after successful submission
+
+      // Reset form and navigate
       setUploadedImages([]);
       setUploadedImagesFiles([]);
       reset();
-      setVariants([
-        {
-          name: "",
-          price: "",
-          sizes: [
-            {
-              size: "",
-              stock: "",
-            },
-          ],
-          colors: [
-            {
-              color: "",
-              stock: "",
-            },
-          ],
-        },
-      ]);
-  
-      // Navigate to the product page after successful submission
+      setVariants([{ name: "", price: "", sizes: [{ size: "", stock: "" }], colors: [{ color: "", stock: "" }] }]);
       navigate("/shop-products");
+
     } catch (err) {
-      console.error("Product creation/update failed:", err);
+      console.error("Error updating product:", err);
     }
+
   };
 
   return (
