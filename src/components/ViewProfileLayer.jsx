@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useGetMe } from "../hook/apis/auth/useMe";
 import { useUpdatePassword } from "../hook/apis/auth/useUpdatePassword";
 import { useUpdateProfile } from "../hook/apis/auth/useUpdateProfile";
@@ -46,7 +46,19 @@ const ViewProfileLayer = () => {
     resolver: zodResolver(
       tab === "edit-profile" ? UpdateProfileSchema : UpdatePasswordSchema
     ),
+    defaultValues:{
+      name: me?.user?.name,
+      email: me?.user?.email,
+      phone: me?.user?.phone
+    }
   });
+
+  useEffect(()=>{
+    setValue("name", me?.user?.name);
+    setValue("email", me?.user?.email);
+    setValue("phone", me?.user?.phone);
+
+  },[me?.user])
 
   const handleProfileSubmit = async (data) => {
     try {
@@ -103,7 +115,7 @@ const ViewProfileLayer = () => {
           <div className="pb-24 ms-16 mb-24 me-16  mt--100">
             <div className="text-center border border-top-0 border-start-0 border-end-0">
               <img
-                src={imagePreview}
+                src={me?.user?.profilePicture || "assets/images/user-grid/user-grid-img13.png"}
                 alt=""
                 className="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover"
               />
@@ -120,7 +132,7 @@ const ViewProfileLayer = () => {
                     Full Name
                   </span>
                   <span className="w-70 text-secondary-light fw-medium text-capitalize">
-                    : {me?.user?.name || "Admin"}
+                    : {me?.user?.name }
                   </span>
                 </li>
                 <li className="d-flex align-items-center gap-1 mb-12">
@@ -128,7 +140,7 @@ const ViewProfileLayer = () => {
                     Email
                   </span>
                   <span className="w-70 text-secondary-light fw-medium">
-                    : {me?.user?.email || "admin@gmail.com"}
+                    : {me?.user?.email }
                   </span>
                 </li>
                 <li className="d-flex align-items-center gap-1 mb-12">
@@ -136,7 +148,7 @@ const ViewProfileLayer = () => {
                     Phone Number
                   </span>
                   <span className="w-70 text-secondary-light fw-medium">
-                    : {me?.user?.phone || "-"}
+                    : {me?.user?.phone }
                   </span>
                 </li>
               </ul>
