@@ -60,7 +60,7 @@ const CarpoolingTable = ({
             <td>
               <div className="d-flex align-items-center">
                 <img
-                  src="assets/images/user.png"
+                  src="/default.png"
                   alt=""
                   className="flex-shrink-0 me-12 radius-8"
                 />

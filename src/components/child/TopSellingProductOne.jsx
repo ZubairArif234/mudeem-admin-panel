@@ -43,7 +43,7 @@ const TopSellingProductOne = () => {
                   <td>
                     <div className="d-flex align-items-center">
                       <img
-                        src={entry.profilePicture}
+                        src={entry.profilePicture || "/default.png"}
                         alt={entry.name}
                         className="flex-shrink-0 me-12 radius-8 me-12"
                         style={{ width: "40px", height: "40px", borderRadius: "50%" }}

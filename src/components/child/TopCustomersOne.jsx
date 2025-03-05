@@ -31,12 +31,11 @@ const TopCustomersOne = () => {
                   className="d-flex align-items-start gap-2 mb-3 justify-content-between"
                 >
                   <div className="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                    <span className="w-44-px h-44-px bg-success-subtle text-success-main rounded-circle d-flex justify-content-center align-items-center flex-shrink-0">
-                      <Icon
-                        icon="bitcoin-icons:verify-outline"
-                        className="icon text-xxl"
-                      />
-                    </span>
+                    <img
+                      src={notification.user.profilePicture || "/default.png"}
+                      alt="User Profile"
+                      className="w-44-px h-44-px rounded-circle flex-shrink-0"
+                    />
                     <div>
                       <h6 className="text-md fw-semibold mb-4">{notification.title}</h6>
                       <p className="mb-0 text-sm text-secondary-light text-w-120-px">

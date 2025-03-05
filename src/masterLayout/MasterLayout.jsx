@@ -15,9 +15,7 @@ const MasterLayout = ({ children }) => {
   const { me } = useGetMe();
   const { settings } = useGetSettings();
   const { notifications, isLoading, isError, error } = useGetNotifications();
-
-  console.log("notifications", notifications);
-
+  console.log(notifications);
 
 
   useEffect(() => {
@@ -1850,6 +1848,7 @@ const MasterLayout = ({ children }) => {
                   </div>
                 </div> */}
                 {/* Message dropdown end */}
+
                 <div className="dropdown">
                   <button
                     className="has-indicator w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center"
@@ -1887,9 +1886,14 @@ const MasterLayout = ({ children }) => {
                               key={notification._id}
                             >
                               <div className="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                <span className="w-44-px h-44-px bg-success-subtle text-success-main rounded-circle d-flex justify-content-center align-items-center flex-shrink-0">
+                                {/* <span className="w-44-px h-44-px bg-success-subtle text-success-main rounded-circle d-flex justify-content-center align-items-center flex-shrink-0">
                                   <Icon icon="bitcoin-icons:verify-outline" className="icon text-xxl" />
-                                </span>
+                                </span> */}
+                                <img
+                                  src={notification.user.profilePicture || "/default.png" }
+                                  alt="User Profile"
+                                  className="w-44-px h-44-px rounded-circle flex-shrink-0"
+                                />
                                 <div>
                                   <h6 className="text-md fw-semibold mb-4">{notification.title}</h6>
                                   <p className="mb-0 text-sm text-secondary-light text-w-200-px">{modifiedContent}</p>

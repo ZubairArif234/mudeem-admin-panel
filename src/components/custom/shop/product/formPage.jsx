@@ -61,7 +61,7 @@ const FormPage = () => {
   const [uploadedImagesFiles, setUploadedImagesFiles] = useState([]);
   const [variants, setVariants] = useState([
     {
-      _id:"",
+      _id: "",
       name: "",
       price: "",
       sizes: [
@@ -83,6 +83,8 @@ const FormPage = () => {
   const { updateProduct, updatePending } = useUpdateProduct();
   const { createProduct, isPending } = useCreateProduct();
   const { productDetail } = useGetProductById(state?.data?._id);
+
+  console.log("Product Detail: ", productDetail);
 
   const {
     register,
@@ -122,7 +124,7 @@ const FormPage = () => {
         description: productDetail.description || "",
         featured: productDetail.featured || false,
         variants: productDetail.variants?.map((item) => ({
-          _id:item._id,
+          _id: item._id,
           name: item.name || "",
           price: String(item.price),
           sizes: item.sizes?.map((val) => ({
@@ -135,7 +137,7 @@ const FormPage = () => {
           })),
         })) || [
             {
-              _id:"",
+              _id: "",
               name: "",
               price: "",
               sizes: [
@@ -157,7 +159,7 @@ const FormPage = () => {
       setUploadedImagesFiles(productDetail.images || []);
       setVariants(
         productDetail.variants?.map((item) => ({
-          _id:item._id,
+          _id: item._id,
           name: item.name || "",
           price: String(item.price),
           sizes: item.sizes?.map((val) => ({
@@ -170,7 +172,7 @@ const FormPage = () => {
           })),
         })) || [
           {
-            _id:"",
+            _id: "",
             name: "",
             price: "",
             sizes: [
@@ -212,16 +214,16 @@ const FormPage = () => {
     e.target.value = "";
   };
 
-  const removeImage = (src) => {
-    setUploadedImages((prev) => prev.filter((image) => image !== src));
-    URL.revokeObjectURL(src);
-  };
+  // const removeImage = (src) => {
+  //   setUploadedImages((prev) => prev.filter((image) => image !== src));
+  //   URL.revokeObjectURL(src);
+  // };
 
   const handleAddVariants = () => {
     setVariants((prev) => [
       ...prev,
       {
-        _id:"",
+        _id: "",
         name: "",
         price: "",
         sizes: [
@@ -248,20 +250,20 @@ const FormPage = () => {
   const [deletedVariants, setDeletedVariants] = useState([]);
 
   const handleRemoveVariants = (i, variantId) => {
-    if (variantId !== ""){
+    if (variantId !== "") {
 
-      setDeletedVariants([...deletedVariants,variantId]);
+      setDeletedVariants([...deletedVariants, variantId]);
     }
     setVariants((prevVariants) => {
-     
+
       const updatedVariants = prevVariants.filter((_, index) => index !== i);
       return updatedVariants;
     });
   };
-  
+
   console.log(deletedVariants);
-  
-  
+
+
 
 
   const handleAddSizeAndColour = (type, i) => {
@@ -294,10 +296,29 @@ const FormPage = () => {
     setVariants(updatedVariants);
   };
 
+  const [deletedImages, setDeletedImages] = useState([]);
+
+  const removeImage = (imageSrc) => {
+    setUploadedImages((prev) => prev.filter((image) => image !== imageSrc));
+
+    if (typeof imageSrc === "string" && !imageSrc.includes("blob")) {
+      // If it's an existing image URL, add to deletedImages
+      setDeletedImages((prev) => [...prev, imageSrc]);
+    } else {
+      // If it's a newly uploaded file, remove it from uploadedImagesFiles
+      setUploadedImagesFiles((prev) =>
+        prev.filter((file) => URL.createObjectURL(file) !== imageSrc)
+      );
+    }
+
+    URL.revokeObjectURL(imageSrc);
+  };
+
+
 
   const onSubmit = async (data) => {
-    console.log("Deleted Variants Before Submission:", deletedVariants); // Debugging
-  
+    console.log("Deleted Variants Before Submission:", deletedVariants);
+
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("brand", data.brand);
@@ -306,31 +327,47 @@ const FormPage = () => {
     formData.append("price", Number(data.price) || 0);
     formData.append("greenPointsPerUnit", data.greenPointsPerUnit);
     formData.append("featured", data.featured);
-  
+
     // Prepare updated variants
     const updatedVariants = data.variants.map((variant, index) => {
       const existingVariantId = productDetail?.variants[index]?._id;
       return {
-        _id: existingVariantId || "",  // Use "" for new variants
+        _id: existingVariantId || "", // Use "" for new variants
         name: variant.name,
         price: Number(variant.price) || 0,
         sizes: variant.sizes,
         colors: variant.colors,
       };
     });
-  
+
     formData.append("updatedVariants", JSON.stringify(updatedVariants));
-  
+
     // Only include deletedVariants if it has values
     if (deletedVariants.length > 0) {
       formData.append("deletedVariants", JSON.stringify(deletedVariants));
     }
-  
+
+    // **Handle Images: Pass ONLY new uploaded images**
+    const newImageFiles = uploadedImagesFiles.filter((file) => file instanceof File); // Ensure only File objects
+
+    if (newImageFiles.length > 0) {
+      newImageFiles.forEach((file) => {
+        formData.append("images", file); // Append each new file
+      });
+    }
+
+    // **Pass deleted images (Existing URLs only)**
+    if (deletedImages.length > 0) {
+      formData.append("deletedImages", JSON.stringify(deletedImages));
+    }
+
     console.log("Final Payload:", {
       updatedVariants,
       deletedVariants,
+      images: newImageFiles.map((file) => file.name), // Debugging only filenames
+      deletedImages,
     });
-  
+
     try {
       if (state?.data?.name) {
         // Updating existing product
@@ -339,19 +376,19 @@ const FormPage = () => {
         // Creating new product
         await createProduct(formData);
       }
-  
+
       reset();
       navigate("/shop-products");
     } catch (err) {
       console.error("Error updating product:", err);
     }
   };
-  
-  
+
+
 
   console.log("Deleted Variants:", deletedVariants);
-  
-  
+
+
 
   return (
     <div className="card basic-data-table ">
@@ -534,7 +571,7 @@ const FormPage = () => {
                       Variant {variants?.length > 1 && i + 1}
                     </h6>
                     {variants?.length > 1 && (
-                      <button type="button" onClick={() => handleRemoveVariants(i ,elem?._id)}>
+                      <button type="button" onClick={() => handleRemoveVariants(i, elem?._id)}>
                         <Icon
                           icon="radix-icons:minus"
                           className="text-xl text-danger-600"
@@ -596,7 +633,7 @@ const FormPage = () => {
                             {elem?.sizes?.length - 1 === j &&
                               elem?.sizes?.length > 0 ? (
                               <button
-                              type="button"
+                                type="button"
                                 onClick={() =>
                                   handleAddSizeAndColour("size", i)
                                 }
@@ -608,7 +645,7 @@ const FormPage = () => {
                               </button>
                             ) : (
                               <button
-                              type="button"
+                                type="button"
                                 onClick={() =>
                                   handleRemoveSizeAndColour("size", i, j)
                                 }
@@ -745,7 +782,7 @@ const FormPage = () => {
                             {elem?.colors?.length - 1 === k &&
                               elem?.colors?.length > 0 ? (
                               <button
-                              type="button"
+                                type="button"
                                 onClick={() =>
                                   handleAddSizeAndColour("color", i)
                                 }
@@ -757,7 +794,7 @@ const FormPage = () => {
                               </button>
                             ) : (
                               <button
-                              type="button"
+                                type="button"
                                 onClick={() =>
                                   handleRemoveSizeAndColour("color", i, k)
                                 }

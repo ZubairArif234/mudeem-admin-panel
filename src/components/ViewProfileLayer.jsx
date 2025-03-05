@@ -1,11 +1,13 @@
-import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useState } from "react";
 import { useGetMe } from "../hook/apis/auth/useMe";
 import { useUpdatePassword } from "../hook/apis/auth/useUpdatePassword";
+import { useUpdateProfile } from "../hook/apis/auth/useUpdateProfile";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Loader from "./custom/extra/loader";
+import { Icon } from "@iconify/react/dist/iconify.js";
+
 const UpdatePasswordSchema = z.object({
   currentPassword: z
     .string()
@@ -20,30 +22,42 @@ const UpdatePasswordSchema = z.object({
       "New password must contain at least one uppercase letter, one number, and one symbol"
     ),
 });
-const UpdateProfileSchema = z.object({
-  name: z.string().min(3, "Name atleast contain 3 characters"),
-  email: z
-    .string()
-    .regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Invalid email address"),
 
-  phone: z.string("Phone number is invalid"),
+const UpdateProfileSchema = z.object({
+  name: z.string().min(3, "Name at least contain 3 characters"),
+  email: z.string().email("Invalid email address"),
+  phone: z.string().min(10, "Phone number is invalid"),
+  profilePicture: z.any().optional(),
 });
+
 const ViewProfileLayer = () => {
   const [tab, setTab] = useState("edit-profile");
   const { me } = useGetMe();
-  const { updatePassword, isPending } = useUpdatePassword();
+  const { updatePassword, isPending: isPasswordPending } = useUpdatePassword();
+  const { mutate: updateProfile, isPending: isProfilePending } = useUpdateProfile();
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
+    setValue,
   } = useForm({
     resolver: zodResolver(
-      tab == "edit-profile" ? UpdateProfileSchema : UpdatePasswordSchema
+      tab === "edit-profile" ? UpdateProfileSchema : UpdatePasswordSchema
     ),
   });
-  const handleFormSubmit = async (data) => {
+
+  const handleProfileSubmit = async (data) => {
+    try {
+      await updateProfile(data);
+      reset();
+    } catch (err) {
+      console.error("Update profile failed:", err);
+    }
+  };
+
+  const handlePasswordSubmit = async (data) => {
     try {
       await updatePassword(data);
       reset();
@@ -58,12 +72,10 @@ const ViewProfileLayer = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
-  // Toggle function for password field
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
 
-  // Toggle function for confirm password field
   const toggleConfirmPasswordVisibility = () => {
     setConfirmPasswordVisible(!confirmPasswordVisible);
   };
@@ -73,10 +85,12 @@ const ViewProfileLayer = () => {
       const reader = new FileReader();
       reader.onload = (e) => {
         setImagePreview(e.target.result);
+        setValue("profilePicture", input.target.files[0]);
       };
       reader.readAsDataURL(input.target.files[0]);
     }
   };
+
   return (
     <div className="row gy-4">
       <div className="col-lg-4">
@@ -89,7 +103,7 @@ const ViewProfileLayer = () => {
           <div className="pb-24 ms-16 mb-24 me-16  mt--100">
             <div className="text-center border border-top-0 border-start-0 border-end-0">
               <img
-                src="assets/images/user.png"
+                src={imagePreview}
                 alt=""
                 className="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover"
               />
@@ -111,7 +125,6 @@ const ViewProfileLayer = () => {
                 </li>
                 <li className="d-flex align-items-center gap-1 mb-12">
                   <span className="w-30 text-md fw-semibold text-primary-light">
-                    {" "}
                     Email
                   </span>
                   <span className="w-70 text-secondary-light fw-medium">
@@ -120,50 +133,12 @@ const ViewProfileLayer = () => {
                 </li>
                 <li className="d-flex align-items-center gap-1 mb-12">
                   <span className="w-30 text-md fw-semibold text-primary-light">
-                    {" "}
                     Phone Number
                   </span>
                   <span className="w-70 text-secondary-light fw-medium">
                     : {me?.user?.phone || "-"}
                   </span>
                 </li>
-                {/* <li className="d-flex align-items-center gap-1 mb-12">
-                  <span className="w-30 text-md fw-semibold text-primary-light">
-                    {" "}
-                    Department
-                  </span>
-                  <span className="w-70 text-secondary-light fw-medium">
-                    : Design
-                  </span>
-                </li>
-                <li className="d-flex align-items-center gap-1 mb-12">
-                  <span className="w-30 text-md fw-semibold text-primary-light">
-                    {" "}
-                    Designation
-                  </span>
-                  <span className="w-70 text-secondary-light fw-medium">
-                    : UI UX Designer
-                  </span>
-                </li>
-                <li className="d-flex align-items-center gap-1 mb-12">
-                  <span className="w-30 text-md fw-semibold text-primary-light">
-                    {" "}
-                    Languages
-                  </span>
-                  <span className="w-70 text-secondary-light fw-medium">
-                    : English
-                  </span>
-                </li>
-                <li className="d-flex align-items-center gap-1">
-                  <span className="w-30 text-md fw-semibold text-primary-light">
-                    {" "}
-                    Bio
-                  </span>
-                  <span className="w-70 text-secondary-light fw-medium">
-                    : Lorem Ipsum&nbsp;is simply dummy text of the printing and
-                    typesetting industry.
-                  </span>
-                </li> */}
               </ul>
             </div>
           </div>
@@ -220,7 +195,6 @@ const ViewProfileLayer = () => {
                 <h6 className="text-md text-primary-light mb-16">
                   Profile Image
                 </h6>
-                {/* Upload Image Start */}
                 <div className="mb-24 mt-16">
                   <div className="avatar-upload">
                     <div className="avatar-edit position-absolute bottom-0 end-0 me-24 mt-16 z-1 cursor-pointer">
@@ -253,8 +227,7 @@ const ViewProfileLayer = () => {
                     </div>
                   </div>
                 </div>
-                {/* Upload Image End */}
-                <form action="#">
+                <form onSubmit={handleSubmit(handleProfileSubmit)}>
                   <div className="row">
                     <div className="col-sm-6">
                       <div className="mb-20">
@@ -289,8 +262,6 @@ const ViewProfileLayer = () => {
                           Email
                         </label>
                         <input
-                          readOnly
-                          disabled
                           type="email"
                           className="form-control radius-8"
                           id="email"
@@ -315,7 +286,7 @@ const ViewProfileLayer = () => {
                           Phone
                         </label>
                         <input
-                          type="email"
+                          type="text"
                           className="form-control radius-8"
                           id="number"
                           placeholder="Enter phone number"
@@ -336,7 +307,7 @@ const ViewProfileLayer = () => {
                       type="submit"
                       className="btn btn-success border border-success-600 text-md px-56 py-12 radius-8"
                     >
-                      Save
+                      {isProfilePending ? <Loader loading={isProfilePending} /> : "Save"}
                     </button>
                   </div>
                 </form>
@@ -348,7 +319,7 @@ const ViewProfileLayer = () => {
                 aria-labelledby="pills-change-passwork-tab"
                 tabIndex="0"
               >
-                <form onSubmit={handleSubmit(handleFormSubmit)}>
+                <form onSubmit={handleSubmit(handlePasswordSubmit)}>
                   <div className="mb-20">
                     <label
                       htmlFor="your-password"
@@ -416,8 +387,8 @@ const ViewProfileLayer = () => {
                       type="submit"
                       className="btn bg-success-600 text-white "
                     >
-                      {isPending ? (
-                        <Loader loading={isPending} />
+                      {isPasswordPending ? (
+                        <Loader loading={isPasswordPending} />
                       ) : (
                         "Update Password"
                       )}
