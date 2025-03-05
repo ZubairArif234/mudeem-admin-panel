@@ -59,9 +59,17 @@ const ContentTable = ({
             <td>
               <div className="d-flex align-items-center">
                 <img
-                  src="assets/images/user.png"
-                  alt=""
-                  className="flex-shrink-0 me-12 radius-8"
+                  src={item?.user?.profilePicture || "/default.png"}
+                  alt={item?.user?.name}
+                  className="rounded"
+                  style={{
+                    aspectRatio: "1 / 1",
+                    backgroundColor: "#dbdbdb",
+                    borderRadius: "10px",
+                    height: "60px",
+                    width: "60px",
+                    objectFit: "contain"
+                  }}
                 />
                 {item?.user?.name}
               </div>

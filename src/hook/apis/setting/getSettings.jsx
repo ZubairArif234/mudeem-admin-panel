@@ -6,7 +6,6 @@ export const useGetSettings = () => {
     queryKey: ["setting"],
     queryFn: async () => {
       const response = await formAxios.get("/setting");
-      console.log('Fetched settings data:', response?.data);
       return response?.data?.data;
     },
     onError: (err) => {

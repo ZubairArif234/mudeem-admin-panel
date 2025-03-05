@@ -42,7 +42,7 @@ const CarpoolingTable = ({
           <th scope="col">Pick up</th>
           <th scope="col">Destination</th>
           <th scope="col">Seats</th>
-          <th scope="col">Passengers</th>
+          {/* <th scope="col">Passengers</th> */}
         </tr>
       </thead>
       <tbody>
@@ -60,22 +60,32 @@ const CarpoolingTable = ({
             <td>
               <div className="d-flex align-items-center">
                 <img
-                  src="/default.png"
-                  alt=""
-                  className="flex-shrink-0 me-12 radius-8"
+                  src={item?.user?.profilePicture || "/default.png"}
+                  alt={item?.user?.name}
+                  className="rounded"
+                  style={{
+                    aspectRatio: "1 / 1",
+                    backgroundColor: "#dbdbdb",
+                    borderRadius: "10px",
+                    height: "60px",
+                    width: "60px",
+                    objectFit: "contain"
+                  }}
                 />
-                <h6 className="text-md mb-0 fw-medium flex-grow-1">
+                <h6 className="text-md mb-0 fw-medium flex-grow-1 ms-2">
                   {item?.user?.name}
                 </h6>
               </div>
+
+
             </td>
             <td>{item?.pickupLocation}</td>
             <td>{item?.whereTo}</td>
 
             <td> {item?.availableSeats}</td>
-            <td>
+            {/* <td>
               <SingleAvatarGroup users={[0, 1, 2, 3]} />
-            </td>
+            </td> */}
           </tr>
         ))}
       </tbody>

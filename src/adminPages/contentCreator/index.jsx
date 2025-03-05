@@ -78,7 +78,6 @@ export const VideoCard = ({ data }) => {
 
 const ContentCreator = () => {
   const { reels, isPending } = useGetAllReels();
-  console.log(reels);
   const tableHeadings = [
     "ID",
     "Driver",

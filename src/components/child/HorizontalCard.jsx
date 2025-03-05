@@ -144,9 +144,17 @@ export const SingleHorizontalCard = ({
       <div className="card-body p-16 flex-grow-1 ">
         <div className="d-flex align-items-center gap-2 mb-3">
           <img
-            src="assets/images/user.png"
-            alt="image_user"
-            className="w-40 h-40 object-fit-cover rounded-circle"
+            src={data?.user?.profilePicture || "/default.png"}
+            alt={data?.user?.name}
+            className="rounded"
+            style={{
+              aspectRatio: "1 / 1",
+              backgroundColor: "#dbdbdb",
+              borderRadius: "10px",
+              height: "40px",
+              width: "40px",
+              objectFit: "contain"
+            }}
           />
           <h5 className="card-title text-lg text-primary-light mb-6">
             {data?.user?.name}
