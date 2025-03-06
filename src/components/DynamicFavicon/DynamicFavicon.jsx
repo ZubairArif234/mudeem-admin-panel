@@ -1,18 +1,26 @@
 import React, { useEffect, useState } from 'react';
 
 const DynamicFavicon = () => {
-  const [faviconUrl, setFaviconUrl] = useState(null);
+  const [settings, setSettings] = useState({
+    favIcon: null,
+    websiteName: null,
+    websiteDescription: null
+  });
 
   useEffect(() => {
     const storedSettings = localStorage.getItem("settings");
     if (storedSettings) {
       const parsedSettings = JSON.parse(storedSettings);
-      setFaviconUrl(parsedSettings?.favIcon);
+      setSettings({
+        favIcon: parsedSettings?.favIcon || null,
+        websiteName: parsedSettings?.websiteName || "Mudeem Admin Panel",
+        websiteDescription: parsedSettings?.websiteDescription || "Mudeem Admin Panel"
+      });
     }
   }, []);
 
   useEffect(() => {
-    if (faviconUrl) {
+    if (settings.favIcon) {
       let link = document.querySelector("link[rel*='icon']");
       if (!link) {
         link = document.createElement('link');
@@ -20,9 +28,23 @@ const DynamicFavicon = () => {
         document.head.appendChild(link);
       }
       link.type = 'image/x-icon';
-      link.href = faviconUrl;
+      link.href = settings.favIcon;F
     }
-  }, [faviconUrl]);
+
+    if (settings.websiteName) {
+      document.title = settings.websiteName;
+    }
+
+    if (settings.websiteDescription) {
+      let metaDescription = document.querySelector("meta[name='description']");
+      if (!metaDescription) {
+        metaDescription = document.createElement('meta');
+        metaDescription.name = 'description';
+        document.head.appendChild(metaDescription);
+      }
+      metaDescription.content = settings.websiteDescription;
+    }
+  }, [settings]);
 
   return null;
 };

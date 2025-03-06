@@ -232,41 +232,6 @@ const Form = ({ data }) => {
         <div className="col-lg-6">
           <label>Upload Book PDF</label>
           <div className="upload-image-wrapper d-flex align-items-center gap-3">
-            {/* PDF preview section */}
-            {/* {pdfPreview?.file ? (
-              <div className="position-relative w-auto ps-6 pe-6 pt-2 pb-2 d-flex overflow-hidden border-dashed bg-neutral-50">
-                <p className="mb-0">{pdfPreview?.file?.name}</p>
-                <button
-                  type="button"
-                  onClick={() => removeImage("pdf")}
-                  className="uploaded-img__remove top-0 end-0 z-1 text-2xxl line-height-1 ms-20 mt-4 d-flex"
-                  aria-label="Remove uploaded image"
-                >
-                  <Icon
-                    icon="radix-icons:cross-2"
-                    className="text-xl text-danger-600"
-                  ></Icon>
-                </button>
-              </div>
-            ) : (
-              data?.content && (
-                <div className="position-relative w-auto ps-6 pe-6 pt-2 pb-2 d-flex overflow-hidden border-dashed bg-neutral-50">
-                  <p className="mb-0"><a href={data.content} target="_blank" rel="noopener noreferrer">View PDF</a></p>
-                  <button
-                    type="button"
-                    onClick={() => removeImage("pdf")}
-                    className="uploaded-img__remove top-0 end-0 z-1 text-2xxl line-height-1 ms-20 mt-4 d-flex"
-                    aria-label="Remove uploaded image"
-                  >
-                    <Icon
-                      icon="radix-icons:cross-2"
-                      className="text-xl text-danger-600"
-                    ></Icon>
-                  </button>
-                </div>
-              )
-            )} */}
-            {/* PDF preview section */}
             {pdfPreview?.file || data?.content ? (
               <div className="position-relative w-auto ps-6 pe-6 pt-2 pb-2 d-flex overflow-hidden border-dashed bg-neutral-50">
                 {pdfPreview?.file ? (
