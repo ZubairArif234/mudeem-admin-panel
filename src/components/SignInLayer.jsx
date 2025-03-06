@@ -1,12 +1,11 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLogin } from "../hook/apis/auth/useLogin";
 import Loader from "./custom/extra/loader";
-import { useGetSettings } from "../hook/apis/setting/getSettings";
 
 const LoginSchema = z.object({
   email: z
@@ -18,13 +17,14 @@ const LoginSchema = z.object({
 const SignInLayer = () => {
   const navigate = useNavigate();
   const [hidePassword, setHidePassword] = useState(true);
+  const [settings, setSettings] = useState(null);
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(LoginSchema),
   });
 
   const { login, isPending } = useLogin();
-  const { settings } = useGetSettings();
+
 
   const handleFormSubmit = async (data) => {
     try {
@@ -34,6 +34,13 @@ const SignInLayer = () => {
       console.error("Login failed:", err);
     }
   };
+
+  useEffect(() => {
+    const storedSettings = localStorage.getItem("settings");
+    if (storedSettings) {
+      setSettings(JSON.parse(storedSettings));
+    }
+  }, []);
 
   const logoUrl = settings?.logo || "assets/images/logo.png";
 
@@ -96,9 +103,8 @@ const SignInLayer = () => {
                 </div>
                 <span
                   onClick={() => setHidePassword(!hidePassword)}
-                  className={`toggle-password ${
-                    hidePassword ? "ri-eye-off-line" : "ri-eye-line"
-                  } cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light`}
+                  className={`toggle-password ${hidePassword ? "ri-eye-off-line" : "ri-eye-line"
+                    } cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light`}
                   data-toggle="#password"
                 />
               </div>

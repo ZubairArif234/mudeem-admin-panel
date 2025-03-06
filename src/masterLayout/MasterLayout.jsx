@@ -4,18 +4,27 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import ThemeToggleButton from "../helper/ThemeToggleButton";
 import { useGetMe } from "../hook/apis/auth/useMe";
 import { useLogout } from "../hook/apis/auth/useLogout";
-import { useGetSettings } from "../hook/apis/setting/getSettings";
 import useGetNotifications from '../hook/apis/Notifications/useGetNotifications';
 
 const MasterLayout = ({ children }) => {
   let [sidebarActive, seSidebarActive] = useState(false);
   let [mobileMenu, setMobileMenu] = useState(false);
-  const location = useLocation(); // Hook to get the current route
+  const location = useLocation();
   const { logout } = useLogout();
   const { me } = useGetMe();
-  const { settings } = useGetSettings();
   const { notifications, isLoading, isError, error } = useGetNotifications();
-  console.log(notifications);
+
+  const [settings, setSettings] = useState(null);
+
+  useEffect(() => {
+    const storedSettings = localStorage.getItem("settings");
+    if (storedSettings) {
+      setSettings(JSON.parse(storedSettings));
+    }
+  }, []);
+
+  const logoUrl = settings?.logo || "assets/images/logo.png";
+
 
 
   useEffect(() => {
@@ -75,12 +84,6 @@ const MasterLayout = ({ children }) => {
     };
   }, [location.pathname]);
 
-
-  // if (isLoading) {
-  //   return <div>Loading...</div>;
-  // }
-
-
   const handleLogut = async () => {
     try {
       await logout();
@@ -120,17 +123,17 @@ const MasterLayout = ({ children }) => {
         <div className="d-flex justify-content-center">
           <Link to="/dashboard" className="sidebar-logo">
             <img
-              src={settings?.logo || "assets/images/logo.png"}
+              src={logoUrl || "assets/images/logo.png"}
               alt="site logo"
               className="light-logo"
             />
             <img
-              src={settings?.logo || "assets/images/logo-light.png"}
+              src={logoUrl || "assets/images/logo-light.png"}
               alt="site logo"
               className="dark-logo"
             />
             <img
-              src={settings?.logo || "assets/images/logo-icon.png"}
+              src={logoUrl || "assets/images/logo-icon.png"}
               alt="site logo"
               className="logo-icon"
             />
@@ -1890,7 +1893,7 @@ const MasterLayout = ({ children }) => {
                                   <Icon icon="bitcoin-icons:verify-outline" className="icon text-xxl" />
                                 </span> */}
                                 <img
-                                  src={notification.user.profilePicture || "/default.png" }
+                                  src={notification.user.profilePicture || "/default.png"}
                                   alt="User Profile"
                                   className="w-44-px h-44-px rounded-circle flex-shrink-0"
                                 />

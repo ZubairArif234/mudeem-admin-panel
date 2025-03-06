@@ -102,26 +102,36 @@ import Careers from "../adminPages/careers";
 import Dashboard from "../adminPages/dashboard";
 import Users from "../adminPages/user";
 import Settings from "../adminPages/setting";
+import { useGetSettings } from "../hook/apis/setting/getSettings";
 import Profile from "../adminPages/profile";
 import ResetPasswordPage from "../pages/ResetPasswordPage";
 import CreateProduct from "../adminPages/shop/products/createProduct";
 import { useState, useEffect } from "react";
 import PreLoader from "../components/custom/extra/preLoader";
 const Router = () => {
-  const [isLoading, setIsLoading] = useState(true); // Track loading state
+  const [isLoading, setIsLoading] = useState(true);
+  const [settings, setSettings] = useState(null);
+
+  const { settings: fetchedSettings, isPending } = useGetSettings();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
+    const cachedSettings = localStorage.getItem("settings");
 
-    return () => clearTimeout(timer); // Cleanup on component unmount
-  }, []);
+    if (cachedSettings) {
+      setSettings(JSON.parse(cachedSettings));
+      setIsLoading(false);
+    } else if (fetchedSettings && !isPending) {
+      setSettings(fetchedSettings);
+      localStorage.setItem("settings", JSON.stringify(fetchedSettings));
+      setIsLoading(false);
+    }
+  }, [fetchedSettings, isPending]);
+
 
   return (
     <>
       <RouteScrollToTop />
-      {isLoading ? (
+      {isLoading || isPending ? (
         <PreLoader />
       ) : (
         <Routes>

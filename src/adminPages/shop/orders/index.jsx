@@ -8,78 +8,12 @@ import DataNotFound from "../../../components/custom/extra/dataNotFound";
 import Loader from "../../../components/custom/extra/loader";
 const Order = () => {
   const [filters, setFilters] = useState({ search: "" });
-
-  const tableRows = [
-    {
-      id: "453",
-      userName: "Kathryn Murphy",
-      items: 6,
-      total: 2300,
-      createdAt: "26-Feb-2024",
-      status: "pending",
-    },
-    {
-      id: "453",
-      userName: "Kathryn Murphy",
-      items: 6,
-      total: 2300,
-      createdAt: "26-Feb-2024",
-      status: "pending",
-    },
-    {
-      id: "453",
-      userName: "Kathryn Murphy",
-      items: 6,
-      total: 2300,
-      createdAt: "26-Feb-2024",
-      status: "pending",
-    },
-    {
-      id: "453",
-      userName: "Kathryn Murphy",
-      items: 6,
-      total: 2300,
-      createdAt: "26-Feb-2024",
-      status: "pending",
-    },
-    {
-      id: "453",
-      userName: "Kathryn Murphy",
-      items: 6,
-      total: 2300,
-      createdAt: "26-Feb-2024",
-      status: "pending",
-    },
-    {
-      id: "453",
-      userName: "Kathryn Murphy",
-      items: 6,
-      total: 2300,
-      createdAt: "26-Feb-2024",
-      status: "pending",
-    },
-    {
-      id: "453",
-      userName: "Kathryn Murphy",
-      items: 6,
-      total: 2300,
-      createdAt: "26-Feb-2024",
-      status: "pending",
-    },
-    {
-      id: "453",
-      userName: "Kathryn Murphy",
-      items: 6,
-      total: 2300,
-      createdAt: "26-Feb-2024",
-      status: "pending",
-    },
-  ];
   const { orders, isPending } = useGetOrder(filters);
 
   const handleSearch = (value) => {
     setFilters((prev) => ({ ...prev, search: value }));
   };
+  
   console.log(orders, orders?.length > 0);
 
   return (

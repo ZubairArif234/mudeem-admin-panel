@@ -56,7 +56,19 @@ const OrdersTable = ({ isSelectable, rows }) => {
             <td>#{item?._id.slice(0, 6) + i}</td>
             <td className="text-capitalize">
               <div className=" d-flex gap-1 align-items-center">
-                <img src={"/assets/images/user.png"} width={40} />
+              <img
+                  src={item?.user?.profilePicture || "/default.png"}
+                  alt={item?.user?.name}
+                  className="rounded"
+                  style={{
+                    aspectRatio: "1 / 1",
+                    backgroundColor: "#dbdbdb",
+                    borderRadius: "10px",
+                    height: "60px",
+                    width: "60px",
+                    objectFit: "contain"
+                  }}
+                />
 
                 {item?.user?.name}
               </div>

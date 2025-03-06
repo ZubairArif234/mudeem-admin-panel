@@ -1,18 +1,28 @@
-import React, { useEffect } from 'react';
-import { useGetSettings } from '../../hook/apis/setting/getSettings';
+import React, { useEffect, useState } from 'react';
 
 const DynamicFavicon = () => {
-  const { faviconUrl, isLoading, isError } = useGetSettings();
+  const [faviconUrl, setFaviconUrl] = useState(null);
 
   useEffect(() => {
-    if (faviconUrl && !isLoading && !isError) {
-      const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
-      link.type = 'image/x-icon';
-      link.rel = 'shortcut icon';
-      link.href = faviconUrl;
-      document.getElementsByTagName('head')[0].appendChild(link);
+    const storedSettings = localStorage.getItem("settings");
+    if (storedSettings) {
+      const parsedSettings = JSON.parse(storedSettings);
+      setFaviconUrl(parsedSettings?.favIcon);
     }
-  }, [faviconUrl, isLoading, isError]);
+  }, []);
+
+  useEffect(() => {
+    if (faviconUrl) {
+      let link = document.querySelector("link[rel*='icon']");
+      if (!link) {
+        link = document.createElement('link');
+        link.rel = 'shortcut icon';
+        document.head.appendChild(link);
+      }
+      link.type = 'image/x-icon';
+      link.href = faviconUrl;
+    }
+  }, [faviconUrl]);
 
   return null;
 };
