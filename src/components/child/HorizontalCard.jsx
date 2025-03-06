@@ -146,14 +146,14 @@ export const SingleHorizontalCard = ({
           <img
             src={data?.user?.profilePicture || "/default.png"}
             alt={data?.user?.name}
-            className="rounded"
+            className="rounded-circle"
             style={{
               aspectRatio: "1 / 1",
               backgroundColor: "#dbdbdb",
-              borderRadius: "10px",
-              height: "40px",
-              width: "40px",
-              objectFit: "contain"
+              borderRadius: "50%",
+              height: "60px",
+              width: "60px",
+              objectFit: "cover"
             }}
           />
           <h5 className="card-title text-lg text-primary-light mb-6">

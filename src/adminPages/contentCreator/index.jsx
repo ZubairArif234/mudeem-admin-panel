@@ -30,7 +30,19 @@ export const VideoCard = ({ data }) => {
           <div className="  p-24">
             <div className="d-flex gap-2 align-items-center">
               <span className="w-44-px h-44-px bg-success-subtle text-success-main rounded-circle d-flex justify-content-center align-items-center flex-shrink-0">
-                <img src="assets/images/user.png" alt="" />
+                <img
+                  src={data?.user?.profilePicture || "/default.png"}
+                  alt={data?.user?.name}
+                  className="rounded-circle"
+                  style={{
+                    aspectRatio: "1 / 1",
+                    backgroundColor: "#dbdbdb",
+                    borderRadius: "50%",
+                    height: "60px",
+                    width: "60px",
+                    objectFit: "cover"
+                  }}
+                />
               </span>
               <p
                 className="card-title  
@@ -85,78 +97,6 @@ const ContentCreator = () => {
     "Destination",
     "Seats",
     "Passengers",
-  ];
-  const tableRows = [
-    {
-      id: "453",
-      name: "Kathryn Murphy",
-      imge: "assets/images/user-list/user-list1.png",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
-    },
-    {
-      id: "453",
-      name: "Kathryn Murphy",
-      imge: "assets/images/user-list/user-list1.png",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
-    },
-    {
-      id: "453",
-      name: "Kathryn Murphy",
-      imge: "assets/images/user-list/user-list1.png",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
-    },
-    {
-      id: "453",
-      name: "Kathryn Murphy",
-      imge: "assets/images/user-list/user-list1.png",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
-    },
-    {
-      id: "453",
-      name: "Kathryn Murphy",
-      imge: "assets/images/user-list/user-list1.png",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
-    },
-    {
-      id: "453",
-      name: "Kathryn Murphy",
-      imge: "assets/images/user-list/user-list1.png",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
-    },
-    {
-      id: "453",
-      name: "Kathryn Murphy",
-      imge: "assets/images/user-list/user-list1.png",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
-    },
-    {
-      id: "453",
-      name: "Kathryn Murphy",
-      imge: "assets/images/user-list/user-list1.png",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
-    },
-    {
-      id: "453",
-      name: "Kathryn Murphy",
-      imge: "assets/images/user-list/user-list1.png",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
-    },
-    {
-      id: "453",
-      name: "Kathryn Murphy",
-      imge: "assets/images/user-list/user-list1.png",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
-    },
   ];
   return (
     <MasterLayout>

@@ -62,14 +62,14 @@ const CarpoolingTable = ({
                 <img
                   src={item?.user?.profilePicture || "/default.png"}
                   alt={item?.user?.name}
-                  className="rounded"
+                  className="rounded-circle"
                   style={{
                     aspectRatio: "1 / 1",
                     backgroundColor: "#dbdbdb",
-                    borderRadius: "10px",
+                    borderRadius: "50%",
                     height: "60px",
                     width: "60px",
-                    objectFit: "contain"
+                    objectFit: "cover"
                   }}
                 />
                 <h6 className="text-md mb-0 fw-medium flex-grow-1 ms-2">

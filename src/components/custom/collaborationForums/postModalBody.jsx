@@ -18,14 +18,14 @@ const PostModalBody = ({ data, handleAcceptPost, handleRejectedPost }) => {
         <img
           src={data?.user?.profilePicture || "/default.png"}
           alt={data?.user?.name}
-          className="rounded"
+          className="rounded-circle"
           style={{
             aspectRatio: "1 / 1",
             backgroundColor: "#dbdbdb",
-            borderRadius: "10px",
+            borderRadius: "50%",
             height: "60px",
             width: "60px",
-            objectFit: "contain"
+            objectFit: "cover"
           }}
         />
         <h5 className="card-title text-lg text-primary-light mb-6">
