@@ -102,38 +102,16 @@ import Careers from "../adminPages/careers";
 import Dashboard from "../adminPages/dashboard";
 import Users from "../adminPages/user";
 import Settings from "../adminPages/setting";
-import { useGetSettings } from "../hook/apis/setting/getSettings";
+// import { useGetSettings } from "../hook/apis/setting/getSettings";
 import Profile from "../adminPages/profile";
 import ResetPasswordPage from "../pages/ResetPasswordPage";
 import CreateProduct from "../adminPages/shop/products/createProduct";
-import { useState, useEffect } from "react";
-import PreLoader from "../components/custom/extra/preLoader";
+
 const Router = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [settings, setSettings] = useState(null);
-
-  const { settings: fetchedSettings, isPending } = useGetSettings();
-
-  useEffect(() => {
-    const cachedSettings = localStorage.getItem("settings");
-
-    if (cachedSettings) {
-      setSettings(JSON.parse(cachedSettings));
-      setIsLoading(false);
-    } else if (fetchedSettings && !isPending) {
-      setSettings(fetchedSettings);
-      localStorage.setItem("settings", JSON.stringify(fetchedSettings));
-      setIsLoading(false);
-    }
-  }, [fetchedSettings, isPending]);
-
-
+  
   return (
     <>
       <RouteScrollToTop />
-      {isLoading || isPending ? (
-        <PreLoader />
-      ) : (
         <Routes>
           <Route path="/" element={<SignInPage />} />
           <Route exact path="/dashboard2" element={<HomePageOne />} />
@@ -320,7 +298,6 @@ const Router = () => {
           <Route exact path="/setting" element={<Settings />} />
           <Route exact path="/my-profile" element={<Profile />} />
         </Routes>
-      )}
     </>
   );
 };

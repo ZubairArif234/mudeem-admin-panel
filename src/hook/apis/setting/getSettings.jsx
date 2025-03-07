@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { formAxios } from "../../../config/axios.config";
 
@@ -13,11 +14,18 @@ export const useGetSettings = () => {
     },
   });
 
+  // Store settings in localStorage
+  useEffect(() => {
+    if (data) {
+      localStorage.setItem("settings", JSON.stringify(data));
+    }
+  }, [data]);
+
   return {
-    settings: data,
+    settings: data || JSON.parse(localStorage.getItem("settings") || "null"),
     isLoading,
     isError,
     error,
     faviconUrl: data?.favIcon,
   };
-}; 
+};
