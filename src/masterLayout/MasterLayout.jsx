@@ -1922,10 +1922,19 @@ const MasterLayout = ({ children }) => {
                     data-bs-toggle="dropdown"
                   >
                     <img
-                      src="assets/images/user.png"
-                      alt="image_user"
-                      className="w-40-px h-40-px object-fit-cover rounded-circle"
+                      src={me?.user?.profilePicture || "/default.png"}
+                      alt={me?.user?.name}
+                      className="rounded-circle"
+                      style={{
+                        aspectRatio: "1 / 1",
+                        backgroundColor: "#dbdbdb",
+                        borderRadius: "50%",
+                        height: "60px",
+                        width: "60px",
+                        objectFit: "cover"
+                      }}
                     />
+
                   </button>
                   <div className="dropdown-menu to-top dropdown-menu-sm">
                     <div className="py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">

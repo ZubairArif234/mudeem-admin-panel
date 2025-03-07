@@ -46,19 +46,26 @@ const ViewProfileLayer = () => {
     resolver: zodResolver(
       tab === "edit-profile" ? UpdateProfileSchema : UpdatePasswordSchema
     ),
-    defaultValues:{
+    defaultValues: {
       name: me?.user?.name,
       email: me?.user?.email,
       phone: me?.user?.phone
     }
   });
 
-  useEffect(()=>{
+  useEffect(() => {
     setValue("name", me?.user?.name);
     setValue("email", me?.user?.email);
     setValue("phone", me?.user?.phone);
 
-  },[me?.user])
+  }, [me?.user])
+
+  useEffect(() => {
+    if (me?.user?.profilePicture) {
+      setImagePreview(me.user.profilePicture);
+    }
+  }, [me?.user?.profilePicture]);
+
 
   const handleProfileSubmit = async (data) => {
     try {
@@ -78,9 +85,8 @@ const ViewProfileLayer = () => {
     }
   };
 
-  const [imagePreview, setImagePreview] = useState(
-    "assets/images/user-grid/user-grid-img13.png"
-  );
+  const [imagePreview, setImagePreview] = useState(me?.user?.profilePicture || "assets/images/user-grid/user-grid-img13.png");
+
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
@@ -108,10 +114,11 @@ const ViewProfileLayer = () => {
       <div className="col-lg-4">
         <div className="user-grid-card position-relative border radius-16 overflow-hidden bg-base h-100">
           <img
-            src="assets/images/green-bg.png"
-            alt=""
-            className="w-100 h-25 object-fit-cover"
+            src={imagePreview}
+            alt="Profile"
+            className="border br-white border-width-2-px w-150-px h-150-px rounded-circle object-fit-cover"
           />
+
           <div className="pb-24 ms-16 mb-24 me-16  mt--100">
             <div className="text-center border border-top-0 border-start-0 border-end-0">
               <img
@@ -132,7 +139,7 @@ const ViewProfileLayer = () => {
                     Full Name
                   </span>
                   <span className="w-70 text-secondary-light fw-medium text-capitalize">
-                    : {me?.user?.name }
+                    : {me?.user?.name}
                   </span>
                 </li>
                 <li className="d-flex align-items-center gap-1 mb-12">
@@ -140,7 +147,7 @@ const ViewProfileLayer = () => {
                     Email
                   </span>
                   <span className="w-70 text-secondary-light fw-medium">
-                    : {me?.user?.email }
+                    : {me?.user?.email}
                   </span>
                 </li>
                 <li className="d-flex align-items-center gap-1 mb-12">
@@ -148,7 +155,7 @@ const ViewProfileLayer = () => {
                     Phone Number
                   </span>
                   <span className="w-70 text-secondary-light fw-medium">
-                    : {me?.user?.phone }
+                    : {me?.user?.phone}
                   </span>
                 </li>
               </ul>
@@ -349,9 +356,8 @@ const ViewProfileLayer = () => {
                         {...register("currentPassword")}
                       />
                       <span
-                        className={`toggle-password ${
-                          passwordVisible ? "ri-eye-off-line" : "ri-eye-line"
-                        } cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light`}
+                        className={`toggle-password ${passwordVisible ? "ri-eye-off-line" : "ri-eye-line"
+                          } cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light`}
                         onClick={togglePasswordVisibility}
                       ></span>
                     </div>
@@ -379,11 +385,10 @@ const ViewProfileLayer = () => {
                         {...register("newPassword")}
                       />
                       <span
-                        className={`toggle-password ${
-                          confirmPasswordVisible
+                        className={`toggle-password ${confirmPasswordVisible
                             ? "ri-eye-off-line"
                             : "ri-eye-line"
-                        } cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light`}
+                          } cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light`}
                         onClick={toggleConfirmPasswordVisibility}
                       ></span>
                     </div>
