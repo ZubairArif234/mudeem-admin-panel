@@ -1,18 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import $ from "jquery";
 import "datatables.net-dt/js/dataTables.dataTables.js";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
-import { SingleAvatarGroup } from "../../child/AvatarGroup";
-import { SquarePagination } from "../../PaginationLayer";
 import Modal from "../extra/modal";
-import Form from "./form";
 import DeleteModalContent from "../extra/deleteModalContent";
 import moment from "moment";
 import { useDeletedCompany } from "../../../hook/apis/waste/useDeleteWasteCompany";
 
 const SustainibiltyCompanyTable = ({ isSelectable, rows }) => {
-  const [selectedCompany, setSelectedCompany] = useState();
   const { deleteCompany } = useDeletedCompany();
   //   useEffect(() => {
   //     const table = $("#dataTable").DataTable({
@@ -54,7 +50,7 @@ const SustainibiltyCompanyTable = ({ isSelectable, rows }) => {
 
           <th scope="col">Location</th>
           <th scope="col">Created At</th>
-          <th scope="col">Actions</th>
+          <th scope="col">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -101,7 +97,7 @@ const SustainibiltyCompanyTable = ({ isSelectable, rows }) => {
                   }
                   body={
                     <DeleteModalContent
-                      deleteFunction={() => handleDelete(selectedCompany._id)}
+                      deleteFunction={() => handleDelete(item._id)}
                     />
                   }
                   title="Are you sure!"

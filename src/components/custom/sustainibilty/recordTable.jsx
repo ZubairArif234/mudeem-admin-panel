@@ -38,7 +38,7 @@ const SustainibiltyRecordTable = ({
           <th scope="col">Waste type</th>
           <th scope="col">Description</th>
           <th scope="col">Company</th>
-          <th scope="col">Pickup Date & time</th>
+          <th scope="col">Pickup Date</th>
           <th scope="col">Green Points</th>
         </tr>
       </thead>

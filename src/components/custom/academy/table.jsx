@@ -51,7 +51,7 @@ const AcademyTable = ({ isSelectable, rows }) => {
             <td>
               <div className="d-flex gap-1 align-items-center">
                 <img
-                  className="book-img"
+                  className="table-row-image"
                   src={item?.thumbnail || "/assets/images/book.png"}
                   width={50}
                 />
