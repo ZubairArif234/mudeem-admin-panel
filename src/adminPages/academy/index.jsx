@@ -39,9 +39,10 @@ const Academy = () => {
         isCustomHeaderButton
         modalTitle="Add Book"
         modalId="add-book-form"
-        modalForm={<Form />}
+        modalForm={<Form />} // Call the function correctly
         modalSize="modal-lg"
       />
+
     </MasterLayout>
   );
 };

@@ -48,49 +48,63 @@ const Form = ({ data }) => {
   const fileInputRef = useRef(null);
   console.log(imagePreview);
 
-  const handleFileChange = (e, type) => {
-    console.log(e.target.files.length);
 
+  const handleFileChange = (e, type) => {
     if (e.target.files.length > 0) {
-      if (fileValidation(e.target?.files[0])) {
+      if (fileValidation(e.target.files[0])) {
         const src = URL.createObjectURL(e.target.files[0]);
+  
         if (type === "image") {
-          setImagePreview({
-            ...imagePreview,
-            file: e.target.files[0],
-            src: src,
+          setImagePreview((prev) => ({
+            ...prev,
+            file: e.target.files[0], // Store the new file
+            src: src, // Update src for preview
             error: "",
-          });
+          }));
+  
+          if (data?._id) {
+            setValue("cover", e.target.files[0]); // Ensure edit mode recognizes new image
+          }
         } else if (type === "file") {
-          setPdfPreview({
-            ...pdfPreview,
+          setPdfPreview((prev) => ({
+            ...prev,
             file: e.target.files[0],
             src: src,
             error: "",
-          });
+          }));
         }
       }
     }
   };
+  
+
 
   const removeImage = (type) => {
     if (type === "image") {
-      setImagePreview({
+      setImagePreview((prev) => ({
+        ...prev,
         file: null,
-        src: "",
+        src: "", // Clear src to visually remove the preview
         error: "",
-      });
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
+      }));
+  
+      if (data?._id) {
+        setValue("cover", null); // Ensure the backend knows the image is removed
       }
     } else {
-      setPdfPreview({
+      setPdfPreview((prev) => ({
+        ...prev,
         file: null,
         src: "",
         error: "",
-      });
+      }));
     }
   };
+  
+  
+
+
+
 
   useEffect(() => {
     return () => {
@@ -111,15 +125,11 @@ const Form = ({ data }) => {
   });
 
   const onSubmit = async (formData) => {
-    console.log(formData);
-
-    if (!imagePreview?.file) {
-      setImagePreview({ ...imagePreview, error: "Upload image" });
+    if (!imagePreview?.file && !data?._id) {
+      setImagePreview((prev) => ({ ...prev, error: "Upload image" }));
+      return;
     }
-    if (!pdfPreview?.file) {
-      setPdfPreview({ ...pdfPreview, error: "Upload PDF" });
-    }
-
+  
     const bookData = new FormData();
     bookData.append("title", formData.name);
     bookData.append("year", new Date(formData.year).getFullYear());
@@ -128,12 +138,26 @@ const Form = ({ data }) => {
     bookData.append("language", formData.language);
     bookData.append("isPremium", formData.category === "free" ? false : true);
     bookData.append("description", formData.description);
-    bookData.append("price", formData?.price);
+    bookData.append("price", formData.price);
     bookData.append("greenPoints", formData.greenPoints);
     bookData.append("type", formData.type);
-    bookData.append("cover", imagePreview?.file);
-    bookData.append("book", pdfPreview?.file);
-
+  
+    if (imagePreview?.file) {
+      bookData.append("cover", imagePreview?.file);
+    } else if (data?._id && imagePreview?.src) {
+      bookData.append("cover", data?.thumbnail); // Preserve old image if unchanged
+    } else {
+      bookData.append("cover", ""); // Remove image if deleted
+    }
+  
+    if (pdfPreview?.file) {
+      bookData.append("book", pdfPreview?.file);
+    } else if (data?._id && pdfPreview?.src) {
+      bookData.append("book", data?.content); // Preserve old PDF if unchanged
+    } else {
+      bookData.append("book", ""); // Remove PDF if deleted
+    }
+  
     try {
       let res;
       if (data?._id) {
@@ -141,10 +165,10 @@ const Form = ({ data }) => {
       } else {
         res = await createBook(bookData);
       }
-
+  
       if (res) {
-        setImagePreview({ file: "", src: "", error: "" });
-        setPdfPreview({ file: "", src: "", error: "" });
+        setImagePreview({ file: null, src: "", error: "" });
+        setPdfPreview({ file: null, src: "", error: "" });
         reset();
       }
     } catch (err) {
@@ -152,10 +176,11 @@ const Form = ({ data }) => {
     }
   };
 
+
   console.log(pdfPreview, imagePreview);
 
   useEffect(() => {
-    if (data?._id) {
+    if (data && data._id) {
       setValue("name", data?.title);
       setValue("author", data?.author);
       setValue("pages", data?.pages);
@@ -166,16 +191,25 @@ const Form = ({ data }) => {
       setValue("isPremium", data?.isPremium ? "premium" : "free");
       setValue("description", data?.description);
       setValue("type", data?.type);
-
-      if (data?.content) {
-        setPdfPreview({ ...pdfPreview, src: data?.content });
+  
+      if (data?.content && !pdfPreview.file) {
+        setPdfPreview((prev) => ({ ...prev, src: data?.content, file: null }));
       }
-
-      if (data?.thumbnail) {
-        setImagePreview({ ...imagePreview, src: data?.thumbnail });
+  
+      if (data?.thumbnail && !imagePreview.file) {
+        setImagePreview((prev) => ({
+          ...prev,
+          src: imagePreview.src || data?.thumbnail, // Preserve the selected image preview
+          file: imagePreview.file, // Preserve new image if already selected
+        }));
       }
+    } else {
+      setImagePreview({ file: null, src: "", error: "" });
+      setPdfPreview({ file: null, src: "", error: "" });
     }
-  }, [data, setValue]);
+  }, [data, setValue, imagePreview.file, pdfPreview.file]);
+  
+
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

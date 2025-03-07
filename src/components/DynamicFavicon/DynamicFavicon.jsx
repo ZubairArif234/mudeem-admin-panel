@@ -28,7 +28,7 @@ const DynamicFavicon = () => {
         document.head.appendChild(link);
       }
       link.type = 'image/x-icon';
-      link.href = settings.favIcon;F
+      link.href = settings.favIcon;
     }
 
     if (settings.websiteName) {
