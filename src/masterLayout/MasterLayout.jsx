@@ -1929,8 +1929,8 @@ const MasterLayout = ({ children }) => {
                         aspectRatio: "1 / 1",
                         backgroundColor: "#dbdbdb",
                         borderRadius: "50%",
-                        height: "60px",
-                        width: "60px",
+                        height: "40px",
+                        width: "40px",
                         objectFit: "cover"
                       }}
                     />
