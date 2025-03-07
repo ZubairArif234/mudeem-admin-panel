@@ -146,7 +146,7 @@ const BannerForm = ({ data }) => {
             ) : (
               <label
                 className="upload-file h-120-px w-120-px border input-form-light radius-8 overflow-hidden border-dashed bg-neutral-50 bg-hover-neutral-200 d-flex align-items-center flex-column justify-content-center gap-1"
-                htmlFor="upload-file"
+                htmlFor={`upload-file-${data?._id}`}
                 data-error={!imageFile ? "true" : "false"}
               >
                 <Icon
@@ -156,8 +156,9 @@ const BannerForm = ({ data }) => {
                 <span className="fw-semibold text-secondary-light">Upload</span>
               </label>
             )}
+
             <input
-              id="upload-file"
+              id={`upload-file-${data?._id}`}
               type="file"
               onChange={handleFileChange}
               hidden
