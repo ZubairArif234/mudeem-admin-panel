@@ -48,63 +48,49 @@ const Form = ({ data }) => {
   const fileInputRef = useRef(null);
   console.log(imagePreview);
 
-
   const handleFileChange = (e, type) => {
+    console.log(e.target.files.length);
+
     if (e.target.files.length > 0) {
-      if (fileValidation(e.target.files[0])) {
+      if (fileValidation(e.target?.files[0])) {
         const src = URL.createObjectURL(e.target.files[0]);
-  
         if (type === "image") {
-          setImagePreview((prev) => ({
-            ...prev,
-            file: e.target.files[0], // Store the new file
-            src: src, // Update src for preview
-            error: "",
-          }));
-  
-          if (data?._id) {
-            setValue("cover", e.target.files[0]); // Ensure edit mode recognizes new image
-          }
-        } else if (type === "file") {
-          setPdfPreview((prev) => ({
-            ...prev,
+          setImagePreview({
+            ...imagePreview,
             file: e.target.files[0],
             src: src,
             error: "",
-          }));
+          });
+        } else if (type === "file") {
+          setPdfPreview({
+            ...pdfPreview,
+            file: e.target.files[0],
+            src: src,
+            error: "",
+          });
         }
       }
     }
   };
-  
-
 
   const removeImage = (type) => {
     if (type === "image") {
-      setImagePreview((prev) => ({
-        ...prev,
-        file: null,
-        src: "", // Clear src to visually remove the preview
-        error: "",
-      }));
-  
-      if (data?._id) {
-        setValue("cover", null); // Ensure the backend knows the image is removed
-      }
-    } else {
-      setPdfPreview((prev) => ({
-        ...prev,
+      setImagePreview({
         file: null,
         src: "",
         error: "",
-      }));
+      });
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    } else {
+      setPdfPreview({
+        file: null,
+        src: "",
+        error: "",
+      });
     }
   };
-  
-  
-
-
-
 
   useEffect(() => {
     return () => {
@@ -125,11 +111,15 @@ const Form = ({ data }) => {
   });
 
   const onSubmit = async (formData) => {
-    if (!imagePreview?.file && !data?._id) {
-      setImagePreview((prev) => ({ ...prev, error: "Upload image" }));
-      return;
+    console.log(formData);
+
+    if (!imagePreview?.file) {
+      setImagePreview({ ...imagePreview, error: "Upload image" });
     }
-  
+    if (!pdfPreview?.file) {
+      setPdfPreview({ ...pdfPreview, error: "Upload PDF" });
+    }
+
     const bookData = new FormData();
     bookData.append("title", formData.name);
     bookData.append("year", new Date(formData.year).getFullYear());
@@ -138,26 +128,12 @@ const Form = ({ data }) => {
     bookData.append("language", formData.language);
     bookData.append("isPremium", formData.category === "free" ? false : true);
     bookData.append("description", formData.description);
-    bookData.append("price", formData.price);
+    bookData.append("price", formData?.price);
     bookData.append("greenPoints", formData.greenPoints);
     bookData.append("type", formData.type);
-  
-    if (imagePreview?.file) {
-      bookData.append("cover", imagePreview?.file);
-    } else if (data?._id && imagePreview?.src) {
-      bookData.append("cover", data?.thumbnail); // Preserve old image if unchanged
-    } else {
-      bookData.append("cover", ""); // Remove image if deleted
-    }
-  
-    if (pdfPreview?.file) {
-      bookData.append("book", pdfPreview?.file);
-    } else if (data?._id && pdfPreview?.src) {
-      bookData.append("book", data?.content); // Preserve old PDF if unchanged
-    } else {
-      bookData.append("book", ""); // Remove PDF if deleted
-    }
-  
+    bookData.append("cover", imagePreview?.file);
+    bookData.append("book", pdfPreview?.file);
+
     try {
       let res;
       if (data?._id) {
@@ -165,10 +141,10 @@ const Form = ({ data }) => {
       } else {
         res = await createBook(bookData);
       }
-  
+
       if (res) {
-        setImagePreview({ file: null, src: "", error: "" });
-        setPdfPreview({ file: null, src: "", error: "" });
+        setImagePreview({ file: "", src: "", error: "" });
+        setPdfPreview({ file: "", src: "", error: "" });
         reset();
       }
     } catch (err) {
@@ -176,11 +152,10 @@ const Form = ({ data }) => {
     }
   };
 
-
   console.log(pdfPreview, imagePreview);
 
   useEffect(() => {
-    if (data && data._id) {
+    if (data?._id) {
       setValue("name", data?.title);
       setValue("author", data?.author);
       setValue("pages", data?.pages);
@@ -191,25 +166,16 @@ const Form = ({ data }) => {
       setValue("isPremium", data?.isPremium ? "premium" : "free");
       setValue("description", data?.description);
       setValue("type", data?.type);
-  
-      if (data?.content && !pdfPreview.file) {
-        setPdfPreview((prev) => ({ ...prev, src: data?.content, file: null }));
-      }
-  
-      if (data?.thumbnail && !imagePreview.file) {
-        setImagePreview((prev) => ({
-          ...prev,
-          src: imagePreview.src || data?.thumbnail, // Preserve the selected image preview
-          file: imagePreview.file, // Preserve new image if already selected
-        }));
-      }
-    } else {
-      setImagePreview({ file: null, src: "", error: "" });
-      setPdfPreview({ file: null, src: "", error: "" });
-    }
-  }, [data, setValue, imagePreview.file, pdfPreview.file]);
-  
 
+      if (data?.content) {
+        setPdfPreview({ ...pdfPreview, src: data?.content });
+      }
+
+      if (data?.thumbnail) {
+        setImagePreview({ ...imagePreview, src: data?.thumbnail });
+      }
+    }
+  }, [data, setValue]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -240,7 +206,7 @@ const Form = ({ data }) => {
             ) : (
               <label
                 className="upload-file h-120-px w-120-px border input-form-light radius-8 overflow-hidden border-dashed bg-neutral-50 bg-hover-neutral-200 d-flex align-items-center flex-column justify-content-center gap-1"
-                htmlFor="upload-file"
+                htmlFor={`upload-file-${data?._id}`}
               >
                 <Icon
                   icon="solar:camera-outline"
@@ -251,7 +217,7 @@ const Form = ({ data }) => {
             )}
 
             <input
-              id="upload-file"
+              id={`upload-file-${data?._id}`}
               type="file"
               onChange={(e) => handleFileChange(e, "image")}
               hidden
@@ -266,6 +232,41 @@ const Form = ({ data }) => {
         <div className="col-lg-6">
           <label>Upload Book PDF</label>
           <div className="upload-image-wrapper d-flex align-items-center gap-3">
+            {/* PDF preview section */}
+            {/* {pdfPreview?.file ? (
+              <div className="position-relative w-auto ps-6 pe-6 pt-2 pb-2 d-flex overflow-hidden border-dashed bg-neutral-50">
+                <p className="mb-0">{pdfPreview?.file?.name}</p>
+                <button
+                  type="button"
+                  onClick={() => removeImage("pdf")}
+                  className="uploaded-img__remove top-0 end-0 z-1 text-2xxl line-height-1 ms-20 mt-4 d-flex"
+                  aria-label="Remove uploaded image"
+                >
+                  <Icon
+                    icon="radix-icons:cross-2"
+                    className="text-xl text-danger-600"
+                  ></Icon>
+                </button>
+              </div>
+            ) : (
+              data?.content && (
+                <div className="position-relative w-auto ps-6 pe-6 pt-2 pb-2 d-flex overflow-hidden border-dashed bg-neutral-50">
+                  <p className="mb-0"><a href={data.content} target="_blank" rel="noopener noreferrer">View PDF</a></p>
+                  <button
+                    type="button"
+                    onClick={() => removeImage("pdf")}
+                    className="uploaded-img__remove top-0 end-0 z-1 text-2xxl line-height-1 ms-20 mt-4 d-flex"
+                    aria-label="Remove uploaded image"
+                  >
+                    <Icon
+                      icon="radix-icons:cross-2"
+                      className="text-xl text-danger-600"
+                    ></Icon>
+                  </button>
+                </div>
+              )
+            )} */}
+            {/* PDF preview section */}
             {pdfPreview?.file || data?.content ? (
               <div className="position-relative w-auto ps-6 pe-6 pt-2 pb-2 d-flex overflow-hidden border-dashed bg-neutral-50">
                 {pdfPreview?.file ? (
@@ -296,7 +297,7 @@ const Form = ({ data }) => {
             ) : (
               <label
                 className="upload-file h-120-px w-120-px border input-form-light radius-8 overflow-hidden border-dashed bg-neutral-50 bg-hover-neutral-200 d-flex align-items-center flex-column justify-content-center gap-1"
-                htmlFor="upload-pdf"
+                htmlFor={`upload-pdf-${data?._id}`}
               >
                 <Icon
                   icon="solar:document-outline"
@@ -309,7 +310,7 @@ const Form = ({ data }) => {
             )}
 
             <input
-              id="upload-pdf"
+              id={`upload-pdf-${data?._id}`}
               accept="application/pdf"
               type="file"
               onChange={(e) => handleFileChange(e, "file")}
@@ -364,14 +365,13 @@ const Form = ({ data }) => {
               type="radio"
               className="btn-check"
               name="btnradio"
-              id="btnradio1"
-              defaultChecked=""
+              id="new"
               value={"new"}
               {...register(`type`)}
             />
             <label
               className="btn btn-outline-success-600 px-20 py-11 radius-8"
-              htmlFor="btnradio1"
+              htmlFor="new"
             >
               New
             </label>
@@ -380,13 +380,13 @@ const Form = ({ data }) => {
               type="radio"
               className="btn-check"
               name="btnradio"
-              id="btnradio3"
+              id="popular"
               value={"popular"}
               {...register(`type`)}
             />
             <label
               className="btn btn-outline-success-600 px-20 py-11 radius-8"
-              htmlFor="btnradio3"
+              htmlFor="popular"
             >
               Popular
             </label>
@@ -469,7 +469,6 @@ const Form = ({ data }) => {
               className="btn-check"
               name="isPremium"
               id="premium"
-              defaultChecked=""
               value={"premium"}
               {...register(`isPremium`)}
             />

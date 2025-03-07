@@ -88,7 +88,6 @@ const AcademyTable = ({ isSelectable, rows }) => {
                   data-bs-target="#view-book"
                 />
 
-
                 <Icon
                   onClick={() => setSelectedBook(item)}
                   icon="mage:edit"
@@ -105,7 +104,6 @@ const AcademyTable = ({ isSelectable, rows }) => {
                   data-bs-toggle="modal"
                   data-bs-target="#delete-book"
                 />
-
               </div>
             </td>
           </tr>
@@ -197,7 +195,6 @@ const AcademyTable = ({ isSelectable, rows }) => {
           </div>
         </div>
       </div>
-      
     </table>
   );
 };
