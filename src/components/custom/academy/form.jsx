@@ -365,13 +365,13 @@ const Form = ({ data }) => {
               type="radio"
               className="btn-check"
               name="btnradio"
-              id="new"
+              id={`new-${data?._id}`}
               value={"new"}
               {...register(`type`)}
             />
             <label
               className="btn btn-outline-success-600 px-20 py-11 radius-8"
-              htmlFor="new"
+              htmlFor={`new-${data?._id}`}
             >
               New
             </label>
@@ -380,13 +380,13 @@ const Form = ({ data }) => {
               type="radio"
               className="btn-check"
               name="btnradio"
-              id="popular"
+              id={`popular-${data?._id}`}
               value={"popular"}
               {...register(`type`)}
             />
             <label
               className="btn btn-outline-success-600 px-20 py-11 radius-8"
-              htmlFor="popular"
+              htmlFor={`popular-${data?._id}`}
             >
               Popular
             </label>
@@ -468,13 +468,13 @@ const Form = ({ data }) => {
               type="radio"
               className="btn-check"
               name="isPremium"
-              id="premium"
+              id={`premium-${data?._id}`}
               value={"premium"}
               {...register(`isPremium`)}
             />
             <label
               className="btn btn-outline-success-600 px-20 py-11 radius-8"
-              htmlFor="premium"
+              htmlFor={`premium-${data?._id}`}
             >
               Premium
             </label>
@@ -483,13 +483,13 @@ const Form = ({ data }) => {
               type="radio"
               className="btn-check"
               name="isPremium"
-              id="free"
+              id={`free-${data?._id}`}
               value={"free"}
               {...register(`isPremium`)}
             />
             <label
               className="btn btn-outline-success-600 px-20 py-11 radius-8"
-              htmlFor="free"
+              htmlFor={`free-${data?._id}`}
             >
               Free
             </label>
