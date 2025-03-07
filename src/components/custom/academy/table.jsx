@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import DeleteModalContent from "../extra/deleteModalContent";
-import Modal from "../extra/modal";
 import { SingleDefaultTooltipThree } from "../../child/DefaultTooltipThree";
 import ViewBookModalContent from "./viewBookModalContent";
 import Form from "./form";
@@ -56,12 +55,14 @@ const AcademyTable = ({ isSelectable, rows }) => {
                   src={item?.thumbnail || "/assets/images/book.png"}
                   width={50}
                 />
-                <Icon
-                  className="text-warning-500"
-                  icon="material-symbols:crown-rounded"
-                  width="24"
-                  height="24"
-                />
+                {item?.isPremium && (
+                  <Icon
+                    className="text-warning-500"
+                    icon="material-symbols:crown-rounded"
+                    width="24"
+                    height="24"
+                  />
+                )}
                 {item?.title?.length > 15 ? (
                   <SingleDefaultTooltipThree
                     title={item?.title}

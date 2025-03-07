@@ -34,7 +34,8 @@ const ViewProfileLayer = () => {
   const [tab, setTab] = useState("edit-profile");
   const { me } = useGetMe();
   const { updatePassword, isPending: isPasswordPending } = useUpdatePassword();
-  const { mutate: updateProfile, isPending: isProfilePending } = useUpdateProfile();
+  const { mutate: updateProfile, isPending: isProfilePending } =
+    useUpdateProfile();
 
   const {
     register,
@@ -46,26 +47,24 @@ const ViewProfileLayer = () => {
     resolver: zodResolver(
       tab === "edit-profile" ? UpdateProfileSchema : UpdatePasswordSchema
     ),
-    defaultValues:{
+    defaultValues: {
       name: me?.user?.name,
       email: me?.user?.email,
-      phone: me?.user?.phone
-    }
+      phone: me?.user?.phone,
+    },
   });
 
-  useEffect(()=>{
+  useEffect(() => {
     setValue("name", me?.user?.name);
     setValue("email", me?.user?.email);
     setValue("phone", me?.user?.phone);
-
-  },[me?.user])
+  }, [me?.user]);
 
   useEffect(() => {
     if (me?.user?.profilePicture) {
       setImagePreview(me.user.profilePicture);
     }
   }, [me?.user?.profilePicture]);
-  
 
   const handleProfileSubmit = async (data) => {
     try {
@@ -85,7 +84,9 @@ const ViewProfileLayer = () => {
     }
   };
 
-  const [imagePreview, setImagePreview] = useState(me?.user?.profilePicture || "assets/images/user-grid/user-grid-img13.png");
+  const [imagePreview, setImagePreview] = useState(
+    me?.user?.profilePicture || "assets/images/user-grid/user-grid-img13.png"
+  );
 
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
@@ -121,7 +122,10 @@ const ViewProfileLayer = () => {
           <div className="pb-24 ms-16 mb-24 me-16  mt--100">
             <div className="text-center border border-top-0 border-start-0 border-end-0">
               <img
-                src={me?.user?.profilePicture || "assets/images/user-grid/user-grid-img13.png"}
+                src={
+                  me?.user?.profilePicture ||
+                  "assets/images/user-grid/user-grid-img13.png"
+                }
                 alt=""
                 className="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover"
               />
@@ -138,7 +142,7 @@ const ViewProfileLayer = () => {
                     Full Name
                   </span>
                   <span className="w-70 text-secondary-light fw-medium text-capitalize">
-                    : {me?.user?.name }
+                    : {me?.user?.name}
                   </span>
                 </li>
                 <li className="d-flex align-items-center gap-1 mb-12">
@@ -146,15 +150,15 @@ const ViewProfileLayer = () => {
                     Email
                   </span>
                   <span className="w-70 text-secondary-light fw-medium">
-                    : {me?.user?.email }
+                    : {me?.user?.email}
                   </span>
                 </li>
                 <li className="d-flex align-items-center gap-1 mb-12">
                   <span className="w-30 text-md fw-semibold text-primary-light">
-                    Phone Number
+                    Phone
                   </span>
                   <span className="w-70 text-secondary-light fw-medium">
-                    : {me?.user?.phone }
+                    : {me?.user?.phone}
                   </span>
                 </li>
               </ul>
@@ -325,7 +329,11 @@ const ViewProfileLayer = () => {
                       type="submit"
                       className="btn btn-success border border-success-600 text-md px-56 py-12 radius-8"
                     >
-                      {isProfilePending ? <Loader loading={isProfilePending} /> : "Save"}
+                      {isProfilePending ? (
+                        <Loader loading={isProfilePending} />
+                      ) : (
+                        "Save"
+                      )}
                     </button>
                   </div>
                 </form>

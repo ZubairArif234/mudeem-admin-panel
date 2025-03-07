@@ -40,7 +40,7 @@ const BannerTable = ({ isSelectable, rows }) => {
         </tr>
       </thead>
       <tbody>
-        {rows.map((item, i) => (
+        {rows?.map((item, i) => (
           <tr key={i}>
             {isSelectable && (
               <td>

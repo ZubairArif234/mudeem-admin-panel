@@ -77,7 +77,7 @@ const SustainibiltyCompanyTable = ({ isSelectable, rows }) => {
             <td> {moment(item?.createdAt).format("DD/MMM/YYYY")}</td>
             <td>
               <div className="d-flex gap-2 align-items-center">
-                <Icon
+                {/* <Icon
                   onClick={() => setSelectedCompany(item)}
                   icon="mage:edit"
                   className="text-success-500 cursor-pointer "
@@ -85,7 +85,7 @@ const SustainibiltyCompanyTable = ({ isSelectable, rows }) => {
                   // class="btn btn-success-600 d-flex gap-2 align-items-center"
                   data-bs-toggle="modal"
                   data-bs-target="#edit-waste-company"
-                />
+                /> */}
 
                 <Modal
                   id="delete-sustainibility-company"
@@ -111,7 +111,7 @@ const SustainibiltyCompanyTable = ({ isSelectable, rows }) => {
           </tr>
         ))}
       </tbody>
-      <div
+      {/* <div
         className="modal fade "
         id={"edit-waste-company"}
         tabIndex="-1"
@@ -136,7 +136,7 @@ const SustainibiltyCompanyTable = ({ isSelectable, rows }) => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </table>
   );
 };

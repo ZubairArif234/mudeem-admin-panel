@@ -3,11 +3,11 @@ import { formAxios } from "../../../config/axios.config";
 
 export const useGetSettings = () => {
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["setting"],
     queryFn: async () => {
       const response = await formAxios.get("/setting");
       return response?.data?.data;
     },
+    queryKey: ["setting"],
     onError: (err) => {
       console.error("Error fetching settings:", err);
     },
@@ -20,4 +20,4 @@ export const useGetSettings = () => {
     error,
     faviconUrl: data?.favIcon,
   };
-}; 
+};

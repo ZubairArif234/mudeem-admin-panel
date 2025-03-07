@@ -14,7 +14,6 @@ const Farm = () => {
   });
 
   const { farm, isPending } = useGetFarm(filter);
-  console.log("Farm", farm);
 
   return (
     <MasterLayout>
@@ -34,9 +33,9 @@ const Farm = () => {
             <FarmTable rows={farm} />
           ) : (
             <DataNotFound
-            heading={"No Farms Found"}
-            text={"There are no farms available based on your search."}
-          />
+              heading={"No Farms Found"}
+              text={"There are no farms available based on your search."}
+            />
           )
         }
       />

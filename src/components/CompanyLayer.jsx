@@ -11,9 +11,15 @@ import { z } from "zod";
 const SettingSchema = z.object({
   websiteName: z.string().min(1, "Website name is required"),
   websiteDescription: z.string().min(1, "Website description is required"),
-  carPoolingGreenPoints: z.number().min(0, "Green points must be a positive number"),
-  greenMapGreenPoints: z.number().min(0, "Green points must be a positive number"),
-  gptMessageGreenPoints: z.number().min(0, "Green points must be a positive number"),
+  carPoolingGreenPoints: z
+    .number()
+    .min(0, "Green points must be a positive number"),
+  greenMapGreenPoints: z
+    .number()
+    .min(0, "Green points must be a positive number"),
+  gptMessageGreenPoints: z
+    .number()
+    .min(0, "Green points must be a positive number"),
 });
 
 const CompanyLayer = () => {
@@ -44,7 +50,6 @@ const CompanyLayer = () => {
     resolver: zodResolver(SettingSchema),
   });
 
-
   useEffect(() => {
     if (settings) {
       setValue("websiteName", settings.websiteName);
@@ -74,29 +79,42 @@ const CompanyLayer = () => {
   const handleFileChange = (e, type) => {
     if (e.target.files.length > 0) {
       const file = e.target.files[0];
-  
+
       // Check if file is an image
       if (!file.type.startsWith("image/")) {
         if (type === "logo") {
-          setLogoPreview({ ...logoPreview, error: "Please upload a valid image file." });
+          setLogoPreview({
+            ...logoPreview,
+            error: "Please upload a valid image file.",
+          });
         } else if (type === "favicon") {
-          setFaviconPreview({ ...faviconPreview, error: "Please upload a valid image file." });
+          setFaviconPreview({
+            ...faviconPreview,
+            error: "Please upload a valid image file.",
+          });
         }
         return;
       }
-  
+
       // Check if file size exceeds limit
-      if (file.size > 2 * 1024 * 1024) { // 2MB limit
+      if (file.size > 2 * 1024 * 1024) {
+        // 2MB limit
         if (type === "logo") {
-          setLogoPreview({ ...logoPreview, error: "File size must be less than 2MB" });
+          setLogoPreview({
+            ...logoPreview,
+            error: "File size must be less than 2MB",
+          });
         } else if (type === "favicon") {
-          setFaviconPreview({ ...faviconPreview, error: "File size must be less than 2MB" });
+          setFaviconPreview({
+            ...faviconPreview,
+            error: "File size must be less than 2MB",
+          });
         }
         return;
       }
-  
+
       const src = URL.createObjectURL(file);
-  
+
       if (type === "logo") {
         setLogoPreview({
           ...logoPreview,
@@ -114,7 +132,7 @@ const CompanyLayer = () => {
       }
     }
   };
-  
+
   const removeImage = (type) => {
     if (type === "logo") {
       setLogoPreview({
@@ -136,7 +154,6 @@ const CompanyLayer = () => {
       }
     }
   };
-  
 
   const onSubmit = async (formData) => {
     // Validate logo and favicon
@@ -144,19 +161,19 @@ const CompanyLayer = () => {
       setLogoPreview({ ...logoPreview, error: "Upload logo" });
       return;
     }
-  
+
     if (!faviconPreview?.file && !faviconPreview?.src) {
       setFaviconPreview({ ...faviconPreview, error: "Upload favicon" });
       return;
     }
-  
+
     const settingData = new FormData();
     settingData.append("websiteName", formData.websiteName);
     settingData.append("websiteDescription", formData.websiteDescription);
     settingData.append("carPoolingGreenPoints", formData.carPoolingGreenPoints);
     settingData.append("greenMapGreenPoints", formData.greenMapGreenPoints);
     settingData.append("gptMessageGreenPoints", formData.gptMessageGreenPoints);
-  
+
     // Handle logo (file or Cloudinary URL)
     if (logoPreview?.file) {
       settingData.append("logo", logoPreview.file); // File (binary)
@@ -164,9 +181,9 @@ const CompanyLayer = () => {
       settingData.append("logo", logoPreview.src); // Cloudinary URL
     } else {
       // If logo is not changed, append the current logo URL (existing value)
-      settingData.append("logo", settings?.logo || ''); // Current logo from settings or empty string if not set
+      settingData.append("logo", settings?.logo || ""); // Current logo from settings or empty string if not set
     }
-  
+
     // Handle favicon (file or Cloudinary URL)
     if (faviconPreview?.file) {
       settingData.append("favIcon", faviconPreview.file); // File (binary)
@@ -174,14 +191,14 @@ const CompanyLayer = () => {
       settingData.append("favIcon", faviconPreview.src); // Cloudinary URL
     } else {
       // If favicon is not changed, append the current favicon URL (existing value)
-      settingData.append("favIcon", settings?.favIcon || ''); // Current favicon from settings or empty string if not set
+      settingData.append("favIcon", settings?.favIcon || ""); // Current favicon from settings or empty string if not set
     }
-  
+
     // Debug: Log FormData content
     for (let [key, value] of settingData.entries()) {
       console.log(key, value); // Log each entry to ensure correct values
     }
-  
+
     try {
       let res;
       if (settings?._id) {
@@ -189,7 +206,7 @@ const CompanyLayer = () => {
       } else {
         res = await createSetting(settingData);
       }
-  
+
       if (res) {
         setLogoPreview({ file: null, src: "", error: "" });
         setFaviconPreview({ file: null, src: "", error: "" });
@@ -199,10 +216,6 @@ const CompanyLayer = () => {
       console.error("Setting update failed:", err);
     }
   };
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className="card h-100 p-0 radius-12 overflow-hidden">
@@ -334,7 +347,9 @@ const CompanyLayer = () => {
                 {...register("websiteDescription")}
               />
               {errors.websiteDescription && (
-                <p className="text-danger-500">{errors.websiteDescription.message}</p>
+                <p className="text-danger-500">
+                  {errors.websiteDescription.message}
+                </p>
               )}
             </div>
 
@@ -347,7 +362,9 @@ const CompanyLayer = () => {
                 {...register("carPoolingGreenPoints", { valueAsNumber: true })}
               />
               {errors.carPoolingGreenPoints && (
-                <p className="text-danger-500">{errors.carPoolingGreenPoints.message}</p>
+                <p className="text-danger-500">
+                  {errors.carPoolingGreenPoints.message}
+                </p>
               )}
             </div>
 
@@ -359,7 +376,9 @@ const CompanyLayer = () => {
                 {...register("greenMapGreenPoints", { valueAsNumber: true })}
               />
               {errors.greenMapGreenPoints && (
-                <p className="text-danger-500">{errors.greenMapGreenPoints.message}</p>
+                <p className="text-danger-500">
+                  {errors.greenMapGreenPoints.message}
+                </p>
               )}
             </div>
 
@@ -371,7 +390,9 @@ const CompanyLayer = () => {
                 {...register("gptMessageGreenPoints", { valueAsNumber: true })}
               />
               {errors.gptMessageGreenPoints && (
-                <p className="text-danger-500">{errors.gptMessageGreenPoints.message}</p>
+                <p className="text-danger-500">
+                  {errors.gptMessageGreenPoints.message}
+                </p>
               )}
             </div>
 
