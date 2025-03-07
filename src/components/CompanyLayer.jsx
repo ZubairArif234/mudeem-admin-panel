@@ -6,6 +6,7 @@ import { useGetSettings } from "../hook/apis/setting/getSettings";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import Loader from "../components/custom/extra/loader";
 
 // Define the validation schema using Zod
 const SettingSchema = z.object({
@@ -23,6 +24,7 @@ const SettingSchema = z.object({
 });
 
 const CompanyLayer = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [logoPreview, setLogoPreview] = useState({
     file: null,
     src: "",
@@ -156,50 +158,32 @@ const CompanyLayer = () => {
   };
 
   const onSubmit = async (formData) => {
-    // Validate logo and favicon
-    if (!logoPreview?.file && !logoPreview?.src) {
-      setLogoPreview({ ...logoPreview, error: "Upload logo" });
-      return;
-    }
-
-    if (!faviconPreview?.file && !faviconPreview?.src) {
-      setFaviconPreview({ ...faviconPreview, error: "Upload favicon" });
-      return;
-    }
-
-    const settingData = new FormData();
-    settingData.append("websiteName", formData.websiteName);
-    settingData.append("websiteDescription", formData.websiteDescription);
-    settingData.append("carPoolingGreenPoints", formData.carPoolingGreenPoints);
-    settingData.append("greenMapGreenPoints", formData.greenMapGreenPoints);
-    settingData.append("gptMessageGreenPoints", formData.gptMessageGreenPoints);
-
-    // Handle logo (file or Cloudinary URL)
-    if (logoPreview?.file) {
-      settingData.append("logo", logoPreview.file); // File (binary)
-    } else if (logoPreview?.src) {
-      settingData.append("logo", logoPreview.src); // Cloudinary URL
-    } else {
-      // If logo is not changed, append the current logo URL (existing value)
-      settingData.append("logo", settings?.logo || ""); // Current logo from settings or empty string if not set
-    }
-
-    // Handle favicon (file or Cloudinary URL)
-    if (faviconPreview?.file) {
-      settingData.append("favIcon", faviconPreview.file); // File (binary)
-    } else if (faviconPreview?.src) {
-      settingData.append("favIcon", faviconPreview.src); // Cloudinary URL
-    } else {
-      // If favicon is not changed, append the current favicon URL (existing value)
-      settingData.append("favIcon", settings?.favIcon || ""); // Current favicon from settings or empty string if not set
-    }
-
-    // Debug: Log FormData content
-    for (let [key, value] of settingData.entries()) {
-      console.log(key, value); // Log each entry to ensure correct values
-    }
+    setIsSubmitting(true); // Start loading
 
     try {
+      const settingData = new FormData();
+      settingData.append("websiteName", formData.websiteName);
+      settingData.append("websiteDescription", formData.websiteDescription);
+      settingData.append(
+        "carPoolingGreenPoints",
+        formData.carPoolingGreenPoints
+      );
+      settingData.append("greenMapGreenPoints", formData.greenMapGreenPoints);
+      settingData.append(
+        "gptMessageGreenPoints",
+        formData.gptMessageGreenPoints
+      );
+
+      if (logoPreview?.file) settingData.append("logo", logoPreview.file);
+      else if (logoPreview?.src) settingData.append("logo", logoPreview.src);
+      else settingData.append("logo", settings?.logo || "");
+
+      if (faviconPreview?.file)
+        settingData.append("favIcon", faviconPreview.file);
+      else if (faviconPreview?.src)
+        settingData.append("favIcon", faviconPreview.src);
+      else settingData.append("favIcon", settings?.favIcon || "");
+
       let res;
       if (settings?._id) {
         res = await updateSetting(settingData, "form");
@@ -208,12 +192,14 @@ const CompanyLayer = () => {
       }
 
       if (res) {
+        reset();
         setLogoPreview({ file: null, src: "", error: "" });
         setFaviconPreview({ file: null, src: "", error: "" });
-        reset();
       }
     } catch (err) {
       console.error("Setting update failed:", err);
+    } finally {
+      setIsSubmitting(false); // Stop loading
     }
   };
 
@@ -402,7 +388,7 @@ const CompanyLayer = () => {
                 type="submit"
                 className="btn btn-success-500 border border-success-600 text-md px-24 py-12 radius-8"
               >
-                Save Change
+                {isSubmitting ? <Loader /> : "Save Change"}
               </button>
             </div>
           </div>
