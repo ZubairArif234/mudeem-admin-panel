@@ -2,15 +2,18 @@ import { useQuery } from "@tanstack/react-query";
 import custAxios from "../../../config/axios.config";
 
 export const useGetCarpool = () => {
-  const { data, ...rest } = useQuery({
+  const { data, error, isLoading } = useQuery({
     queryFn: async () => {
-      const data = await custAxios.get("/carpool");
-      return data?.data?.data;
+      const response = await custAxios.get("/carpool/get-all");
+      return response?.data?.data;
     },
     queryKey: ["carpool"],
     refetchOnWindowFocus: false,
-    staleTime: "infinity",
+    staleTime: Infinity,
     retry: 3,
   });
-  return { carpool: data, ...rest };
+
+  if (error) console.error("React Query Error:", error);
+
+  return { carpool: data, isLoading, error };
 };

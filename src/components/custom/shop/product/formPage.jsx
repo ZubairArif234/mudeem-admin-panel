@@ -135,30 +135,15 @@ const FormPage = () => {
             color: val.color,
             stock: String(val.stock),
           })),
-        })) || [
-            {
-              _id: "",
-              name: "",
-              price: "",
-              sizes: [
-                {
-                  size: "",
-                  stock: "",
-                },
-              ],
-              colors: [
-                {
-                  color: "",
-                  stock: "",
-                },
-              ],
-            },
-          ],
+        })) || [],
       });
+  
       setUploadedImages(productDetail.images || []);
       setUploadedImagesFiles(productDetail.images || []);
-      setVariants(
-        productDetail.variants?.map((item) => ({
+  
+      // **Only update variants if they are different from the current state**
+      setVariants((prevVariants) => {
+        const newVariants = productDetail.variants?.map((item) => ({
           _id: item._id,
           name: item.name || "",
           price: String(item.price),
@@ -170,28 +155,18 @@ const FormPage = () => {
             color: val.color,
             stock: String(val.stock),
           })),
-        })) || [
-          {
-            _id: "",
-            name: "",
-            price: "",
-            sizes: [
-              {
-                size: "",
-                stock: "",
-              },
-            ],
-            colors: [
-              {
-                color: "",
-                stock: "",
-              },
-            ],
-          },
-        ]
-      );
+        })) || [];
+  
+        // Avoid unnecessary updates if variants are the same
+        if (JSON.stringify(prevVariants) !== JSON.stringify(newVariants)) {
+          return newVariants;
+        }
+        return prevVariants;
+      });
     }
   }, [productDetail, reset]);
+  
+  
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
@@ -226,21 +201,12 @@ const FormPage = () => {
         _id: "",
         name: "",
         price: "",
-        sizes: [
-          {
-            size: "",
-            stock: "",
-          },
-        ],
-        colors: [
-          {
-            color: "",
-            stock: "",
-          },
-        ],
+        sizes: [{ size: "", stock: "" }],
+        colors: [{ color: "", stock: "" }],
       },
     ]);
-  };
+  };  
+  
 
   // const handleRemoveVariants = (i) => {
   //   const updatedVariants = variants.filter((_, index) => index !== i);
@@ -249,22 +215,19 @@ const FormPage = () => {
 
   const [deletedVariants, setDeletedVariants] = useState([]);
 
-  const handleRemoveVariants = (i, variantId) => {
-    if (variantId !== "") {
 
-      setDeletedVariants([...deletedVariants, variantId]);
+  const handleRemoveVariants = (indexToRemove, variantId) => {
+    setVariants((prevVariants) => 
+      prevVariants.filter((_, index) => index !== indexToRemove)
+    );
+  
+    if (variantId) {
+      setDeletedVariants((prev) => [...prev, variantId]);
     }
-    setVariants((prevVariants) => {
-
-      const updatedVariants = prevVariants.filter((_, index) => index !== i);
-      return updatedVariants;
-    });
   };
+  
 
-  console.log(deletedVariants);
-
-
-
+  console.log("deleted variant: ", deletedVariants);
 
   const handleAddSizeAndColour = (type, i) => {
     const updatedVariants = [...variants];
@@ -314,11 +277,9 @@ const FormPage = () => {
     URL.revokeObjectURL(imageSrc);
   };
 
-
-
   const onSubmit = async (data) => {
     console.log("Deleted Variants Before Submission:", deletedVariants);
-
+  
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("brand", data.brand);
@@ -327,64 +288,57 @@ const FormPage = () => {
     formData.append("price", Number(data.price) || 0);
     formData.append("greenPointsPerUnit", data.greenPointsPerUnit);
     formData.append("featured", data.featured);
-
-    // Prepare updated variants
-    const updatedVariants = data.variants.map((variant, index) => {
-      const existingVariantId = productDetail?.variants[index]?._id;
-      return {
-        _id: existingVariantId || "", // Use "" for new variants
+  
+    // ✅ Filter out duplicate variants
+    const existingVariants = data.variants
+      .filter((variant) => variant._id && !deletedVariants.includes(variant._id))
+      .map((variant) => ({
+        _id: variant._id,
         name: variant.name,
         price: Number(variant.price) || 0,
         sizes: variant.sizes,
         colors: variant.colors,
-      };
-    });
-
-    formData.append("updatedVariants", JSON.stringify(updatedVariants));
-
-    // Only include deletedVariants if it has values
+      }));
+  
+    // ✅ Only send new variants if they don’t exist
+    const newVariants = data.variants
+      .filter((variant) => !variant._id)
+      .map((variant) => ({
+        name: variant.name,
+        price: Number(variant.price) || 0,
+        sizes: variant.sizes,
+        colors: variant.colors,
+      }));
+  
+    // ❗ Log to debug duplicate issues
+    console.log("Existing Variants:", existingVariants);
+    console.log("New Variants Before Sending:", newVariants);
+  
+    // ✅ Append Variants
+    if (existingVariants.length > 0) {
+      formData.append("updatedVariants", JSON.stringify(existingVariants));
+    }
+    if (newVariants.length > 0) {
+      formData.append("newVariants", JSON.stringify(newVariants));
+    }
+  
+    // ✅ Append deleted variants
     if (deletedVariants.length > 0) {
       formData.append("deletedVariants", JSON.stringify(deletedVariants));
     }
-
-    // **Handle Images: Pass ONLY new uploaded images**
-    const newImageFiles = uploadedImagesFiles.filter((file) => file instanceof File); // Ensure only File objects
-
-    if (newImageFiles.length > 0) {
-      newImageFiles.forEach((file) => {
-        formData.append("images", file); // Append each new file
-      });
-    }
-
-    // **Pass deleted images (Existing URLs only)**
-    if (deletedImages.length > 0) {
-      formData.append("deletedImages", JSON.stringify(deletedImages));
-    }
-
-    console.log("Final Payload:", {
-      updatedVariants,
-      deletedVariants,
-      images: newImageFiles.map((file) => file.name), // Debugging only filenames
-      deletedImages,
-    });
-
+  
     try {
       if (state?.data?.name) {
-        // Updating existing product
         await updateProduct({ payload: formData, id: id });
       } else {
-        // Creating new product
         await createProduct(formData);
       }
-
       reset();
       navigate("/shop-products");
     } catch (err) {
       console.error("Error updating product:", err);
     }
-  };
-
-
+  };  
 
   console.log("Deleted Variants:", deletedVariants);
 

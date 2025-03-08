@@ -8,7 +8,9 @@ import { useGetCarpool } from "../../hook/apis/carpool/useGetAll";
 import DataNotFound from "../../components/custom/extra/dataNotFound";
 
 const Carpooling = () => {
-  const { carpool, isPending } = useGetCarpool();
+  const { carpool, isLoading, error } = useGetCarpool();
+
+  console.log("Carpool Data in Component:", carpool); // Debug in console
 
   return (
     <MasterLayout>
@@ -17,20 +19,22 @@ const Carpooling = () => {
       <TableDataLayer
         title={"Ride History"}
         body={
-          isPending ? (
+          isLoading ? (
             <div
               style={{ minHeight: "59vh" }}
               className="d-flex justify-content-center align-items-center"
             >
-              <Loader loading={isPending} size={150} color="#15803d" />
+              <Loader loading={isLoading} size={150} color="#15803d" />
             </div>
+          ) : error ? (
+            <p>Error fetching data: {error.message}</p>
           ) : carpool?.length > 0 ? (
             <CarpoolingTable rows={carpool} />
           ) : (
             <DataNotFound
-            heading={"No Ride History Found"}
-            text={"There are no rides available based on your search."}
-          />
+              heading={"No Ride History Found"}
+              text={"There are no rides available based on your search."}
+            />
           )
         }
       />
