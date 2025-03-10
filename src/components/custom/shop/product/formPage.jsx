@@ -90,6 +90,8 @@ const FormPage = () => {
     register,
     handleSubmit,
     reset,
+    getValues,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(ProductSchema),
@@ -135,15 +137,30 @@ const FormPage = () => {
             color: val.color,
             stock: String(val.stock),
           })),
-        })) || [],
+        })) || [
+            {
+              _id: "",
+              name: "",
+              price: "",
+              sizes: [
+                {
+                  size: "",
+                  stock: "",
+                },
+              ],
+              colors: [
+                {
+                  color: "",
+                  stock: "",
+                },
+              ],
+            },
+          ],
       });
-  
       setUploadedImages(productDetail.images || []);
       setUploadedImagesFiles(productDetail.images || []);
-  
-      // **Only update variants if they are different from the current state**
-      setVariants((prevVariants) => {
-        const newVariants = productDetail.variants?.map((item) => ({
+      setVariants(
+        productDetail.variants?.map((item) => ({
           _id: item._id,
           name: item.name || "",
           price: String(item.price),
@@ -155,18 +172,28 @@ const FormPage = () => {
             color: val.color,
             stock: String(val.stock),
           })),
-        })) || [];
-  
-        // Avoid unnecessary updates if variants are the same
-        if (JSON.stringify(prevVariants) !== JSON.stringify(newVariants)) {
-          return newVariants;
-        }
-        return prevVariants;
-      });
+        })) || [
+          {
+            _id: "",
+            name: "",
+            price: "",
+            sizes: [
+              {
+                size: "",
+                stock: "",
+              },
+            ],
+            colors: [
+              {
+                color: "",
+                stock: "",
+              },
+            ],
+          },
+        ]
+      );
     }
   }, [productDetail, reset]);
-  
-  
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
@@ -195,18 +222,44 @@ const FormPage = () => {
   // };
 
   const handleAddVariants = () => {
+    setValue("variants", [...variants,{
+      _id: "",
+      name: "",
+      price: "",
+      sizes: [
+        {
+          size: "",
+          stock: "",
+        },
+      ],
+      colors: [
+        {
+          color: "",
+          stock: "",
+        },
+      ],
+    }])
     setVariants((prev) => [
       ...prev,
       {
         _id: "",
         name: "",
         price: "",
-        sizes: [{ size: "", stock: "" }],
-        colors: [{ color: "", stock: "" }],
+        sizes: [
+          {
+            size: "",
+            stock: "",
+          },
+        ],
+        colors: [
+          {
+            color: "",
+            stock: "",
+          },
+        ],
       },
     ]);
-  };  
-  
+  };
 
   // const handleRemoveVariants = (i) => {
   //   const updatedVariants = variants.filter((_, index) => index !== i);
@@ -215,19 +268,32 @@ const FormPage = () => {
 
   const [deletedVariants, setDeletedVariants] = useState([]);
 
-
-  const handleRemoveVariants = (indexToRemove, variantId) => {
-    setVariants((prevVariants) => 
-      prevVariants.filter((_, index) => index !== indexToRemove)
-    );
-  
-    if (variantId) {
+  const handleRemoveVariants = (i, variantId) => {
+    console.log(getValues("variants"));
+    
+    if (variantId !== "") {
       setDeletedVariants((prev) => [...prev, variantId]);
     }
-  };
-  
 
-  console.log("deleted variant: ", deletedVariants);
+    const updatedVariants = getValues("variants").filter((_, index) => index !== i);
+    // const afterDeletedVariants = variants.splice(i, 1);
+    // console.log(updatedVariants , afterDeletedVariants);
+    
+    setValue("variants",[...updatedVariants]);
+    setVariants([...updatedVariants]);
+
+    // setVariants((prevVariants) => {
+    //   const updatedVariants = prevVariants.filter((variant) => variant._id !== variantId);
+    //   console.log("Updated Variants:", updatedVariants);
+    //   return updatedVariants;
+    // });
+  };
+
+
+
+
+
+
 
   const handleAddSizeAndColour = (type, i) => {
     const updatedVariants = [...variants];
@@ -277,9 +343,11 @@ const FormPage = () => {
     URL.revokeObjectURL(imageSrc);
   };
 
+
+
   const onSubmit = async (data) => {
     console.log("Deleted Variants Before Submission:", deletedVariants);
-  
+
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("brand", data.brand);
@@ -288,57 +356,86 @@ const FormPage = () => {
     formData.append("price", Number(data.price) || 0);
     formData.append("greenPointsPerUnit", data.greenPointsPerUnit);
     formData.append("featured", data.featured);
-  
-    // ✅ Filter out duplicate variants
-    const existingVariants = data.variants
-      .filter((variant) => variant._id && !deletedVariants.includes(variant._id))
-      .map((variant) => ({
-        _id: variant._id,
+    console.log(variants, "all variats", data?.variants, " data variants");
+
+    // Prepare updated variants
+    const updatedVariants = data.variants.map((variant, index) => {
+      const existingVariantId = productDetail?.variants[index]?._id;
+      if (existingVariantId) {
+
+        return {
+          _id: existingVariantId,
+          name: variant.name,
+          price: Number(variant.price) || 0,
+          sizes: variant.sizes,
+          colors: variant.colors,
+        };
+      }
+      return {
         name: variant.name,
         price: Number(variant.price) || 0,
         sizes: variant.sizes,
         colors: variant.colors,
-      }));
-  
-    // ✅ Only send new variants if they don’t exist
-    const newVariants = data.variants
-      .filter((variant) => !variant._id)
-      .map((variant) => ({
-        name: variant.name,
-        price: Number(variant.price) || 0,
-        sizes: variant.sizes,
-        colors: variant.colors,
-      }));
-  
-    // ❗ Log to debug duplicate issues
-    console.log("Existing Variants:", existingVariants);
-    console.log("New Variants Before Sending:", newVariants);
-  
-    // ✅ Append Variants
-    if (existingVariants.length > 0) {
-      formData.append("updatedVariants", JSON.stringify(existingVariants));
+      };
+    });
+
+    let newVariants = updatedVariants.filter((variant) => !variant._id);
+    let uptVariants = updatedVariants.filter((variant) => variant._id);
+
+    // console.log(uptVariants);
+
+    if (uptVariants.length > 0) {
+      formData.append("updatedVariants", JSON.stringify(uptVariants));
     }
+
     if (newVariants.length > 0) {
+
       formData.append("newVariants", JSON.stringify(newVariants));
     }
-  
-    // ✅ Append deleted variants
+
+    // Only include deletedVariants if it has values
     if (deletedVariants.length > 0) {
       formData.append("deletedVariants", JSON.stringify(deletedVariants));
     }
-  
+
+    // **Handle Images: Pass ONLY new uploaded images**
+    const newImageFiles = uploadedImagesFiles.filter((file) => file instanceof File); // Ensure only File objects
+
+    if (newImageFiles.length > 0) {
+      newImageFiles.forEach((file) => {
+        formData.append("images", file); // Append each new file
+      });
+    }
+
+    // **Pass deleted images (Existing URLs only)**
+    if (deletedImages.length > 0) {
+      formData.append("deletedImages", JSON.stringify(deletedImages));
+    }
+
+    console.log("Final Payload:", {
+      updatedVariants,
+      deletedVariants,
+      images: newImageFiles.map((file) => file.name), // Debugging only filenames
+      deletedImages,
+    });
+
     try {
       if (state?.data?.name) {
+        // Updating existing product
         await updateProduct({ payload: formData, id: id });
       } else {
+        // Creating new product
         await createProduct(formData);
       }
+
       reset();
       navigate("/shop-products");
     } catch (err) {
       console.error("Error updating product:", err);
     }
-  };  
+  };
+
+
 
   console.log("Deleted Variants:", deletedVariants);
 
@@ -519,22 +616,23 @@ const FormPage = () => {
             <div className="col-xl-6">
               {/* Variants Section */}
               {variants?.map((elem, i) => (
-                <div key={i}>
+                <div key={ i}> {/* Ensure unique key based on _id or index */}
                   <div className="d-flex justify-content-between align-items-center">
                     <h6 className="mb-0">
                       Variant {variants?.length > 1 && i + 1}
                     </h6>
                     {variants?.length > 1 && (
-                      <button type="button" onClick={() => handleRemoveVariants(i, elem?._id)}>
-                        <Icon
-                          icon="radix-icons:minus"
-                          className="text-xl text-danger-600"
-                        ></Icon>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveVariants(i, elem?._id)} // Pass the index and the variant ID
+                      >
+                        <Icon icon="radix-icons:minus" className="text-xl text-danger-600"></Icon>
                       </button>
                     )}
                   </div>
                   <div className="border-top my-8"></div>
 
+                  {/* Variant Name */}
                   <div className="row gy-8 mb-8">
                     <div className="col-xl-6">
                       <label className="form-label">Variant Name</label>
@@ -543,11 +641,7 @@ const FormPage = () => {
                         name="name"
                         className="form-control form-control-sm"
                         placeholder="Enter Variant Name"
-                        data-error={
-                          errors?.variants && errors?.variants[i]?.name
-                            ? "true"
-                            : "false"
-                        }
+                        data-error={errors?.variants && errors?.variants[i]?.name ? "true" : "false"}
                         {...register(`variants[${i}].name`)}
                       />
                       {errors?.variants && (
@@ -557,16 +651,15 @@ const FormPage = () => {
                       )}
                     </div>
 
+                    {/* Variant Price */}
                     <div className="col-xl-6">
                       <label className="form-label">Variant Price</label>
                       <input
                         type="number"
                         className="form-control form-control-sm"
                         placeholder="Enter Variant Price"
-                        data-error={
-                          errors?.variants && errors?.variants[i]?.price ? "true" : "false"
-                        }
-                        {...register(`variants[${i}].price`, { valueAsNumber: true })} // ✅ Ensure it stores a number
+                        data-error={errors?.variants && errors?.variants[i]?.price ? "true" : "false"}
+                        {...register(`variants[${i}].price`, { valueAsNumber: true })}
                       />
                       {errors?.variants && (
                         <p className="text-danger-500">
@@ -574,269 +667,231 @@ const FormPage = () => {
                         </p>
                       )}
                     </div>
+                  </div>
 
+                  {/* Sizes Section */}
+                  <div className="col-xl-6 mt-8">
+                    {elem?.sizes?.map((size, j) => (
+                      <div key={j}>
+                        <div className="d-flex justify-content-between align-items-center">
+                          <p className="text-md fw-bold mb-0">
+                            Size {elem?.sizes?.length > 1 && j + 1}
+                          </p>
+                          {elem?.sizes?.length - 1 === j && elem?.sizes?.length > 0 ? (
+                            <button
+                              type="button"
+                              onClick={() => handleAddSizeAndColour("size", i)}
+                            >
+                              <Icon
+                                icon="radix-icons:plus"
+                                className="text-xl text-success-600"
+                              ></Icon>
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveSizeAndColour("size", i, j)}
+                            >
+                              <Icon
+                                icon="radix-icons:minus"
+                                className="text-xl text-danger-600"
+                              ></Icon>
+                            </button>
+                          )}
+                        </div>
+                        <div className="border-top my-8"></div>
 
-                    {/* Sizes Section */}
-                    <div className="col-xl-6 mt-8">
-                      {elem?.sizes?.map((size, j) => (
-                        <div key={j}>
-                          <div className="d-flex justify-content-between align-items-center">
-                            <p className="text-md fw-bold mb-0">
-                              Size {elem?.sizes?.length > 1 && j + 1}
-                            </p>
-                            {elem?.sizes?.length - 1 === j &&
-                              elem?.sizes?.length > 0 ? (
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  handleAddSizeAndColour("size", i)
-                                }
-                              >
-                                <Icon
-                                  icon="radix-icons:plus"
-                                  className="text-xl text-success-600"
-                                ></Icon>
-                              </button>
-                            ) : (
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  handleRemoveSizeAndColour("size", i, j)
-                                }
-                              >
-                                <Icon
-                                  icon="radix-icons:minus"
-                                  className="text-xl text-danger-600"
-                                ></Icon>
-                              </button>
-                            )}
-                          </div>
-                          <div className="border-top my-8"></div>
-
-                          <div className="row gy-8 mb-8">
-                            <div className="col-lg-5">
-                              <label className="form-label d-block">Size</label>
-                              <div
-                                className="btn-group"
-                                role="group"
-                                aria-label="Basic radio toggle button group"
-                              >
-                                <input
-                                  type="radio"
-                                  className="btn-check"
-                                  name={`size${j + "," + i}`}
-                                  id={`btnradio1${j + 1 + i}`}
-                                  defaultChecked=""
-                                  value={"large"}
-                                  {...register(
-                                    `variants[${i}].sizes[${j}].size`
-                                  )}
-                                />
-                                <label
-                                  className="btn btn-outline-success-600 px-10 py-8 radius-8"
-                                  htmlFor={`btnradio1${j + 1 + i}`}
-                                >
-                                  L
-                                </label>
-
-                                <input
-                                  type="radio"
-                                  className="btn-check"
-                                  name={`size${j + "," + i}`}
-                                  id={`btnradio2${j - 2 + i}`}
-                                  value={"medium"}
-                                  {...register(
-                                    `variants[${i}].sizes[${j}].size`
-                                  )}
-                                />
-                                <label
-                                  className="btn btn-outline-success-600 px-10 py-8 radius-8"
-                                  htmlFor={`btnradio2${j - 2 + i}`}
-                                >
-                                  M
-                                </label>
-
-                                <input
-                                  type="radio"
-                                  className="btn-check"
-                                  name={`size${j + "," + i}`}
-                                  id={`btnradio3${j + 3 + i}`}
-                                  value={"small"}
-                                  {...register(
-                                    `variants[${i}].sizes[${j}].size`
-                                  )}
-                                />
-                                <label
-                                  className="btn btn-outline-success-600 px-10 py-8 radius-8"
-                                  htmlFor={`btnradio3${j + 3 + i}`}
-                                >
-                                  S
-                                </label>
-                              </div>
-                              {errors?.variants &&
-                                errors?.variants[i] &&
-                                Array.isArray(errors?.variants[i]?.sizes) &&
-                                errors?.variants[i]?.sizes[j] && (
-                                  <p className="text-danger-500">
-                                    {
-                                      errors?.variants[i]?.sizes[j]?.size
-                                        ?.message
-                                    }
-                                  </p>
-                                )}
-                            </div>
-
-                            <div className="col-lg-7">
-                              <label className="form-label">
-                                Stock Quantity
-                              </label>
+                        <div className="row gy-8 mb-8">
+                          <div className="col-lg-5">
+                            <label className="form-label d-block">Size</label>
+                            <div
+                              className="btn-group"
+                              role="group"
+                              aria-label="Basic radio toggle button group"
+                            >
                               <input
-                                type="number"
-                                name="stock"
-                                className="form-control form-control-sm"
-                                placeholder="Enter Stock "
-                                data-error={
-                                  errors?.variants &&
-                                    errors?.variants[i] &&
-                                    Array.isArray(errors?.variants[i]?.sizes) &&
-                                    errors?.variants[i]?.sizes[j] &&
-                                    errors?.variants[i]?.sizes[j]?.stock
-                                    ? "true"
-                                    : "false"
-                                }
-                                {...register(
-                                  `variants[${i}].sizes[${j}].stock`
-                                )}
+                                type="radio"
+                                className="btn-check"
+                                name={`size${j + "," + i}`}
+                                id={`btnradio1${j + 1 + i}`}
+                                defaultChecked=""
+                                value={"large"}
+                                {...register(`variants[${i}].sizes[${j}].size`)}
                               />
-                              {errors?.variants &&
-                                errors?.variants[i] &&
-                                Array.isArray(errors?.variants[i]?.sizes) &&
-                                errors?.variants[i]?.sizes[j] && (
-                                  <p className="text-danger-500">
-                                    {
-                                      errors?.variants[i]?.sizes[j]?.stock
-                                        ?.message
-                                    }
-                                  </p>
-                                )}
+                              <label
+                                className="btn btn-outline-success-600 px-10 py-8 radius-8"
+                                htmlFor={`btnradio1${j + 1 + i}`}
+                              >
+                                L
+                              </label>
+
+                              <input
+                                type="radio"
+                                className="btn-check"
+                                name={`size${j + "," + i}`}
+                                id={`btnradio2${j - 2 + i}`}
+                                value={"medium"}
+                                {...register(`variants[${i}].sizes[${j}].size`)}
+                              />
+                              <label
+                                className="btn btn-outline-success-600 px-10 py-8 radius-8"
+                                htmlFor={`btnradio2${j - 2 + i}`}
+                              >
+                                M
+                              </label>
+
+                              <input
+                                type="radio"
+                                className="btn-check"
+                                name={`size${j + "," + i}`}
+                                id={`btnradio3${j + 3 + i}`}
+                                value={"small"}
+                                {...register(`variants[${i}].sizes[${j}].size`)}
+                              />
+                              <label
+                                className="btn btn-outline-success-600 px-10 py-8 radius-8"
+                                htmlFor={`btnradio3${j + 3 + i}`}
+                              >
+                                S
+                              </label>
                             </div>
+                            {errors?.variants &&
+                              errors?.variants[i] &&
+                              Array.isArray(errors?.variants[i]?.sizes) &&
+                              errors?.variants[i]?.sizes[j] && (
+                                <p className="text-danger-500">
+                                  {errors?.variants[i]?.sizes[j]?.size?.message}
+                                </p>
+                              )}
+                          </div>
+
+                          <div className="col-lg-7">
+                            <label className="form-label">Stock Quantity</label>
+                            <input
+                              type="number"
+                              name="stock"
+                              className="form-control form-control-sm"
+                              placeholder="Enter Stock"
+                              data-error={
+                                errors?.variants &&
+                                  errors?.variants[i] &&
+                                  Array.isArray(errors?.variants[i]?.sizes) &&
+                                  errors?.variants[i]?.sizes[j] &&
+                                  errors?.variants[i]?.sizes[j]?.stock
+                                  ? "true"
+                                  : "false"
+                              }
+                              {...register(`variants[${i}].sizes[${j}].stock`)}
+                            />
+                            {errors?.variants &&
+                              errors?.variants[i] &&
+                              Array.isArray(errors?.variants[i]?.sizes) &&
+                              errors?.variants[i]?.sizes[j] && (
+                                <p className="text-danger-500">
+                                  {errors?.variants[i]?.sizes[j]?.stock?.message}
+                                </p>
+                              )}
                           </div>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
+                  </div>
 
-                    {/* Colors Section */}
-                    <div className="col-xl-6 mt-8">
-                      {elem?.colors?.map((color, k) => (
-                        <div key={k}>
-                          <div className="d-flex justify-content-between align-items-center">
-                            <p className="text-md fw-bold mb-0">
-                              Color {elem?.colors?.length > 1 && k + 1}
-                            </p>
-                            {elem?.colors?.length - 1 === k &&
-                              elem?.colors?.length > 0 ? (
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  handleAddSizeAndColour("color", i)
-                                }
-                              >
-                                <Icon
-                                  icon="radix-icons:plus"
-                                  className="text-xl text-success-600"
-                                ></Icon>
-                              </button>
-                            ) : (
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  handleRemoveSizeAndColour("color", i, k)
-                                }
-                              >
-                                <Icon
-                                  icon="radix-icons:minus"
-                                  className="text-xl text-danger-600"
-                                ></Icon>
-                              </button>
-                            )}
+                  {/* Colors Section */}
+                  <div className="col-xl-6 mt-8">
+                    {elem?.colors?.map((color, k) => (
+                      <div key={k}>
+                        <div className="d-flex justify-content-between align-items-center">
+                          <p className="text-md fw-bold mb-0">
+                            Color {elem?.colors?.length > 1 && k + 1}
+                          </p>
+                          {elem?.colors?.length - 1 === k && elem?.colors?.length > 0 ? (
+                            <button
+                              type="button"
+                              onClick={() => handleAddSizeAndColour("color", i)}
+                            >
+                              <Icon
+                                icon="radix-icons:plus"
+                                className="text-xl text-success-600"
+                              ></Icon>
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveSizeAndColour("color", i, k)}
+                            >
+                              <Icon
+                                icon="radix-icons:minus"
+                                className="text-xl text-danger-600"
+                              ></Icon>
+                            </button>
+                          )}
+                        </div>
+                        <div className="border-top my-8"></div>
+
+                        <div className="row gy-8 mb-8">
+                          <div className="col-lg-5">
+                            <label className="form-label">Color</label>
+                            <input
+                              type="color"
+                              name="color"
+                              className="form-control form-control-sm w-10"
+                              placeholder="Enter Color"
+                              data-error={
+                                errors?.variants &&
+                                  errors?.variants[i] &&
+                                  Array.isArray(errors?.variants[i]?.colors) &&
+                                  errors?.variants[i]?.colors[k] &&
+                                  errors?.variants[i]?.colors[k]?.color
+                                  ? "true"
+                                  : "false"
+                              }
+                              {...register(`variants[${i}].colors[${k}].color`)}
+                            />
+                            {errors?.variants &&
+                              errors?.variants[i] &&
+                              Array.isArray(errors?.variants[i]?.colors) &&
+                              errors?.variants[i]?.colors[k] && (
+                                <p className="text-danger-500">
+                                  {errors?.variants[i]?.colors[k]?.color?.message}
+                                </p>
+                              )}
                           </div>
-                          <div className="border-top my-8"></div>
 
-                          <div className="row gy-8 mb-8">
-                            <div className="col-lg-5">
-                              <label className="form-label">Color</label>
-                              <input
-                                type="color"
-                                name="color"
-                                className="form-control form-control-sm w-10"
-                                placeholder="Enter Color"
-                                data-error={
-                                  errors?.variants &&
-                                    errors?.variants[i] &&
-                                    Array.isArray(errors?.variants[i]?.colors) &&
-                                    errors?.variants[i]?.colors[k] &&
-                                    errors?.variants[i]?.colors[k]?.color
-                                    ? "true"
-                                    : "false"
-                                }
-                                {...register(
-                                  `variants[${i}].colors[${k}].color`
-                                )}
-                              />
-                              {errors?.variants &&
-                                errors?.variants[i] &&
-                                Array.isArray(errors?.variants[i]?.colors) &&
-                                errors?.variants[i]?.colors[k] && (
-                                  <p className="text-danger-500">
-                                    {
-                                      errors?.variants[i]?.colors[k]?.color
-                                        ?.message
-                                    }
-                                  </p>
-                                )}
-                            </div>
-
-                            <div className="col-lg-7">
-                              <label className="form-label">
-                                Stock Quantity
-                              </label>
-                              <input
-                                type="number"
-                                name="stock"
-                                className="form-control form-control-sm"
-                                placeholder="Enter Stock "
-                                data-error={
-                                  errors?.variants &&
-                                    errors?.variants[i] &&
-                                    Array.isArray(errors?.variants[i]?.colors) &&
-                                    errors?.variants[i]?.colors[k] &&
-                                    errors?.variants[i]?.colors[k]?.stock
-                                    ? "true"
-                                    : "false"
-                                }
-                                {...register(
-                                  `variants[${i}].colors[${k}].stock`
-                                )}
-                              />
-                              {errors?.variants &&
-                                errors?.variants[i] &&
-                                Array.isArray(errors?.variants[i]?.colors) &&
-                                errors?.variants[i]?.colors[k] && (
-                                  <p className="text-danger-500">
-                                    {
-                                      errors?.variants[i]?.colors[k]?.stock
-                                        ?.message
-                                    }
-                                  </p>
-                                )}
-                            </div>
+                          <div className="col-lg-7">
+                            <label className="form-label">Stock Quantity</label>
+                            <input
+                              type="number"
+                              name="stock"
+                              className="form-control form-control-sm"
+                              placeholder="Enter Stock"
+                              data-error={
+                                errors?.variants &&
+                                  errors?.variants[i] &&
+                                  Array.isArray(errors?.variants[i]?.colors) &&
+                                  errors?.variants[i]?.colors[k] &&
+                                  errors?.variants[i]?.colors[k]?.stock
+                                  ? "true"
+                                  : "false"
+                              }
+                              {...register(`variants[${i}].colors[${k}].stock`)}
+                            />
+                            {errors?.variants &&
+                              errors?.variants[i] &&
+                              Array.isArray(errors?.variants[i]?.colors) &&
+                              errors?.variants[i]?.colors[k] && (
+                                <p className="text-danger-500">
+                                  {errors?.variants[i]?.colors[k]?.stock?.message}
+                                </p>
+                              )}
                           </div>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               ))}
+
 
               {/* Add New Variant Button */}
               <button
