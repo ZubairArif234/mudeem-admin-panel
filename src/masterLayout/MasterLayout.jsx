@@ -126,16 +126,25 @@ const MasterLayout = ({ children }) => {
               src={logoUrl || "assets/images/logo.png"}
               alt="site logo"
               className="light-logo"
+              style={{
+                width: sidebarActive || mobileMenu ? "3rem" : "5rem",
+              }}
             />
             <img
               src={logoUrl || "assets/images/logo-light.png"}
               alt="site logo"
               className="dark-logo"
+              style={{
+                width: sidebarActive || mobileMenu ? "3rem" : "5rem",
+              }}
             />
             <img
               src={logoUrl || "assets/images/logo-icon.png"}
               alt="site logo"
               className="logo-icon"
+              style={{
+                width: sidebarActive || mobileMenu ? "3rem" : "5rem",
+              }}
             />
           </Link>
         </div>
