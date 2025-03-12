@@ -174,19 +174,19 @@ const CompanyLayer = () => {
         formData.gptMessageGreenPoints
       );
 
-      if (logoPreview?.file) settingData.append("logo", logoPreview.file);
-      else if (logoPreview?.src) settingData.append("logo", logoPreview.src);
-      else settingData.append("logo", settings?.logo || "");
+      if (typeof(logoPreview?.file) !== "string") settingData.append("logo", logoPreview.file);
+      else if (typeof(logoPreview?.src) !== "string") settingData.append("logo", logoPreview.src);
+      // else settingData.append("logo", settings?.logo || "");
 
-      if (faviconPreview?.file)
+      if (typeof(faviconPreview?.file) !== "string")
         settingData.append("favIcon", faviconPreview.file);
-      else if (faviconPreview?.src)
+      else if (typeof(faviconPreview?.src) !== "string")
         settingData.append("favIcon", faviconPreview.src);
-      else settingData.append("favIcon", settings?.favIcon || "");
+      // else settingData.append("favIcon", settings?.favIcon || "");
 
       let res;
       if (settings?._id) {
-        res = await updateSetting(settingData, "form");
+        res = await updateSetting({payload:settingData, type: typeof(faviconPreview?.file) !== "string" || typeof(logoPreview?.file) !== "string" ? "form" : "json"});
       } else {
         res = await createSetting(settingData);
       }

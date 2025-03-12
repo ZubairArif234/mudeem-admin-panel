@@ -52,7 +52,7 @@ const TableDataLayer = ({
                 onClick={(e) => categoryFunction(e?.target?.value)}
                 className="text-capitalize form-control  bg-neutral-50 radius-12 "
               >
-                <option value={""}>Select Status</option>
+                <option value={""}>Filters</option>
 
                 {categories?.map((item, i) => {
                   return (

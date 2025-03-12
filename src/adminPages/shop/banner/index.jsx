@@ -31,7 +31,7 @@ const Banner = () => {
 
   return (
     <MasterLayout>
-      <Breadcrumb heading="Banner" title="Shop - Banner" />
+      <Breadcrumb heading="Shop" title="Shop - Banner" />
 
       <TableDataLayer
         title={"Banners"}

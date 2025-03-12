@@ -13,7 +13,7 @@ const FarmBanner = () => {
 
   return (
     <MasterLayout>
-      <Breadcrumb heading="Banner" title="Sustainable Farm - Banner" />
+      <Breadcrumb heading="Sustainable Farm" title="Sustainable Farm - Banner" />
 
       <TableDataLayer
         title={"Banners"}
