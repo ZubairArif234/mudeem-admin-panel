@@ -9,14 +9,14 @@ import Loader from "../../extra/loader";
 
 const imageValidation = (file) => {
   const allowedTypes = ["image/png"];
-  if (!file) {
-    return false;
-  }
-  const isValidType = allowedTypes.includes(file.type);
   const maxSize = 5 * 1024 * 1024; // 5MB limit
+  const isValidType = allowedTypes.includes(file.type);
   const isValidSize = file.size <= maxSize;
 
-  return isValidType && isValidSize ? file : null;
+  return {
+    isValidType,
+    isValidSize,
+  };
 };
 
 const BannerSchema = z.object({
@@ -25,7 +25,8 @@ const BannerSchema = z.object({
 
 const BannerForm = ({ data }) => {
   const [imagePreview, setImagePreview] = useState(null);
-  const [imageFile, setImageFile] = useState("hai");
+  const [imageFile, setImageFile] = useState(null);
+  const [fileError, setFileError] = useState(null); // Error message state
   const fileInputRef = useRef(null);
 
   const { createBanner, isPending } = useCreateBanner();
@@ -46,10 +47,18 @@ const BannerForm = ({ data }) => {
 
   const handleFileChange = (e) => {
     if (e.target.files.length > 0) {
-      if (imageValidation(e.target.files[0])) {
-        const src = URL.createObjectURL(e.target.files[0]);
+      const file = e.target.files[0];
+      const { isValidType, isValidSize } = imageValidation(file);
+
+      if (!isValidType) {
+        setFileError(" Invalid image file (only PNG)");
+      } else if (!isValidSize) {
+        setFileError("File size exceeds the limit of 5MB.");
+      } else {
+        setFileError(null); // Reset error if file is valid
+        const src = URL.createObjectURL(file);
         setImagePreview(src);
-        setImageFile(e.target.files[0]);
+        setImageFile(file);
       }
     }
   };
@@ -57,6 +66,7 @@ const BannerForm = ({ data }) => {
   const removeImage = () => {
     setImagePreview(null);
     setImageFile(null);
+    setFileError(null); // Reset error when image is removed
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -87,7 +97,7 @@ const BannerForm = ({ data }) => {
   const handleClose = () => {
     reset();
     setImagePreview(null);
-    setImageFile("hai");
+    setImageFile(null);
   };
 
   useEffect(() => {
@@ -101,12 +111,10 @@ const BannerForm = ({ data }) => {
   useEffect(() => {
     if (data?.name || data?.image) {
       setValue("name", data.name);
-
       setImagePreview(data.image);
       setImageFile(data.image);
     }
   }, [data]);
-  console.log(imagePreview);
 
   return (
     <form
@@ -147,7 +155,6 @@ const BannerForm = ({ data }) => {
               <label
                 className="upload-file h-120-px w-120-px border input-form-light radius-8 overflow-hidden border-dashed bg-neutral-50 bg-hover-neutral-200 d-flex align-items-center flex-column justify-content-center gap-1"
                 htmlFor={`upload-file-${data?._id}`}
-                data-error={!imageFile ? "true" : "false"}
               >
                 <Icon
                   icon="solar:camera-outline"
@@ -166,10 +173,10 @@ const BannerForm = ({ data }) => {
               accept="image/*"
             />
           </div>
-          {!imageFile && (
-            <p className="text-danger-500">
-              Invalid image file (only PNG, max 5MB)
-            </p>
+
+          {/* Show error message if file is invalid */}
+          {fileError && (
+            <p className="text-danger-500">{fileError}</p>
           )}
         </div>
 
@@ -200,7 +207,7 @@ const BannerForm = ({ data }) => {
           <button
             type="submit"
             className="btn btn-success-600"
-            data-bs-dismiss={data && "modal"}
+            data-bs-dismiss={"modal"}
           >
             {isPending || updatePending ? (
               <Loader loading={isPending || updatePending} />

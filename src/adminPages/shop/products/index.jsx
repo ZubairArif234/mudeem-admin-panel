@@ -12,7 +12,7 @@ const Products = () => {
     search: "",
     category: "",
     page: 1,
-    limit: 10,
+    limit: 100000,
   });
 
   const { categories } = useGetCategory();
@@ -56,7 +56,7 @@ const Products = () => {
         isCustomHeaderButton
         modalTitle="Add Product"
         pageLink="/create-products"
-        isAllowPagination={products?.length > 10 ? true : false}
+        isAllowPagination={products?.length > 100000 ? true : false}
         paginationFunction={handlePagination}
         page={filters?.page}
         isFilter

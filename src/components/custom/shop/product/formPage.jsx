@@ -340,9 +340,99 @@ const FormPage = () => {
 
 
 
+  // const onSubmit = async (data) => {
+  //   console.log("Deleted Variants Before Submission:", deletedVariants);
+
+  //   const formData = new FormData();
+  //   formData.append("name", data.name);
+  //   formData.append("brand", data.brand);
+  //   formData.append("category", data.category);
+  //   formData.append("description", data.description);
+  //   formData.append("price", Number(data.price) || 0);
+  //   formData.append("greenPointsPerUnit", data.greenPointsPerUnit);
+  //   formData.append("featured", data.featured);
+  //   console.log(variants, "all variats", data?.variants, " data variants");
+
+  //   // Prepare updated variants
+  //   const updatedVariants = data.variants.map((variant, index) => {
+  //     const existingVariantId = productDetail?.variants[index]?._id;
+  //     if (existingVariantId) {
+
+  //       return {
+  //         _id: existingVariantId,
+  //         name: variant.name,
+  //         price: Number(variant.price) || 0,
+  //         sizes: variant.sizes,
+  //         colors: variant.colors,
+  //       };
+  //     }
+  //     return {
+  //       name: variant.name,
+  //       price: Number(variant.price) || 0,
+  //       sizes: variant.sizes,
+  //       colors: variant.colors,
+  //     };
+  //   });
+
+  //   let newVariants = updatedVariants.filter((variant) => !variant._id);
+  //   let uptVariants = updatedVariants.filter((variant) => variant._id);
+
+  //   // console.log(uptVariants);
+
+  //   if (uptVariants.length > 0) {
+  //     formData.append("updatedVariants", JSON.stringify(uptVariants));
+  //   }
+
+  //   if (newVariants.length > 0) {
+
+  //     formData.append("newVariants", JSON.stringify(newVariants));
+  //   }
+
+  //   // Only include deletedVariants if it has values
+  //   if (deletedVariants.length > 0) {
+  //     formData.append("deletedVariants", JSON.stringify(deletedVariants));
+  //   }
+
+  //   // **Handle Images: Pass ONLY new uploaded images**
+  //   const newImageFiles = uploadedImagesFiles.filter((file) => file instanceof File); // Ensure only File objects
+
+  //   if (newImageFiles.length > 0) {
+  //     newImageFiles.forEach((file) => {
+  //       formData.append("images", file); // Append each new file
+  //     });
+  //   }
+
+  //   // **Pass deleted images (Existing URLs only)**
+  //   if (deletedImages.length > 0) {
+  //     formData.append("deletedImages", JSON.stringify(deletedImages));
+  //   }
+
+  //   console.log("Final Payload:", {
+  //     updatedVariants,
+  //     deletedVariants,
+  //     images: newImageFiles.map((file) => file.name), // Debugging only filenames
+  //     deletedImages,
+  //   });
+
+  //   try {
+  //     if (state?.data?.name) {
+  //       // Updating existing product
+  //       await updateProduct({ payload: formData, id: id });
+  //     } else {
+  //       // Creating new product
+  //       await createProduct(formData);
+  //     }
+
+  //     reset();
+  //     navigate("/shop-products");
+  //   } catch (err) {
+  //     console.error("Error updating product:", err);
+  //   }
+  // };
+
   const onSubmit = async (data) => {
     console.log("Deleted Variants Before Submission:", deletedVariants);
-
+  
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("brand", data.brand);
@@ -351,13 +441,12 @@ const FormPage = () => {
     formData.append("price", Number(data.price) || 0);
     formData.append("greenPointsPerUnit", data.greenPointsPerUnit);
     formData.append("featured", data.featured);
-    console.log(variants, "all variats", data?.variants, " data variants");
-
-    // Prepare updated variants
+    console.log(variants, "all variants", data?.variants, " data variants");
+  
+    // Prepare updated variants for Update Product
     const updatedVariants = data.variants.map((variant, index) => {
       const existingVariantId = productDetail?.variants[index]?._id;
       if (existingVariantId) {
-
         return {
           _id: existingVariantId,
           name: variant.name,
@@ -373,47 +462,51 @@ const FormPage = () => {
         colors: variant.colors,
       };
     });
-
+  
+    // Prepare the new and updated variants for Create Product
     let newVariants = updatedVariants.filter((variant) => !variant._id);
     let uptVariants = updatedVariants.filter((variant) => variant._id);
-
-    // console.log(uptVariants);
-
-    if (uptVariants.length > 0) {
-      formData.append("updatedVariants", JSON.stringify(uptVariants));
+  
+    // For Update Product, send updated and new variants separately
+    if (state?.data?.name) {
+      if (uptVariants.length > 0) {
+        formData.append("updatedVariants", JSON.stringify(uptVariants));
+      }
+  
+      if (newVariants.length > 0) {
+        formData.append("newVariants", JSON.stringify(newVariants));
+      }
+    } else {
+      // For Create Product, send all variants directly
+      formData.append("variants", JSON.stringify(updatedVariants));
     }
-
-    if (newVariants.length > 0) {
-
-      formData.append("newVariants", JSON.stringify(newVariants));
-    }
-
+  
     // Only include deletedVariants if it has values
     if (deletedVariants.length > 0) {
       formData.append("deletedVariants", JSON.stringify(deletedVariants));
     }
-
+  
     // **Handle Images: Pass ONLY new uploaded images**
     const newImageFiles = uploadedImagesFiles.filter((file) => file instanceof File); // Ensure only File objects
-
+  
     if (newImageFiles.length > 0) {
       newImageFiles.forEach((file) => {
         formData.append("images", file); // Append each new file
       });
     }
-
+  
     // **Pass deleted images (Existing URLs only)**
     if (deletedImages.length > 0) {
       formData.append("deletedImages", JSON.stringify(deletedImages));
     }
-
+  
     console.log("Final Payload:", {
       updatedVariants,
       deletedVariants,
       images: newImageFiles.map((file) => file.name), // Debugging only filenames
       deletedImages,
     });
-
+  
     try {
       if (state?.data?.name) {
         // Updating existing product
@@ -422,15 +515,13 @@ const FormPage = () => {
         // Creating new product
         await createProduct(formData);
       }
-
+  
       reset();
       navigate("/shop-products");
     } catch (err) {
       console.error("Error updating product:", err);
     }
-  };
-
-
+  };  
 
   console.log("Deleted Variants:", deletedVariants);
 

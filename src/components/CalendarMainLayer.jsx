@@ -400,10 +400,10 @@ const CalendarMainLayer = (data) => {
               </div>
               <div className="mb-12">
                 <span className="text-secondary-light txt-sm fw-medium">
-                  Date and time
+                  Date
                 </span>
                 <h6 className="text-primary-light fw-semibold text-md mb-0 mt-4">
-                  {moment(singleEvent?.dateTime).format("LLL")}
+                  {moment(singleEvent?.dateTime).format("MMM DD , YYYY")}
                 </h6>
               </div>
 
