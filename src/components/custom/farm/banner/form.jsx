@@ -204,7 +204,7 @@ const BannerForm = ({ data, closeModal }) => {
           <button
             type="submit"
             className="btn btn-success-600"
-            data-bs-dismiss={data && "modal"}
+            data-bs-dismiss={"modal"}
           >
             {isPending || updatePending ? (
               <Loader loading={isPending || updatePending} />
