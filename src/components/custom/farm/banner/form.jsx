@@ -7,25 +7,27 @@ import { useCreateBanner } from "../../../../hook/apis/sustainableFarm/banner/us
 import { useUpdateBanner } from "../../../../hook/apis/sustainableFarm/banner/useUpdateBanner";
 import Loader from "../../extra/loader";
 
+// File validation function
 const imageValidation = (file) => {
   const allowedTypes = ["image/png"];
-  if (!file) {
-    return false;
-  }
-  const isValidType = allowedTypes.includes(file.type);
   const maxSize = 5 * 1024 * 1024; // 5MB limit
+  const isValidType = allowedTypes.includes(file.type);
   const isValidSize = file.size <= maxSize;
 
-  return isValidType && isValidSize ? file : null;
+  return {
+    isValidType,
+    isValidSize,
+  };
 };
 
 const BannerSchema = z.object({
   name: z.string().min(3, "Invalid Banner Name"),
 });
 
-const BannerForm = ({ data }) => {
+const BannerForm = ({ data, closeModal }) => {
   const [imagePreview, setImagePreview] = useState(null);
-  const [imageFile, setImageFile] = useState("hai");
+  const [imageFile, setImageFile] = useState(null);
+  const [fileError, setFileError] = useState(null); // Error state for invalid files
   const fileInputRef = useRef(null);
 
   const { createBanner, isPending } = useCreateBanner();
@@ -44,24 +46,36 @@ const BannerForm = ({ data }) => {
     },
   });
 
+  // Handle file selection
   const handleFileChange = (e) => {
-    if (e.target.files.length) {
-      if (imageValidation(e.target.files[0])) {
-        const src = URL.createObjectURL(e.target.files[0]);
+    if (e.target.files.length > 0) {
+      const file = e.target.files[0];
+      const { isValidType, isValidSize } = imageValidation(file);
+
+      if (!isValidType) {
+        setFileError("Invalid file type. Please upload a PNG image.");
+      } else if (!isValidSize) {
+        setFileError("File size exceeds the limit of 5MB.");
+      } else {
+        setFileError(null); // Reset error if the file is valid
+        const src = URL.createObjectURL(file);
         setImagePreview(src);
-        setImageFile(e.target.files[0]);
+        setImageFile(file);
       }
     }
   };
 
+  // Remove uploaded image
   const removeImage = () => {
     setImagePreview(null);
     setImageFile(null);
+    setFileError(null); // Reset error when image is removed
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
   };
 
+  // Handle form submit
   const handleFormSubmit = async (values) => {
     const formData = new FormData();
     formData.append("name", values.name);
@@ -79,6 +93,7 @@ const BannerForm = ({ data }) => {
       reset();
       setImagePreview(null);
       setImageFile(null);
+      closeModal(); // Close modal after form submission
     } catch (err) {
       console.error("Banner failed:", err);
     }
@@ -87,13 +102,14 @@ const BannerForm = ({ data }) => {
   const handleClose = () => {
     reset();
     setImagePreview(null);
-    setImageFile("hai");
+    setImageFile(null);
+    setFileError(null); // Reset file error when closing modal
   };
 
   useEffect(() => {
     return () => {
       if (imagePreview) {
-        URL.revokeObjectURL(imagePreview);
+        URL.revokeObjectURL(imagePreview); // Clean up the object URL
       }
     };
   }, [imagePreview]);
@@ -101,11 +117,11 @@ const BannerForm = ({ data }) => {
   useEffect(() => {
     if (data?.name || data?.image) {
       setValue("name", data.name);
-
       setImagePreview(data.image);
       setImageFile(data.image);
     }
   }, [data]);
+
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)}>
       <div className="row gy-3">
@@ -136,7 +152,6 @@ const BannerForm = ({ data }) => {
               <label
                 className="upload-file h-120-px w-120-px border input-form-light radius-8 overflow-hidden border-dashed bg-neutral-50 bg-hover-neutral-200 d-flex align-items-center flex-column justify-content-center gap-1"
                 htmlFor={`upload-file-${data?._id}`}
-                data-error={!imageFile ? "true" : "false"}
               >
                 <Icon
                   icon="solar:camera-outline"
@@ -145,6 +160,7 @@ const BannerForm = ({ data }) => {
                 <span className="fw-semibold text-secondary-light">Upload</span>
               </label>
             )}
+
             <input
               id={`upload-file-${data?._id}`}
               type="file"
@@ -154,10 +170,10 @@ const BannerForm = ({ data }) => {
               accept="image/*"
             />
           </div>
-          {!imageFile && (
-            <p className="text-danger-500">
-              Invalid image file (only PNG, max 5MB)
-            </p>
+
+          {/* Show error message if file is invalid */}
+          {fileError && (
+            <p className="text-danger-500">{fileError}</p>
           )}
         </div>
 
