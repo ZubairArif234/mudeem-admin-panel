@@ -5,12 +5,13 @@ import InnovationCard from "../../components/custom/innovation/card";
 import { useGetProjects } from "../../hook/apis/sustainableInnovation/useGetProjects";
 import Loader from "../../components/custom/extra/loader";
 import DataNotFound from "../../components/custom/extra/dataNotFound";
-import { z } from "zod";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useChangeStatus } from "../../hook/apis/sustainableInnovation/useChangeStatus";
 import { SquarePagination } from "../../components/PaginationLayer";
+import { z } from "zod";
 
 const RewardSchema = z.object({
   points: z.coerce.number().min(1, "Points should be greater then 0"),
