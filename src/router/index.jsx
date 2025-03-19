@@ -106,6 +106,7 @@ import Settings from "../adminPages/setting";
 import Profile from "../adminPages/profile";
 import ResetPasswordPage from "../pages/ResetPasswordPage";
 import CreateProduct from "../adminPages/shop/products/createProduct";
+import DeleteUserProfile from "../DeleteUserProfile";
 
 const Router = () => {
   
@@ -246,6 +247,7 @@ const Router = () => {
           <Route exact path="/widgets" element={<WidgetsPage />} />
           <Route exact path="/wizard" element={<WizardPage />} />
 
+          <Route exact path="/delete-profile" element={<DeleteUserProfile />} />
           <Route exact path="*" element={<ErrorPage />} />
 
           {/* admin pages */}

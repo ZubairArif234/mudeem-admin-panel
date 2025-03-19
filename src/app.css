@@ -56,6 +56,11 @@
   background-color: #f2f2f2;
 }
 
+.delete-profile-bg{
+  background-image: url("https://img.freepik.com/premium-photo/geometric-abstract-pattern_153454-6776.jpg?ga=GA1.1.2038776791.1724095678&semt=ais_hybrid");
+
+}
+
 @media (max-width: 768px) {
   .fc .fc-toolbar {
     display: block !important;
