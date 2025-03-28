@@ -24,22 +24,30 @@ const ColorSchema = z.object({
 
 const VariantSchema = z.object({
   name: z.string().min(1, "Variant name is required"),
-  price: z.union([z.string(), z.number()]).refine((val) => !isNaN(Number(val)), {
-    message: "Price must be a valid number",
-  }), // ✅ Allow both string and number
+  price: z
+    .union([z.string(), z.number()])
+    .refine((val) => !isNaN(Number(val)), {
+      message: "Price must be a valid number",
+    }), // ✅ Allow both string and number
   sizes: z.array(SizeSchema).min(1, "At least one size is required"),
   colors: z.array(ColorSchema).min(1, "At least one color is required"),
 });
 
-
 // Zod schema for product
 const ProductSchema = z.object({
   name: z.string().min(3, "Product name must be at least 3 characters"),
+  name_ar: z.string().min(3, "Product name in Arabic must be at least 3 characters"),
   brand: z.string().min(3, "Product brand must be at least 3 characters"),
+  brand_ar: z.string().min(3, "Product brand in Arabic must be at least 3 characters"),
   category: z.string().min(3, "Product category is invalid"),
   greenPointsPerUnit: z.string().min(1, "Product green point is invalid"),
   featured: z.boolean(),
-  description: z.string().min(10, "Product description must be at least 10 characters"),
+  description: z
+    .string()
+    .min(10, "Product description must be at least 10 characters"),
+  description_ar: z
+    .string()
+    .min(10, "Product description in Arabic must be at least 10 characters"),
   variants: z.array(VariantSchema).min(1, "At least one variant is required"),
 });
 
@@ -97,11 +105,14 @@ const FormPage = () => {
     resolver: zodResolver(ProductSchema),
     defaultValues: {
       name: "",
+      name_ar: "",
       brand: "",
+      brand_ar: "",
       greenPointsPerUnit: "",
       price: "", // ✅ Ensure price has a default value
       category: "Select Category",
       description: "",
+      description_ar: "",
       featured: false,
       variants: [
         {
@@ -114,16 +125,18 @@ const FormPage = () => {
     },
   });
 
-
   // Reset form when productDetail changes
   useEffect(() => {
     if (productDetail) {
       reset({
         name: productDetail.name || "",
+        name_ar: productDetail.name_ar || "",
         brand: productDetail.brand || "",
+        brand_ar: productDetail.brand_ar || "",
         greenPointsPerUnit: String(productDetail.greenPointsPerUnit) || "",
         category: productDetail.category?._id || "Select Category",
         description: productDetail.description || "",
+        description_ar: productDetail.description_ar || "",
         featured: productDetail.featured || false,
         variants: productDetail.variants?.map((item) => ({
           _id: item._id,
@@ -138,24 +151,24 @@ const FormPage = () => {
             stock: String(val.stock),
           })),
         })) || [
-            {
-              _id: "",
-              name: "",
-              price: "",
-              sizes: [
-                {
-                  size: "",
-                  stock: "",
-                },
-              ],
-              colors: [
-                {
-                  color: "",
-                  stock: "",
-                },
-              ],
-            },
-          ],
+          {
+            _id: "",
+            name: "",
+            price: "",
+            sizes: [
+              {
+                size: "",
+                stock: "",
+              },
+            ],
+            colors: [
+              {
+                color: "",
+                stock: "",
+              },
+            ],
+          },
+        ],
       });
       setUploadedImages(productDetail.images || []);
       setUploadedImagesFiles(productDetail.images || []);
@@ -240,10 +253,10 @@ const FormPage = () => {
         },
       ],
     };
-    
+
     // First update the form value with current form data
     setValue("variants", [...currentFormVariants, newVariant]);
-    
+
     // Then update the local state with the same data
     setVariants([...currentFormVariants, newVariant]);
   };
@@ -257,32 +270,30 @@ const FormPage = () => {
 
   const handleRemoveVariants = (i, variantId) => {
     console.log("Removing variant at index:", i, "with ID:", variantId);
-    
+
     if (variantId !== "") {
       setDeletedVariants((prev) => [...prev, variantId]);
     }
 
     // Get current form values first
     const currentFormVariants = getValues("variants");
-    
+
     // Make a copy and remove the variant at index i
     const updatedVariants = [...currentFormVariants];
     updatedVariants.splice(i, 1);
-    
+
     // Update both form values and state
     setValue("variants", updatedVariants);
     setVariants(updatedVariants);
-    
+
     console.log("Variants after removal:", updatedVariants);
   };
-
-
 
   const handleAddSizeAndColour = (type, i) => {
     // Get current form values
     const currentFormVariants = getValues("variants");
     const updatedVariants = [...currentFormVariants];
-    
+
     if (type === "size") {
       updatedVariants[i].sizes = [
         ...updatedVariants[i].sizes,
@@ -294,7 +305,7 @@ const FormPage = () => {
         { color: "", stock: "" },
       ];
     }
-    
+
     // Update both form values and state
     setValue("variants", updatedVariants);
     setVariants(updatedVariants);
@@ -304,7 +315,7 @@ const FormPage = () => {
     // Get current form values
     const currentFormVariants = getValues("variants");
     const updatedVariants = [...currentFormVariants];
-    
+
     if (type === "size") {
       updatedVariants[i].sizes = updatedVariants[i].sizes.filter(
         (_, index) => index !== indexToRemove
@@ -314,7 +325,7 @@ const FormPage = () => {
         (_, index) => index !== indexToRemove
       );
     }
-    
+
     // Update both form values and state
     setValue("variants", updatedVariants);
     setVariants(updatedVariants);
@@ -337,8 +348,6 @@ const FormPage = () => {
 
     URL.revokeObjectURL(imageSrc);
   };
-
-
 
   // const onSubmit = async (data) => {
   //   console.log("Deleted Variants Before Submission:", deletedVariants);
@@ -432,17 +441,20 @@ const FormPage = () => {
 
   const onSubmit = async (data) => {
     console.log("Deleted Variants Before Submission:", deletedVariants);
-  
+
     const formData = new FormData();
     formData.append("name", data.name);
+    formData.append("name_ar", data.name_ar);
     formData.append("brand", data.brand);
+    formData.append("brand_ar", data.brand_ar);
     formData.append("category", data.category);
     formData.append("description", data.description);
+    formData.append("description_ar", data.description_ar);
     formData.append("price", Number(data.price) || 0);
     formData.append("greenPointsPerUnit", data.greenPointsPerUnit);
     formData.append("featured", data.featured);
     console.log(variants, "all variants", data?.variants, " data variants");
-  
+
     // Prepare updated variants for Update Product
     const updatedVariants = data.variants.map((variant, index) => {
       const existingVariantId = productDetail?.variants[index]?._id;
@@ -462,17 +474,17 @@ const FormPage = () => {
         colors: variant.colors,
       };
     });
-  
+
     // Prepare the new and updated variants for Create Product
     let newVariants = updatedVariants.filter((variant) => !variant._id);
     let uptVariants = updatedVariants.filter((variant) => variant._id);
-  
+
     // For Update Product, send updated and new variants separately
     if (state?.data?.name) {
       if (uptVariants.length > 0) {
         formData.append("updatedVariants", JSON.stringify(uptVariants));
       }
-  
+
       if (newVariants.length > 0) {
         formData.append("newVariants", JSON.stringify(newVariants));
       }
@@ -480,33 +492,35 @@ const FormPage = () => {
       // For Create Product, send all variants directly
       formData.append("variants", JSON.stringify(updatedVariants));
     }
-  
+
     // Only include deletedVariants if it has values
     if (deletedVariants.length > 0) {
       formData.append("deletedVariants", JSON.stringify(deletedVariants));
     }
-  
+
     // **Handle Images: Pass ONLY new uploaded images**
-    const newImageFiles = uploadedImagesFiles.filter((file) => file instanceof File); // Ensure only File objects
-  
+    const newImageFiles = uploadedImagesFiles.filter(
+      (file) => file instanceof File
+    ); // Ensure only File objects
+
     if (newImageFiles.length > 0) {
       newImageFiles.forEach((file) => {
         formData.append("images", file); // Append each new file
       });
     }
-  
+
     // **Pass deleted images (Existing URLs only)**
     if (deletedImages.length > 0) {
       formData.append("deletedImages", JSON.stringify(deletedImages));
     }
-  
+
     console.log("Final Payload:", {
       updatedVariants,
       deletedVariants,
       images: newImageFiles.map((file) => file.name), // Debugging only filenames
       deletedImages,
     });
-  
+
     try {
       if (state?.data?.name) {
         // Updating existing product
@@ -515,17 +529,15 @@ const FormPage = () => {
         // Creating new product
         await createProduct(formData);
       }
-  
+
       reset();
       navigate("/shop-products");
     } catch (err) {
       console.error("Error updating product:", err);
     }
-  };  
+  };
 
   console.log("Deleted Variants:", deletedVariants);
-
-
 
   return (
     <div className="card basic-data-table ">
@@ -573,7 +585,9 @@ const FormPage = () => {
                           icon="solar:camera-outline"
                           className="text-xl text-secondary-light"
                         ></Icon>
-                        <span className="fw-semibold text-secondary-light">Upload</span>
+                        <span className="fw-semibold text-secondary-light">
+                          Upload
+                        </span>
                         <input
                           id="upload-file-multiple"
                           type="file"
@@ -586,7 +600,7 @@ const FormPage = () => {
                     )}
                   </div>
                 </div>
-                <div className="col-12">
+                <div className="col-12 mt-12">
                   <label className="form-label">Product Name</label>
                   <input
                     type="text"
@@ -599,9 +613,23 @@ const FormPage = () => {
                   {errors?.name && (
                     <p className="text-danger-500">{errors?.name?.message}</p>
                   )}
+                  <input
+                    type="text"
+                    name="name_ar"
+                    dir="rtl"
+                    className="form-control form-control-sm mt-8"
+                    placeholder="Enter Product Name in Arabic"
+                    data-error={errors?.name_ar ? "true" : "false"}
+                    {...register("name_ar")}
+                  />
+                  {errors?.name_ar && (
+                    <p className="text-danger-500">
+                      {errors?.name_ar?.message}
+                    </p>
+                  )}
                 </div>
 
-                <div className="col-12">
+                <div className="col-12 mt-12">
                   <label className="form-label">Brand Name</label>
                   <input
                     type="text"
@@ -614,9 +642,24 @@ const FormPage = () => {
                   {errors?.brand && (
                     <p className="text-danger-500">{errors?.brand?.message}</p>
                   )}
+
+                  <input
+                    type="text"
+                    name="brand_ar"
+                    dir="rtl"
+                    className="form-control form-control-sm mt-8"
+                    placeholder="Enter Brand Name in Arabic"
+                    data-error={errors?.brand_ar ? "true" : "false"}
+                    {...register("brand_ar")}
+                  />
+                  {errors?.brand_ar && (
+                    <p className="text-danger-500">
+                      {errors?.brand_ar?.message}
+                    </p>
+                  )}
                 </div>
 
-                <div className="col-lg-6">
+                <div className="col-lg-6 mt-12">
                   <label className="form-label">Green Points</label>
                   <input
                     type="number"
@@ -633,7 +676,7 @@ const FormPage = () => {
                   )}
                 </div>
 
-                <div className="col-lg-6">
+                <div className="col-lg-6 mt-12">
                   <label className="form-label">Category</label>
                   <select
                     className="form-control form-control-sm"
@@ -662,7 +705,7 @@ const FormPage = () => {
                   )}
                 </div>
 
-                <div className="col-12">
+                <div className="col-12 mt-12">
                   <label className="form-label">Description</label>
                   <textarea
                     name="#0"
@@ -677,9 +720,23 @@ const FormPage = () => {
                       {errors?.description?.message}
                     </p>
                   )}
+                  <textarea
+                    name="#0"
+                    style={{ height: "100px" }}
+                    dir="rtl"
+                    className="form-control form-control-sm mt-8"
+                    placeholder="Enter Description in Arabic"
+                    data-error={errors?.description_ar ? "true" : "false"}
+                    {...register("description_ar")}
+                  ></textarea>
+                    {errors?.description_ar && (
+                    <p className="text-danger-500">
+                      {errors?.description_ar?.message}
+                    </p>
+                  )}
                 </div>
 
-                <div className="col-lg-6">
+                <div className="col-lg-6 mt-12">
                   <div className="form-switch switch-success d-flex align-items-center gap-3 mt-8">
                     <input
                       className="form-check-input"
@@ -702,7 +759,9 @@ const FormPage = () => {
             <div className="col-xl-6">
               {/* Variants Section */}
               {variants?.map((elem, i) => (
-                <div key={i}> {/* Ensure unique key based on _id or index */}
+                <div key={i}>
+                  {" "}
+                  {/* Ensure unique key based on _id or index */}
                   <div className="d-flex justify-content-between align-items-center">
                     <h6 className="mb-0">
                       Variant {variants?.length > 1 && i + 1}
@@ -712,12 +771,14 @@ const FormPage = () => {
                         type="button"
                         onClick={() => handleRemoveVariants(i, elem?._id)} // Pass the index and the variant ID
                       >
-                        <Icon icon="radix-icons:minus" className="text-xl text-danger-600"></Icon>
+                        <Icon
+                          icon="radix-icons:minus"
+                          className="text-xl text-danger-600"
+                        ></Icon>
                       </button>
                     )}
                   </div>
                   <div className="border-top my-8"></div>
-
                   {/* Variant Name */}
                   <div className="row gy-8 mb-8">
                     <div className="col-xl-6">
@@ -727,7 +788,11 @@ const FormPage = () => {
                         name="name"
                         className="form-control form-control-sm"
                         placeholder="Enter Variant Name"
-                        data-error={errors?.variants && errors?.variants[i]?.name ? "true" : "false"}
+                        data-error={
+                          errors?.variants && errors?.variants[i]?.name
+                            ? "true"
+                            : "false"
+                        }
                         {...register(`variants[${i}].name`)}
                       />
                       {errors?.variants && (
@@ -744,8 +809,14 @@ const FormPage = () => {
                         type="number"
                         className="form-control form-control-sm"
                         placeholder="Enter Variant Price"
-                        data-error={errors?.variants && errors?.variants[i]?.price ? "true" : "false"}
-                        {...register(`variants[${i}].price`, { valueAsNumber: true })}
+                        data-error={
+                          errors?.variants && errors?.variants[i]?.price
+                            ? "true"
+                            : "false"
+                        }
+                        {...register(`variants[${i}].price`, {
+                          valueAsNumber: true,
+                        })}
                       />
                       {errors?.variants && (
                         <p className="text-danger-500">
@@ -754,7 +825,6 @@ const FormPage = () => {
                       )}
                     </div>
                   </div>
-
                   {/* Sizes Section */}
                   <div className="row gy-8 mb-8">
                     <div className="col-xl-6 mt-8">
@@ -764,10 +834,13 @@ const FormPage = () => {
                             <p className="text-md fw-bold mb-0">
                               Size {elem?.sizes?.length > 1 && j + 1}
                             </p>
-                            {elem?.sizes?.length - 1 === j && elem?.sizes?.length > 0 ? (
+                            {elem?.sizes?.length - 1 === j &&
+                            elem?.sizes?.length > 0 ? (
                               <button
                                 type="button"
-                                onClick={() => handleAddSizeAndColour("size", i)}
+                                onClick={() =>
+                                  handleAddSizeAndColour("size", i)
+                                }
                               >
                                 <Icon
                                   icon="radix-icons:plus"
@@ -777,7 +850,9 @@ const FormPage = () => {
                             ) : (
                               <button
                                 type="button"
-                                onClick={() => handleRemoveSizeAndColour("size", i, j)}
+                                onClick={() =>
+                                  handleRemoveSizeAndColour("size", i, j)
+                                }
                               >
                                 <Icon
                                   icon="radix-icons:minus"
@@ -803,7 +878,9 @@ const FormPage = () => {
                                   id={`btnradio1${j + 1 + i}`}
                                   defaultChecked=""
                                   value={"large"}
-                                  {...register(`variants[${i}].sizes[${j}].size`)}
+                                  {...register(
+                                    `variants[${i}].sizes[${j}].size`
+                                  )}
                                 />
                                 <label
                                   className="btn btn-outline-success-600 px-10 py-8 radius-8"
@@ -818,7 +895,9 @@ const FormPage = () => {
                                   name={`size${j + "," + i}`}
                                   id={`btnradio2${j - 2 + i}`}
                                   value={"medium"}
-                                  {...register(`variants[${i}].sizes[${j}].size`)}
+                                  {...register(
+                                    `variants[${i}].sizes[${j}].size`
+                                  )}
                                 />
                                 <label
                                   className="btn btn-outline-success-600 px-10 py-8 radius-8"
@@ -833,7 +912,9 @@ const FormPage = () => {
                                   name={`size${j + "," + i}`}
                                   id={`btnradio3${j + 3 + i}`}
                                   value={"small"}
-                                  {...register(`variants[${i}].sizes[${j}].size`)}
+                                  {...register(
+                                    `variants[${i}].sizes[${j}].size`
+                                  )}
                                 />
                                 <label
                                   className="btn btn-outline-success-600 px-10 py-8 radius-8"
@@ -847,13 +928,18 @@ const FormPage = () => {
                                 Array.isArray(errors?.variants[i]?.sizes) &&
                                 errors?.variants[i]?.sizes[j] && (
                                   <p className="text-danger-500">
-                                    {errors?.variants[i]?.sizes[j]?.size?.message}
+                                    {
+                                      errors?.variants[i]?.sizes[j]?.size
+                                        ?.message
+                                    }
                                   </p>
                                 )}
                             </div>
 
                             <div className="col-lg-7">
-                              <label className="form-label">Stock Quantity</label>
+                              <label className="form-label">
+                                Stock Quantity
+                              </label>
                               <input
                                 type="number"
                                 name="stock"
@@ -861,21 +947,26 @@ const FormPage = () => {
                                 placeholder="Enter Stock"
                                 data-error={
                                   errors?.variants &&
-                                    errors?.variants[i] &&
-                                    Array.isArray(errors?.variants[i]?.sizes) &&
-                                    errors?.variants[i]?.sizes[j] &&
-                                    errors?.variants[i]?.sizes[j]?.stock
+                                  errors?.variants[i] &&
+                                  Array.isArray(errors?.variants[i]?.sizes) &&
+                                  errors?.variants[i]?.sizes[j] &&
+                                  errors?.variants[i]?.sizes[j]?.stock
                                     ? "true"
                                     : "false"
                                 }
-                                {...register(`variants[${i}].sizes[${j}].stock`)}
+                                {...register(
+                                  `variants[${i}].sizes[${j}].stock`
+                                )}
                               />
                               {errors?.variants &&
                                 errors?.variants[i] &&
                                 Array.isArray(errors?.variants[i]?.sizes) &&
                                 errors?.variants[i]?.sizes[j] && (
                                   <p className="text-danger-500">
-                                    {errors?.variants[i]?.sizes[j]?.stock?.message}
+                                    {
+                                      errors?.variants[i]?.sizes[j]?.stock
+                                        ?.message
+                                    }
                                   </p>
                                 )}
                             </div>
@@ -892,10 +983,13 @@ const FormPage = () => {
                             <p className="text-md fw-bold mb-0">
                               Color {elem?.colors?.length > 1 && k + 1}
                             </p>
-                            {elem?.colors?.length - 1 === k && elem?.colors?.length > 0 ? (
+                            {elem?.colors?.length - 1 === k &&
+                            elem?.colors?.length > 0 ? (
                               <button
                                 type="button"
-                                onClick={() => handleAddSizeAndColour("color", i)}
+                                onClick={() =>
+                                  handleAddSizeAndColour("color", i)
+                                }
                               >
                                 <Icon
                                   icon="radix-icons:plus"
@@ -905,7 +999,9 @@ const FormPage = () => {
                             ) : (
                               <button
                                 type="button"
-                                onClick={() => handleRemoveSizeAndColour("color", i, k)}
+                                onClick={() =>
+                                  handleRemoveSizeAndColour("color", i, k)
+                                }
                               >
                                 <Icon
                                   icon="radix-icons:minus"
@@ -926,27 +1022,34 @@ const FormPage = () => {
                                 placeholder="Enter Color"
                                 data-error={
                                   errors?.variants &&
-                                    errors?.variants[i] &&
-                                    Array.isArray(errors?.variants[i]?.colors) &&
-                                    errors?.variants[i]?.colors[k] &&
-                                    errors?.variants[i]?.colors[k]?.color
+                                  errors?.variants[i] &&
+                                  Array.isArray(errors?.variants[i]?.colors) &&
+                                  errors?.variants[i]?.colors[k] &&
+                                  errors?.variants[i]?.colors[k]?.color
                                     ? "true"
                                     : "false"
                                 }
-                                {...register(`variants[${i}].colors[${k}].color`)}
+                                {...register(
+                                  `variants[${i}].colors[${k}].color`
+                                )}
                               />
                               {errors?.variants &&
                                 errors?.variants[i] &&
                                 Array.isArray(errors?.variants[i]?.colors) &&
                                 errors?.variants[i]?.colors[k] && (
                                   <p className="text-danger-500">
-                                    {errors?.variants[i]?.colors[k]?.color?.message}
+                                    {
+                                      errors?.variants[i]?.colors[k]?.color
+                                        ?.message
+                                    }
                                   </p>
                                 )}
                             </div>
 
                             <div className="col-lg-7">
-                              <label className="form-label">Stock Quantity</label>
+                              <label className="form-label">
+                                Stock Quantity
+                              </label>
                               <input
                                 type="number"
                                 name="stock"
@@ -954,21 +1057,26 @@ const FormPage = () => {
                                 placeholder="Enter Stock"
                                 data-error={
                                   errors?.variants &&
-                                    errors?.variants[i] &&
-                                    Array.isArray(errors?.variants[i]?.colors) &&
-                                    errors?.variants[i]?.colors[k] &&
-                                    errors?.variants[i]?.colors[k]?.stock
+                                  errors?.variants[i] &&
+                                  Array.isArray(errors?.variants[i]?.colors) &&
+                                  errors?.variants[i]?.colors[k] &&
+                                  errors?.variants[i]?.colors[k]?.stock
                                     ? "true"
                                     : "false"
                                 }
-                                {...register(`variants[${i}].colors[${k}].stock`)}
+                                {...register(
+                                  `variants[${i}].colors[${k}].stock`
+                                )}
                               />
                               {errors?.variants &&
                                 errors?.variants[i] &&
                                 Array.isArray(errors?.variants[i]?.colors) &&
                                 errors?.variants[i]?.colors[k] && (
                                   <p className="text-danger-500">
-                                    {errors?.variants[i]?.colors[k]?.stock?.message}
+                                    {
+                                      errors?.variants[i]?.colors[k]?.stock
+                                        ?.message
+                                    }
                                   </p>
                                 )}
                             </div>
@@ -980,29 +1088,29 @@ const FormPage = () => {
                 </div>
               ))}
 
-                  {/* Add New Variant Button */}
-                  <button
-                    onClick={handleAddVariants}
-                    type="button"
-                    className="btn w-100 btn-outline-success-600 radius-8 px-20 py-11"
-                  >
-                    Add New Variant
-                  </button>
-                </div>
-          </div>
-
-            {/* Form Submit Button */}
-            <div className="d-flex justify-content-end my-8">
-              <button type="submit" className="btn bg-success-600 text-white">
-                {isPending || updatePending ? (
-                  <Loader loading={isPending || updatePending} />
-                ) : id ? (
-                  "Update Product"
-                ) : (
-                  "Create Product"
-                )}
+              {/* Add New Variant Button */}
+              <button
+                onClick={handleAddVariants}
+                type="button"
+                className="btn w-100 btn-outline-success-600 radius-8 px-20 py-11"
+              >
+                Add New Variant
               </button>
             </div>
+          </div>
+
+          {/* Form Submit Button */}
+          <div className="d-flex justify-content-end my-8">
+            <button type="submit" className="btn bg-success-600 text-white">
+              {isPending || updatePending ? (
+                <Loader loading={isPending || updatePending} />
+              ) : id ? (
+                "Update Product"
+              ) : (
+                "Create Product"
+              )}
+            </button>
+          </div>
         </form>
       </div>
     </div>

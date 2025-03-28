@@ -101,7 +101,7 @@ const DefaultTooltipThree = () => {
   );
 };
 
-export const SingleDefaultTooltipThree = ({ child, title }) => {
+export const SingleDefaultTooltipThree = ({ child, title = "null" }) => {
   useEffect(() => {
     // Select all elements with data-bs-toggle="DefaultTooltipThree"
     const tooltipTriggerList = document.querySelectorAll(
@@ -124,7 +124,7 @@ export const SingleDefaultTooltipThree = ({ child, title }) => {
       data-bs-toggle="DefaultTooltipThree"
       data-bs-placement="top"
       data-bs-custom-class="tooltip-success"
-      data-bs-title={title}
+      data-bs-title={title || "null"}
     >
       {child}
     </button>

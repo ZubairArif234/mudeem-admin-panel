@@ -36,6 +36,7 @@ const CategoryTable = ({ isSelectable, rows }) => {
           <th scope="col">ID</th>
           <th scope="col">Category Image</th>
           <th scope="col">Category Name</th>
+          <th scope="col">Category Name in Arabic</th>
           <th scope="col">Created At</th>
           <th scope="col">Action</th>
         </tr>
@@ -61,7 +62,7 @@ const CategoryTable = ({ isSelectable, rows }) => {
               />
             </td>
             <td className="text-capitalize">{item?.name}</td>
-
+            <td className="text-capitalize">{item?.name_ar}</td>
             <td> {moment(item?.createdAt).format("DD/MMM/YYYY")}</td>
             <td key={i + 1}>
               <div className="d-flex gap-2 align-items-start">

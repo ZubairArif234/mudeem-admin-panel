@@ -21,6 +21,7 @@ const imageValidation = (file) => {
 
 const CategorySchema = z.object({
   name: z.string().min(3, "Invalid Category Name"),
+  name_ar: z.string().min(3, "Invalid Category Name in Arabic"),
 });
 
 const CategoryForm = ({ data }) => {
@@ -64,13 +65,15 @@ const CategoryForm = ({ data }) => {
     resolver: zodResolver(CategorySchema),
     defaultValues: {
       name: data?.name || "",
+      name_ar: data?.name_ar || "",
     },
   });
 
   useEffect(() => {
-    if (data?.name || data?.image) {
+    console.log(data);
+    if (data?.name || data?.image || data?.name_ar) {
       setValue("name", data.name);
-
+      setValue("name_ar", data.name_ar);
       setImagePreview(data.image);
       setImageFile(data.image);
     }
@@ -82,6 +85,7 @@ const CategoryForm = ({ data }) => {
   const handleFormSubmit = async (values) => {
     const formData = new FormData();
     formData.append("name", values.name);
+    formData.append("name_ar", values.name_ar);
     if (!imageFile) {
       return;
     } else {
@@ -190,6 +194,21 @@ const CategoryForm = ({ data }) => {
           />
           {errors?.name && (
             <p className="text-danger-500">{errors?.name?.message}</p>
+          )}
+        </div>
+        <div className="col-12">
+          <label className="form-label">Category Name in Arabic</label>
+          <input
+            type="text"
+            name="name_ar"
+            className="form-control form-control-sm"
+            placeholder="Enter Category Name in Arabic"
+            dir="rtl"
+            data-error={errors?.name_ar ? "true" : "false"}
+            {...register("name_ar")}
+          />
+          {errors?.name_ar && (
+            <p className="text-danger-500">{errors?.name_ar?.message}</p>
           )}
         </div>
 

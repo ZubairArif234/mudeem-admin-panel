@@ -38,7 +38,9 @@ const ProductsTable = ({ isSelectable, rows }) => {
 
             <th scope="col">ID</th>
             <th scope="col">Product Name</th>
+            <th scope="col">Product Name in Arabic</th>
             <th scope="col">Brand Name</th>
+            <th scope="col">Brand Name in Arabic</th>
             <th scope="col">Descripton</th>
             <th scope="col">Category</th>
             <th scope="col">Availibility</th>
@@ -80,7 +82,14 @@ const ProductsTable = ({ isSelectable, rows }) => {
                   )}
                 </div>
               </td>
+              <td className="text-capitalize text-end"> 
+                <SingleDefaultTooltipThree
+                  title={item?.name_ar ? item?.name_ar : "nulll"}
+                  child={item?.name_ar ? item?.name_ar?.slice(0, 15) + "..." : "nulll"}
+                />
+              </td>
               <td className="text-capitalize"> {item?.brand}</td>
+              <td className="text-capitalize text-end"> {item?.brand_ar}</td>
               <td className="text-capitalize">
                 {item?.description?.slice(0, 16) + "..."}
               </td>
