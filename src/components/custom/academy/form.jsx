@@ -8,7 +8,9 @@ import { useUpdateBook } from "../../../hook/apis/academy/useUpdatedBook";
 
 const BookSchema = z.object({
   name: z.string().min(3, "Books name must be at least 3 characters"),
+  name_ar: z.string().min(3, "Books name in Arabic must be at least 3 characters"),
   author: z.string().min(3, "Author name must be at least 3 characters"),
+  author_ar: z.string().min(3, "Author name in Arabic must be at least 3 characters"),
   pages: z.number("No of pages is invalid"),
   language: z.string().min(3, "Language is invalid"),
   year: z.string().min(1, "Release date is invalid"),
@@ -19,6 +21,9 @@ const BookSchema = z.object({
   description: z
     .string()
     .min(10, "Book description must be at least 10 characters"),
+  description_ar: z
+    .string()
+    .min(10, "Book description in Arabic must be at least 10 characters"),
 });
 
 const fileValidation = (file) => {
@@ -122,12 +127,15 @@ const Form = ({ data }) => {
 
     const bookData = new FormData();
     bookData.append("title", formData.name);
+    bookData.append("title_ar", formData.name_ar);
     bookData.append("year", new Date(formData.year).getFullYear());
     bookData.append("author", formData.author);
+    bookData.append("author_ar", formData.author_ar);
     bookData.append("pages", formData.pages);
     bookData.append("language", formData.language);
     bookData.append("isPremium", formData.category === "free" ? false : true);
     bookData.append("description", formData.description);
+    bookData.append("description_ar", formData.description_ar);
     bookData.append("price", formData?.price);
     bookData.append("greenPoints", formData.greenPoints);
     bookData.append("type", formData.type);
@@ -145,7 +153,9 @@ const Form = ({ data }) => {
       if (res) {
         setImagePreview({ file: "", src: "", error: "" });
         setPdfPreview({ file: "", src: "", error: "" });
-        reset();
+        if (!data?._id) {
+          reset();
+        }
       }
     } catch (err) {
       console.error("Book update failed:", err);
@@ -156,8 +166,10 @@ const Form = ({ data }) => {
 
   useEffect(() => {
     if (data?._id) {
-      setValue("name", data?.title);
+      setValue("name", data?.title);  
+      setValue("name_ar", data?.title_ar);
       setValue("author", data?.author);
+      setValue("author_ar", data?.author_ar);
       setValue("pages", data?.pages);
       setValue("language", data?.language);
       setValue("year", new Date(data?.year, 0, 1).toISOString().split("T")[0]);
@@ -165,6 +177,7 @@ const Form = ({ data }) => {
       setValue("price", data?.price);
       setValue("isPremium", data?.isPremium ? "premium" : "free");
       setValue("description", data?.description);
+      setValue("description_ar", data?.description_ar);
       setValue("type", data?.type);
 
       if (data?.content) {
@@ -323,7 +336,7 @@ const Form = ({ data }) => {
           )}
         </div>
 
-        <div className="col-lg-4">
+        <div className="col-lg-6">
           <label className="form-label">Book Name</label>
           <input
             type="text"
@@ -335,6 +348,21 @@ const Form = ({ data }) => {
           />
           {errors?.name && (
             <p className="text-danger-500">{errors?.name?.message}</p>
+          )}
+        </div>
+        <div className="col-lg-6">
+          <label className="form-label">Book Name in Arabic</label>
+          <input
+            type="text"
+            name="#0"
+            className="form-control form-control-sm  "
+            placeholder="أدخل اسم الكتاب باللغة العربية"
+            data-error={errors?.name_ar ? "true" : "false"}
+            {...register("name_ar")}
+            dir="rtl"
+          />
+          {errors?.name_ar && (
+            <p className="text-danger-500">{errors?.name_ar?.message}</p>
           )}
         </div>
 
@@ -350,6 +378,20 @@ const Form = ({ data }) => {
           />
           {errors?.author && (
             <p className="text-danger-500">{errors?.author?.message}</p>
+          )}
+        </div>
+        <div className="col-lg-4">
+          <label className="form-label">Author Name in Arabic</label>
+          <input
+            type="text"
+            name="#0"
+            className="form-control form-control-sm"
+            placeholder="أدخل اسم المؤلف باللغة العربية"
+            data-error={errors?.author_ar ? "true" : "false"}
+            {...register("author_ar")}
+          />
+          {errors?.author_ar && (
+            <p className="text-danger-500">{errors?.author_ar?.message}</p>
           )}
         </div>
 
@@ -528,6 +570,23 @@ const Form = ({ data }) => {
           ></textarea>
           {errors?.description && (
             <p className="text-danger-500">{errors?.description?.message}</p>
+          )}
+        </div>
+        <div className="col-12">
+          <label className="form-label">Decsription in Arabic</label>
+          {/* <textarea> */}
+          <textarea
+            name="#0"
+            // rows={10}
+            style={{ height: "100px" }}
+            className="form-control form-control-sm"
+            placeholder="أدخل الوصف باللغة العربية"
+            data-error={errors?.description_ar ? "true" : "false"}
+            {...register("description_ar")}
+            dir="rtl"
+          ></textarea>
+          {errors?.description_ar && (
+            <p className="text-danger-500">{errors?.description_ar?.message}</p>
           )}
         </div>
       </div>
