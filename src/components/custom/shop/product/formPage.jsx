@@ -24,6 +24,7 @@ const ColorSchema = z.object({
 
 const VariantSchema = z.object({
   name: z.string().min(1, "Variant name is required"),
+  name_ar: z.string().min(1, "Variant name in Arabic is required"),
   price: z
     .union([z.string(), z.number()])
     .refine((val) => !isNaN(Number(val)), {
@@ -71,6 +72,7 @@ const FormPage = () => {
     {
       _id: "",
       name: "",
+      name_ar: "",
       price: "",
       sizes: [
         {
@@ -117,6 +119,7 @@ const FormPage = () => {
       variants: [
         {
           name: "",
+          name_ar: "",
           price: "", // ✅ Ensure price is in defaultValues
           sizes: [{ size: "", stock: "" }],
           colors: [{ color: "", stock: "" }],
@@ -141,6 +144,7 @@ const FormPage = () => {
         variants: productDetail.variants?.map((item) => ({
           _id: item._id,
           name: item.name || "",
+          name_ar: item.name_ar || "",
           price: String(item.price),
           sizes: item.sizes?.map((val) => ({
             size: val.size,
@@ -154,6 +158,7 @@ const FormPage = () => {
           {
             _id: "",
             name: "",
+            name_ar: "",
             price: "",
             sizes: [
               {
@@ -176,6 +181,7 @@ const FormPage = () => {
         productDetail.variants?.map((item) => ({
           _id: item._id,
           name: item.name || "",
+          name_ar: item.name_ar || "",
           price: String(item.price),
           sizes: item.sizes?.map((val) => ({
             size: val.size,
@@ -189,6 +195,7 @@ const FormPage = () => {
           {
             _id: "",
             name: "",
+            name_ar: "",
             price: "",
             sizes: [
               {
@@ -239,6 +246,7 @@ const FormPage = () => {
     const newVariant = {
       _id: "",
       name: "",
+      name_ar: "",
       price: "",
       sizes: [
         {
@@ -452,9 +460,7 @@ const FormPage = () => {
     formData.append("description_ar", data.description_ar);
     formData.append("price", Number(data.price) || 0);
     formData.append("greenPointsPerUnit", data.greenPointsPerUnit);
-    formData.append("featured", data.featured);
-    console.log(variants, "all variants", data?.variants, " data variants");
-
+    formData.append("featured", data.featured); 
     // Prepare updated variants for Update Product
     const updatedVariants = data.variants.map((variant, index) => {
       const existingVariantId = productDetail?.variants[index]?._id;
@@ -462,6 +468,7 @@ const FormPage = () => {
         return {
           _id: existingVariantId,
           name: variant.name,
+          name_ar: variant.name_ar,
           price: Number(variant.price) || 0,
           sizes: variant.sizes,
           colors: variant.colors,
@@ -469,6 +476,7 @@ const FormPage = () => {
       }
       return {
         name: variant.name,
+        name_ar: variant.name_ar,
         price: Number(variant.price) || 0,
         sizes: variant.sizes,
         colors: variant.colors,
@@ -529,9 +537,10 @@ const FormPage = () => {
         // Creating new product
         await createProduct(formData);
       }
-
-      reset();
-      navigate("/shop-products");
+      if (!state?.data?.name) {
+        reset();
+        navigate("/shop-products");
+      }
     } catch (err) {
       console.error("Error updating product:", err);
     }
@@ -798,6 +807,27 @@ const FormPage = () => {
                       {errors?.variants && (
                         <p className="text-danger-500">
                           {errors?.variants[i]?.name?.message}
+                        </p>
+                      )}
+                    </div>
+                    <div className="col-xl-6">
+                      <label className="form-label">Variant Name in Arabic</label>
+                      <input
+                        type="text"
+                        name="name_ar"
+                        dir="rtl"
+                        className="form-control form-control-sm"
+                        placeholder="Variant Name in Arabic"
+                        data-error={
+                          errors?.variants && errors?.variants[i]?.name_ar
+                            ? "true"
+                            : "false"
+                        }
+                        {...register(`variants[${i}].name_ar`)}
+                      />
+                      {errors?.variants && (
+                        <p className="text-danger-500">
+                          {errors?.variants[i]?.name_ar?.message}
                         </p>
                       )}
                     </div>
